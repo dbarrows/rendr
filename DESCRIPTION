@@ -1,0 +1,21 @@
+Package: chemnet
+Title: Chemical Reaction Networks
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Dexter",
+           family = "Barrows",
+           role = c("aut", "cre"),
+           email = "dexter@barrows.io",
+           comment = c(ORCID = "0000-0001-8169-8938"))
+Description: Provides support for natural, string-based, representation of chemical networks, which can be compiled into cpp objects for use in solvers.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.0.1
+Imports: 
+    stringr,
+    magrittr,
+    Rcpp,
+    RcppArmadillo,
+    stringi,
+    fs
