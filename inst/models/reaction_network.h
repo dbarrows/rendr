@@ -11,17 +11,16 @@ struct reaction {
     function<void(arma::vec&)> update;
 };
 
-class rnetwork {
+class reaction_network {
 public:
-    string name;
     vector<string> species;
     vector<reaction> reactions;
 };
 
-RCPP_EXPOSED_CLASS(rnetwork)
-RCPP_MODULE(rnetwork) {
-    Rcpp::class_<rnetwork>("rnetwork")
+RCPP_EXPOSED_CLASS(reaction_network)
+RCPP_MODULE(reaction_network) {
+    Rcpp::class_<reaction_network>("reaction_network")
         .constructor()
-        .field_readonly("name", &rnetwork::name)
-        .field_readonly("species", &rnetwork::species);
+        .field_readonly("name", &reaction_network::name)
+        .field_readonly("species", &reaction_network::species);
 }
