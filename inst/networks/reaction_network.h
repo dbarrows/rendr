@@ -21,6 +21,5 @@ RCPP_EXPOSED_CLASS(reaction_network)
 RCPP_MODULE(reaction_network) {
     Rcpp::class_<reaction_network>("reaction_network")
         .constructor()
-        .field_readonly("name", &reaction_network::name)
         .field_readonly("species", &reaction_network::species);
 }

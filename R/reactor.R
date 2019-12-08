@@ -8,6 +8,7 @@
 #' @importFrom Rcpp sourceCpp
 #' @importFrom magrittr %>%
 #' @importFrom stringr str_c str_sub
+#' @importFrom digest digest
 NULL
 
 ## quiets concerns of R CMD check re:

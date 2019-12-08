@@ -2,6 +2,7 @@
 
 import(chemnet)
 importFrom(Rcpp,sourceCpp)
+importFrom(digest,digest)
 importFrom(magrittr,"%>%")
 importFrom(stringr,str_c)
 importFrom(stringr,str_sub)

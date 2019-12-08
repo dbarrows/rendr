@@ -4,7 +4,7 @@ top_template <- '
 
 #include "reaction_network.h"
 
-class NETWORK_NAME : public rnetwork {
+class NETWORK_NAME : public reaction_network {
 public:
     NETWORK_NAME() {
         species = { SPECIES };
@@ -25,12 +25,14 @@ bottom_template <- '
 };
 
 // [[Rcpp::export()]]
-reaction_network construct_NETWORK_NAME() {
+reaction_network CONSTRUCTOR_NAME() {
     return NETWORK_NAME();
 }
 '
 
-file_contents <- function(network) {
+network_file <- function(network) {
+    name <- str_c("network_", digest(network))
+
     header_snippet <-  gsub("SPECIES",
                             str_c('"', species(network), '"', collapse = ', '),
                             top_template)
@@ -45,23 +47,30 @@ file_contents <- function(network) {
         str_sub(., 2, -2) %>%
         str_c(., collapse = "\n")
 
-    bottom_snippet <- bottom_template
-
-    str_c(header_snippet, reactions_snippet, bottom_snippet) %>%
-        gsub("NETWORK_NAME", "NWNAME", .) %>%
+    constructor_name <- str_c("construct_", name)
+    bottom_snippet <- bottom_template %>% gsub("CONSTRUCTOR_NAME", constructor_name, .)
+        
+    contents <- str_c(header_snippet, reactions_snippet, bottom_snippet) %>%
+        gsub("NETWORK_NAME", name, .) %>%
         trimws() %>%
         str_c(., "\n")
-}
 
-write_network <- function(network, path) {
-    name <- gsub(" ", "", display_name)
-    contents <- file_contents(network)
+    constructor <- function() {
+        eval(parse(text = str_c(constructor_name, "()")))
+    }
 
-    file_path <- fs::path(path, paste0(name, ".gen.r.cpp"))
+    path <- fs::path(system.file("models", package = "reactor"),
+                     str_c(name, ".gen.r.cpp"))
     
-    network_file <- file(file_path)
-    writeLines(contents, network_file)
-    close(network_file)
-    
-    file_path
+    f <- file(path)
+    writeLines(contents, f)
+    close(f)
+
+    structure(list(
+            name = name,
+            path = path,
+            constructor = constructor
+        ),
+        class = "network_file"
+    )
 }

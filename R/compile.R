@@ -1,5 +1,5 @@
 compile <- function(network) {
-    file_path <- write_network(network, system.file("models", package = "reactor"))
-    sourceCpp(file_path)
-    construct()
+    netfile <- network_file(network)
+    sourceCpp(netfile$path)
+    netfile$constructor()
 }
