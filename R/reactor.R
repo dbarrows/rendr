@@ -8,7 +8,9 @@
 #' @importFrom Rcpp sourceCpp
 #' @importFrom magrittr %>%
 #' @importFrom stringr str_c str_sub
+#' @importFrom tibble as_tibble
 #' @importFrom digest digest
+#' @importFrom deSolve ode
 NULL
 
 ## quiets concerns of R CMD check re:
