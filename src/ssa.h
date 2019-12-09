@@ -8,13 +8,6 @@ struct state {
     double t;
     vec y;
 };
-/*vec flatten(const state& s) {
-    auto v = vec(1 + s.y.size());
-    v[0] = s.t;
-    for (auto i = 0; i < y.size(); i++)
-        v[i+1] = s.y[i];
-    return v;
-}*/
 Rcpp::DataFrame data_frame(const vector<string>& species, const vector<state>& states) {
     Rcpp::List list = Rcpp::List(1 + states[0].y.size());
     
@@ -45,7 +38,7 @@ double urand() {
     return R::runif(0, 1);
 }
 
-Rcpp::DataFrame ssa_cpp(const reaction_network& network, vec y0, vec tspan, bool record_all = true) {
+Rcpp::DataFrame ssa(const reaction_network& network, vec y0, vec tspan, bool record_all = true) {
     auto t = tspan[0];
     auto T = tspan[1];
 
@@ -83,20 +76,6 @@ Rcpp::DataFrame ssa_cpp(const reaction_network& network, vec y0, vec tspan, bool
     }
 
     Rcpp::Rcout << "SSA complete" << endl;
-
-    /*
-    vector<vector<double>> data;
-    if (record_all) {
-        data = vector<vector<double>>(X.size());
-        for (auto i = 0; i < X.size(); i++)
-            data[i] = X[i].flatten();
-    } else {
-        data = vector<vector<double>> { State {t, x}.flatten() };
-    }
-
-    auto names = system.species;
-    names.insert(names.begin(), "Time");
-    return Table<double>(names, data, true);*/
 
     return data_frame(network.species,
                       record_all ? Y : vector<state> { {t, y} });

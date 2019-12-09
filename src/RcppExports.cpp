@@ -6,22 +6,22 @@
 
 using namespace Rcpp;
 
-// ssa
-Rcpp::DataFrame ssa(SEXP network_ptr, arma::vec y, arma::vec tspan);
-RcppExport SEXP _reactor_ssa(SEXP network_ptrSEXP, SEXP ySEXP, SEXP tspanSEXP) {
+// ssa_cpp
+Rcpp::DataFrame ssa_cpp(SEXP network_ptr, arma::vec y, arma::vec tspan);
+RcppExport SEXP _reactor_ssa_cpp(SEXP network_ptrSEXP, SEXP ySEXP, SEXP tspanSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type network_ptr(network_ptrSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type y(ySEXP);
     Rcpp::traits::input_parameter< arma::vec >::type tspan(tspanSEXP);
-    rcpp_result_gen = Rcpp::wrap(ssa(network_ptr, y, tspan));
+    rcpp_result_gen = Rcpp::wrap(ssa_cpp(network_ptr, y, tspan));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_reactor_ssa", (DL_FUNC) &_reactor_ssa, 3},
+    {"_reactor_ssa_cpp", (DL_FUNC) &_reactor_ssa_cpp, 3},
     {NULL, NULL, 0}
 };
 

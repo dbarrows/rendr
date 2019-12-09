@@ -2,7 +2,7 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 #' @export
-ssa <- function(network_ptr, y, tspan) {
-    .Call('_reactor_ssa', PACKAGE = 'reactor', network_ptr, y, tspan)
+ssa_cpp <- function(network_ptr, y, tspan) {
+    .Call('_reactor_ssa_cpp', PACKAGE = 'reactor', network_ptr, y, tspan)
 }
 
