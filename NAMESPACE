@@ -2,7 +2,6 @@
 
 export(rre)
 export(ssa)
-export(ssa_cpp)
 import(chemnet)
 importFrom(Rcpp,sourceCpp)
 importFrom(deSolve,ode)
