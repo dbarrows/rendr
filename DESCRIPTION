@@ -19,4 +19,10 @@ Imports:
     digest,
     stringr,
     magrittr,
-    fs
+    tibble,
+    fs,
+    deSolve
+LinkingTo: 
+    Rcpp,
+    RcppArmadillo,
+    chemnet
