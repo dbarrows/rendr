@@ -7,7 +7,7 @@
 rre(network, y, tspan)
 }
 \arguments{
-\item{network}{a reaction network object created using \code{parse_network} from the \code{chemnet} package}
+\item{network}{a reaction network object created using \code{parse_network} from the \code{bondr} package}
 
 \item{y}{the starting state of the system at the initial time}
 

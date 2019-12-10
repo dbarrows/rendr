@@ -4,10 +4,14 @@
 #'
 #' @docType package
 #' @name reactor
-#' @import chemnet
+#' @import bondr
+#' @import ggplot2
+#' @import emplot
 #' @importFrom magrittr %>%
 #' @importFrom stringr str_c str_sub
 #' @importFrom tibble as_tibble
+#' @importFrom dplyr rename
+#' @importFrom tidyr pivot_longer
 #' @importFrom digest digest
 #' @importFrom deSolve ode
 #' @importFrom Rcpp sourceCpp

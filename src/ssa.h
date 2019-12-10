@@ -38,23 +38,22 @@ double urand() {
     return R::runif(0, 1);
 }
 
-Rcpp::DataFrame ssa(const reaction_network& network, vec y0, vec tspan, bool record_all = true) {
+Rcpp::DataFrame ssa(const reaction_network& network, vec y, vec tspan, bool record_all = true) {
     auto t = tspan[0];
     auto T = tspan[1];
 
-    vec y = vec(y0.size());
-    copy(y0.begin(), y0.end(), y.begin());
-    auto Y = vector<state>();
+    vec x = vec(y);
+    auto X = vector<state>();
 
     vec a = vec(network.reactions.size(), fill::zeros);
 
     if (record_all)
-        Y.push_back({ t, y });
+        X.push_back({ t, x });
 
     while (t < T) {
         // setup
         for (uint i = 0; i < a.size(); i++)
-            a[i] = network.reactions[i].propensity(y);
+            a[i] = network.reactions[i].propensity(x);
         vec csum = cumsum(a);
         double asum = csum[csum.size() - 1];
 
@@ -68,15 +67,13 @@ Rcpp::DataFrame ssa(const reaction_network& network, vec y0, vec tspan, bool rec
         double tau = -log(urand())/asum;
 
         // advance system
-        network.reactions[j].update(y);
+        network.reactions[j].update(x);
         t += tau;
 
         if (record_all && t < T)
-            Y.push_back({t, y});
+            X.push_back({t, x});
     }
 
-    Rcpp::Rcout << "SSA complete" << endl;
-
     return data_frame(network.species,
-                      record_all ? Y : vector<state> { {t, y} });
+                      record_all ? X : vector<state> { {t, x} });
 }
