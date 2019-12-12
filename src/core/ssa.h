@@ -1,3 +1,5 @@
+#pragma once
+
 #include <RcppArmadillo.h>
 #include <reaction_network.h>
 

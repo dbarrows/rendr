@@ -1,6 +1,6 @@
 #include <RcppArmadillo.h>
 #include <reaction_network.h>
-#include "ssa.h"
+#include "core/ssa.h"
 
 // [[Rcpp::export]]
 Rcpp::DataFrame ssa_cpp(SEXP network_ptr, arma::vec y, arma::vec tspan) {
