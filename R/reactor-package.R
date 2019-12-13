@@ -4,9 +4,11 @@
 #'
 #' @docType package
 #' @name reactor
+#' 
 #' @import bondr
 #' @import ggplot2
 #' @import emplot
+#' @import Rcpp
 #' @importFrom magrittr %>%
 #' @importFrom stringr str_c str_sub
 #' @importFrom tibble as_tibble
@@ -14,8 +16,7 @@
 #' @importFrom tidyr pivot_longer
 #' @importFrom digest digest
 #' @importFrom deSolve ode
-#' @importFrom Rcpp sourceCpp
-#' @useDynLib reactor
+#' @importFrom methods new
 NULL
 
 ## quiets concerns of R CMD check re:

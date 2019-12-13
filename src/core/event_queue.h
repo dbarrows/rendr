@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <functional>
 #include "array3.h"
-#include "arma-helpers.h"
+#include "arma_helpers.h"
 
 using namespace std;
 using namespace arma;
@@ -33,7 +33,6 @@ node* node::smaller_twig() {
         right;
 }
 
-
 class event_queue {
 public:
     event_queue() {}
@@ -52,7 +51,8 @@ private:
 };
 uint event_queue::size() { return root != nullptr ? root->size() : 0; }
 event_queue::event_queue(array3<double> times) {
-
+    for (uint i = 0; i < times.size(); i++)
+        push(times[i], times.index3(i));
 }
 
 template <typename T>

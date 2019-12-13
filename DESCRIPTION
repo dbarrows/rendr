@@ -25,8 +25,11 @@ Imports:
     dplyr,
     emplot,
     ggplot2,
-    tidyr
+    tidyr,
+    methods
 LinkingTo: 
     Rcpp,
     RcppArmadillo,
     bondr
+RcppModules:
+    reaction_network
