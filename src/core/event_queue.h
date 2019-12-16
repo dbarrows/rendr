@@ -1,5 +1,4 @@
 #pragma once
-// [[Rcpp::plugins(cpp2a)]]
 
 #include <RcppArmadillo.h>
 #include <unordered_map>
@@ -38,7 +37,7 @@ public:
     event_queue() {}
     event_queue(array3<double> times);
     uint size();
-    uvec3 next() { return root->index; }
+    pair<double, uvec3> next() { return pair<double, uvec3>(root->time, root->index); }
     void push(double time, uvec3 index);
 private:
     node* root = nullptr;

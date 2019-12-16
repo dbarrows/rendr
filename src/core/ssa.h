@@ -2,6 +2,7 @@
 
 #include <RcppArmadillo.h>
 #include <reaction_network.h>
+#include "random.h"
 
 using namespace std;
 using namespace arma;
@@ -34,10 +35,6 @@ Rcpp::DataFrame data_frame(const vector<string>& species, const vector<state>& s
     }
 
     return Rcpp::DataFrame(list);
-}
-
-double urand() {
-    return R::runif(0, 1);
 }
 
 Rcpp::DataFrame ssa(const reaction_network& network, vec y, vec tspan, bool record_all = true) {
