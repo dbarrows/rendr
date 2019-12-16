@@ -17,6 +17,11 @@ struct node {
     node* right = nullptr;
 
     node(double time, uvec3 index) : time(time), index(index) {}
+    ~node() {
+        if(up != nullptr) delete up;
+        if(left != nullptr) delete left;
+        if(right != nullptr) delete right;
+    }
 
     uint size();
     node* smaller_twig();
@@ -36,6 +41,7 @@ class event_queue {
 public:
     event_queue() {}
     event_queue(array3<double> times);
+    ~event_queue() { if (root != nullptr) delete root; }
     uint size();
     pair<double, uvec3> next() { return pair<double, uvec3>(root->time, root->index); }
     void push(double time, uvec3 index);
@@ -46,7 +52,7 @@ private:
     void insert(node * root, double time, uvec3 index);
     void update(double time, uvec3 index);
     template <typename T> void swap(T* a, T* b);
-    void swap(node* a, node* b);
+    void swap_data(node* a, node* b);
 };
 uint event_queue::size() { return root != nullptr ? root->size() : 0; }
 event_queue::event_queue(array3<double> times) {
@@ -61,34 +67,29 @@ void event_queue::swap(T* a, T* b) {
     *b = a_tmp;
 }
 
-void event_queue::insert(node * root, double time, uvec3 index) {
-    // if this is the first node, assign values to root
-    if (root == nullptr) {
-        *root = node(time, index);
-        return;
-    }
-
+void event_queue::insert(node* n, double time, uvec3 index) {
     // determine key-value pair to be pushed further
-    if (time < root->time) {
-        swap(&(root->time), &time);
-        swap(&(root->index), &index);
+    if (time < n->time) {
+        swap(&(n->time), &time);
+        swap(&(n->index), &index);
         
         node_map.erase(index);
-        node_map[root->index] = root;
+        node_map[n->index] = n;
     }
 
     // push key-value pair down tree
-    if (root->left == nullptr || root->right == nullptr) {
-        auto n = node(time, index);
-        n.up = root;
-        if (root->left == nullptr)
-            root->left = &n;
+    if (n->left == nullptr || n->right == nullptr) {
+        auto new_node = new node(time, index);
+        node_map[index] = new_node;
+        new_node->up = n;
+        if (n->left == nullptr)
+            n->left = new_node;
         else
-            root->right = &n;
+            n->right = new_node;
     } else {
-        insert(root->right->size() < root->right->size() ?
-                       root->right :
-                       root->left,
+        insert(n->right->size() < n->right->size() ?
+                       n->right :
+                       n->left,
                    time,
                    index);
     }
@@ -96,10 +97,11 @@ void event_queue::insert(node * root, double time, uvec3 index) {
 
 void event_queue::update(double time, uvec3 index) {
     node* n = node_map[index];
+    n->time = time;
 
     // if new value is smaller than branch, move up
     if (n->up != nullptr && time < n->up->time) {
-        swap(n, n->up);
+        swap_data(n, n->up);
         update(time, index);
     // if larger than at least one twig, move down
     } else if ((n->left != nullptr && n->left->time < time) ||
@@ -108,12 +110,12 @@ void event_queue::update(double time, uvec3 index) {
             n->left == nullptr ? n->right :
             n->right == nullptr ? n->left :
             n->left->time < n->right->time ? n->left : n->right;
-        swap(n, twig);
+        swap_data(n, twig);
         update(time, index);
     }
 }
 
-void event_queue::swap(node* a, node* b) {
+void event_queue::swap_data(node* a, node* b) {
     swap(&(a->time), &(b->time));
     swap(&(a->index), &(b->index));
     node_map[a->index] = a;
@@ -121,9 +123,17 @@ void event_queue::swap(node* a, node* b) {
 }
 
 void event_queue::push(double time, uvec3 index) {
+    // if this is the first node, assign values to root
+    if (root == nullptr) {
+        root = new node(time, index);
+        node_map[index] = root;
+        return;
+    }
+
     // if this is an update, use updating instead of insertion
-    if (node_map.find(index) != node_map.end())
+    if (node_map.find(index) != node_map.end()) {
         update(time, index);
-    else
+    } else {
         insert(root, time, index);
+    }
 }

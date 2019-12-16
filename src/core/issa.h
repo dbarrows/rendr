@@ -27,25 +27,39 @@ void update_rates(voxel_rates& rates,
 }
 
 void issa(const reaction_network& network, vec d, const volume& state_volume, double h, vec tspan,
-          bool record_all = true, uint save_grid_size = 100, bool verbose = true) {
+          bool record_all = true,
+          uint save_grid_size = 100,
+          bool verbose = true) {
     auto x = state_volume.data;
     auto dims = x.dims;
     auto t = tspan[0];
     auto T = tspan[1];
 
+    Rcpp::Rcout << "Starting NSM simulation with parameters:" << endl
+                << " - Reactions:   " << network.reactions.size() << endl
+                << " - Species:     " << network.species.size() << endl
+                << " - Dimensions:  " << dims[0] << "x" << dims[1] << "x" << dims[2] << endl
+                << " - h:           " << h << endl
+                << " - time: [" << t << ", " << T << "]" << endl;
+
     auto rates = array3<voxel_rates>(dims);
     auto rate_sums = array3<double>(dims);
     auto event_times = array3<double>(dims);
 
+    // diffusion propensity and update functions
     auto diffs = diffusions(d, dims, h);
 
     // reaction propensity vector
+    double v = pow(h, 3);
     auto reaction_propensities = vector<function<double(const vec&)>>();
-    for (const auto& reaction : network.reactions)
-        reaction_propensities.push_back(reaction.propensity);
+    for (const auto& reaction : network.reactions) {
+        double adjustment = pow(h, 1 - reaction.order);
+        auto f = [reaction, adjustment](const arma::vec& x) { return adjustment*reaction.propensity(x); };
+        reaction_propensities.push_back(f);
+    }
 
     // diffusion propensity array3
-    auto diffusion_propensities = array3<vector<function<double(const vec&)>>>();
+    auto diffusion_propensities = array3<vector<function<double(const vec&)>>>(diffs.dims);
     for (uint i = 0; i < diffs.size(); i++)
         for (uint s = 0; s < diffs[i].size(); s++)
             diffusion_propensities[i].push_back(diffs[i][s].propensity);
@@ -64,21 +78,6 @@ void issa(const reaction_network& network, vec d, const volume& state_volume, do
     // create event queue
     auto eq = event_queue(event_times);
 
-    // state saving
-    /*vector<int> times;
-    vector<array3<vec>> X;
-    uint save_index;
-    uint save_step;
-    uint next_save_time;
-    if (record_all) {
-        times = vector<int>(save_grid_size);
-        X = vector<array3<vec>>(save_grid_size);
-        X[0] = x;
-        save_index = 0;
-        save_step = T / (save_grid_size - 1);
-        next_save_time = save_step;
-    }*/
-
     double next_report_fraction;
     if (verbose)
         next_report_fraction = 0.01;
@@ -87,8 +86,14 @@ void issa(const reaction_network& network, vec d, const volume& state_volume, do
 
         auto time_index = eq.next();
 
-        t = time_index.first;
+        double t = time_index.first;
         uvec3 index = time_index.second;
+
+        //Rcpp::Rcout << t << endl;
+
+        uint total_species = 0;
+        for (uint i = 0; i < x.size(); i++)
+            total_species += sum(x[i]);
 
         double r = urand();
         double reaction_cutoff = sum(rates[index].reactions) / rate_sums[index];
@@ -99,7 +104,7 @@ void issa(const reaction_network& network, vec d, const volume& state_volume, do
             // pick a reaction
             vec rate_cumsum = cumsum(rates[index].reactions);
             uint j = 0;
-            double target = (*rate_cumsum.end()) * r / reaction_cutoff;
+            double target = rate_cumsum[rate_cumsum.size() - 1] * r / reaction_cutoff;
             while (rate_cumsum[j] < target)
                 j++;
             
@@ -111,15 +116,15 @@ void issa(const reaction_network& network, vec d, const volume& state_volume, do
             rate_sums[index] = sum(rates[index]);
 
             // update event queue
-            double next_event_time = event_time(rate_sums[index]) + t;
-            eq.push(next_event_time, index);
+            double tau = event_time(rate_sums[index]);
+            eq.push(t + tau, index);
         } else {
             // next event is a diffusion
 
             // pick diffusion
             vec diffusion_cumsum = cumsum(rates[index].diffusions);
             uint j = 0;
-            double target = (*diffusion_cumsum.end()) * (r - reaction_cutoff) / (1 - reaction_cutoff);
+            double target = diffusion_cumsum[diffusion_cumsum.size() - 1] * (r - reaction_cutoff) / (1 - reaction_cutoff);
             while (diffusion_cumsum[j] < target)
                 j++;
 
@@ -128,28 +133,21 @@ void issa(const reaction_network& network, vec d, const volume& state_volume, do
 
             // update rates, etc. for affected voxels
             for (const auto& v_index : affected_voxels) {
-                update_rates(rates[v_index], reaction_propensities, diffusion_propensities[index], x[v_index]);
+                update_rates(rates[v_index], reaction_propensities, diffusion_propensities[v_index], x[v_index]);
                 rate_sums[v_index] = sum(rates[v_index]);
 
                 // update event queue
-                double next_event_time = event_time(rate_sums[v_index]) + t;
-                eq.push(next_event_time, v_index);
+                double tau = event_time(rate_sums[v_index]);
+                eq.push(t + tau, v_index);
             }
         }
-
-        /*if (record_all && next_save_time <= t) {
-            save_index++;
-            times[save_index] = next_save_time;
-            X[save_index] = x;
-            next_save_time = save_index == save_grid_size - 2 ? T : next_save_time + save_step;
-        }*/
 
         if (verbose && next_report_fraction < t / T) {
             Rcpp::Rcout << ".";
             next_report_fraction += 0.01;
         }
     }
-    Rcpp::Rcout << endl;
+    Rcpp::Rcout << endl << "DONE!!!!!" << endl;
 
     /*if (save_all)
         //(t = times, u = X, τ = all_tau)
