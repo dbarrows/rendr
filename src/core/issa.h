@@ -32,8 +32,8 @@ void issa(const reaction_network& network, vec d, const volume& state_volume, do
           bool verbose = true) {
     auto x = state_volume.data;
     auto dims = x.dims;
-    auto t = tspan[0];
-    auto T = tspan[1];
+    double t = tspan[0];
+    double T = tspan[1];
 
     Rcpp::Rcout << "Starting NSM simulation with parameters:" << endl
                 << " - Reactions:   " << network.reactions.size() << endl
@@ -86,7 +86,7 @@ void issa(const reaction_network& network, vec d, const volume& state_volume, do
 
         auto time_index = eq.next();
 
-        double t = time_index.first;
+        t = time_index.first;
         uvec3 index = time_index.second;
 
         //Rcpp::Rcout << t << endl;
@@ -146,6 +146,8 @@ void issa(const reaction_network& network, vec d, const volume& state_volume, do
             Rcpp::Rcout << ".";
             next_report_fraction += 0.01;
         }
+
+        //if (T < t) break; // whyyyyyyyyyyyyyyy is this needed?
     }
     Rcpp::Rcout << endl << "DONE!!!!!" << endl;
 
