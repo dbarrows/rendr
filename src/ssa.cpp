@@ -1,9 +1,9 @@
 #include <RcppArmadillo.h>
-#include <reaction_network.h>
+#include <rnet.h>
 #include "core/ssa.h"
 
 // [[Rcpp::export]]
-Rcpp::DataFrame ssa_cpp(SEXP network_ptr, arma::vec y, arma::vec tspan) {
-    Rcpp::XPtr<reaction_network> network_xptr(network_ptr);
-    return rsolver::ssa(*network_xptr, y, tspan);
+Rcpp::DataFrame ssa_cpp(SEXP network_xptr, arma::vec y, arma::vec tspan) {
+    auto net = *Rcpp::XPtr<rnet>(network_xptr);
+    return rsolver::ssa(net, y, tspan);
 }

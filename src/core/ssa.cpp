@@ -1,19 +1,19 @@
 #include "ssa.h"
 #include "random.h"
-#include "rsolution.h"
+#include "rsol.h"
 
 using namespace std;
 using namespace arma;
 
 namespace rsolver {
 
-Rcpp::DataFrame ssa(const reaction_network& network, vec y, vec tspan, bool record_all) {
+Rcpp::DataFrame ssa(const rnet& network, vec y, vec tspan, bool record_all) {
     auto t = tspan[0];
     auto T = tspan[1];
 
     vec x = vec(y);
     
-    auto sol = rsolution();
+    auto sol = rsol();
     sol.species = network.species;
 
     vec a = vec(network.reactions.size(), fill::zeros);

@@ -1,15 +1,11 @@
-#pragma once
+#include "rdnet.h"
 
-#include <RcppArmadillo.h>
 #include <functional>
 
 using namespace std;
 using namespace arma;
 
-struct diffusion {
-    function<double(const arma::vec&)> propensity;
-    function<vector<uvec3>(array3<arma::vec>&)> update;
-};
+namespace rdsolver {
 
 vector<uvec3> neighbours(uvec3 index, uvec3 dims) {
     uint x = index[0];
@@ -31,7 +27,7 @@ vector<uvec3> neighbours(uvec3 index, uvec3 dims) {
     return valid_neighbours;
 }
 
-inline array3<vector<diffusion>> diffusions(vec d, uvec3 dims, double h) {
+array3<vector<diffusion>> generate_diffusions(uvec3 dims, vec D, double h) {
     auto diffusions = array3<vector<diffusion>>(dims);
     double h2 = pow(h, 2);
 
@@ -39,10 +35,10 @@ inline array3<vector<diffusion>> diffusions(vec d, uvec3 dims, double h) {
         uvec3 index = diffusions.index3(i);
 
         for (const auto& neighbour_index : neighbours(index, dims)) {
-            for (uint s = 0; s < d.size(); s++)
+            for (uint s = 0; s < D.size(); s++)
                 diffusions[i].push_back({
-                    [s, d, h2](const vec& x) {
-                        return x[s]*d[s]/h2;
+                    [s, D, h2](const vec& x) {
+                        return x[s]*D[s]/h2;
                     },
                     [s, index, neighbour_index](array3<vec>& x) {
                         x[index][s] -= 1;
@@ -53,4 +49,13 @@ inline array3<vector<diffusion>> diffusions(vec d, uvec3 dims, double h) {
         }
     }
     return diffusions;
+}
+
+rdnet::rdnet(const rnet& net, const volume& vol, arma::vec D) {
+    species = net.species;
+    reactions = net.reactions;
+    dims = vol.state.dims;
+    diffusions = generate_diffusions(dims, D, vol.h);
+}
+
 }

@@ -1,16 +1,13 @@
-#include "rdsolution.h"
+#include "rdsol.h"
 
 namespace rdsolver {
 
-Rcpp::NumericVector t(const rdsolution& sol) {
-    //auto v = Rcpp::NumericVector(sol.times.size());
-    //std::copy(sol.times.begin(), sol.times.end(), v.begin());
-    //return v;
+Rcpp::NumericVector t(const rdsol& sol) {
     return Rcpp::wrap(sol.times);
 }
 
 inline Rcpp::List DataFrame(const array3<arma::vec>& state,
-                     const std::vector<std::string>& species) {
+                            const std::vector<std::string>& species) {
     Rcpp::List list = Rcpp::List(3 + species.size());
     auto names = Rcpp::CharacterVector { "x", "y", "z" };
     for (const auto& s : species)
@@ -33,7 +30,7 @@ inline Rcpp::List DataFrame(const array3<arma::vec>& state,
     return Rcpp::DataFrame(list);
 }
 
-Rcpp::List u(const rdsolution& sol) {
+Rcpp::List u(const rdsol& sol) {
     auto list = Rcpp::List(sol.states.size());
     for (uint i = 0; i < sol.states.size(); i++)
         list[i] = DataFrame(sol.states[i], sol.species);

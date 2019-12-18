@@ -4,12 +4,12 @@
 
 namespace rsolver {
 
-struct rsolution {
+struct rsol {
     std::vector<double> times;
     std::vector<std::string> species;
     std::vector<arma::vec> states;
 };
-inline Rcpp::DataFrame DataFrame(const rsolution& sol) {
+inline Rcpp::DataFrame DataFrame(const rsol& sol) {
     Rcpp::List list = Rcpp::List(1 + sol.species.size());
 
     auto names = Rcpp::CharacterVector { "Time" };

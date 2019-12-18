@@ -1,6 +1,5 @@
 #include "nsm.h"
 #include "event_queue.h"
-#include "diffusions.h"
 #include "random.h"
 
 using namespace std;
@@ -24,15 +23,13 @@ void update_rates(voxel_rates& rates,
         rates.diffusions[i] = diffusion_propensities[i](state);
 }
 
-rdsolution nsm(const reaction_network& network,
-               vec d,
-               const volume& state_volume,
-               double h,
-               vec tspan,
-               bool record_all,
-               uint save_grid_size,
-               bool verbose) {
-    auto x = state_volume.data.copy();
+rdsol nsm(const rdnet& network,
+          const volume& vol,
+          vec tspan,
+          bool record_all,
+          uint save_grid_size,
+          bool verbose) {
+    /*auto x = state_volume.data.copy();
     auto dims = x.dims;
     double t = tspan[0];
     double T = tspan[1];
@@ -103,9 +100,9 @@ rdsolution nsm(const reaction_network& network,
         t = time_index.first;
         uvec3 index = time_index.second;
 
-        /*uint total_species = 0;
-        for (uint i = 0; i < x.size(); i++)
-            total_species += sum(x[i]);*/
+        //uint total_species = 0;
+        //for (uint i = 0; i < x.size(); i++)
+        //    total_species += sum(x[i]);
 
         double r = urand();
         double reaction_cutoff = sum(rates[index].reactions) / rate_sums[index];
@@ -171,7 +168,7 @@ rdsolution nsm(const reaction_network& network,
         sol.states.push_back(x.copy());
     }
 
-    return sol;
+    return sol;*/
 }
 
 }
