@@ -16,10 +16,6 @@ public:
         dims = uvec3 { dx, dy, dz };
         data = vector<T>(dx*dy*dz, seed);
     }
-    /*array3(const array3& copy) : array3(copy.dims) {
-        for (uint i = 0; i < copy.size(); i++)
-            data[i] = copy[i];
-    }*/
 
     uint index(uint x, uint y, uint z) { return x + y*dims[0] + z*dims[0]*dims[1]; }
     uint index(uvec3 i) { return index(i[0], i[1], i[2]); }
@@ -35,7 +31,7 @@ public:
     T operator [](uvec3 i) const { return data[index(i)]; }
     T& operator [](uvec3 i) { return data[index(i)]; }
 
-    //array3<T> operator=(const array3<T>& copy);
+    array3<T> copy() const;
 
 private:
     vector<T> data;
@@ -49,7 +45,10 @@ uvec3 array3<T>::index3(uint i) {
     return { x, y, z };
 }
 
-/*template <typename T>
-array3<T> array3<T>::operator=(const array3<T>& copy) {
-    return array3(copy);
-}*/
+template <typename T>
+array3<T> array3<T>::copy() const {
+    auto c = array3<T>(dims);
+    for (uint i = 0; i < size(); i++)
+        c[i] = data[i];
+    return c;
+}

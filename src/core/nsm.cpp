@@ -1,21 +1,21 @@
 #pragma once
 
-#include <RcppArmadillo.h>
-#include <reaction_network.h>
+#include "nsm.h"
 #include "event_queue.h"
-#include "volume.h"
 #include "diffusions.h"
 #include "random.h"
 
 using namespace std;
 using namespace arma;
 
+namespace rdsolver {
+
 struct voxel_rates {
     vec reactions;
     vec diffusions;
 };
-static double sum(voxel_rates rates) { return sum(rates.reactions) + sum(rates.diffusions); }
-static double event_time(double rate) { return -log(urand())/rate; };
+double sum(voxel_rates rates) { return sum(rates.reactions) + sum(rates.diffusions); }
+double event_time(double rate) { return -log(urand())/rate; };
 void update_rates(voxel_rates& rates,
                   vector<function<double(const vec&)>> reaction_propensities,
                   vector<function<double(const vec&)>> diffusion_propensities,
@@ -26,11 +26,11 @@ void update_rates(voxel_rates& rates,
         rates.diffusions[i] = diffusion_propensities[i](state);
 }
 
-void issa(const reaction_network& network, vec d, const volume& state_volume, double h, vec tspan,
-          bool record_all = true,
-          uint save_grid_size = 100,
-          bool verbose = true) {
-    auto x = state_volume.data;
+rdsolution nsm(const reaction_network& network, vec d, const volume& state_volume, double h, vec tspan,
+             bool record_all = true,
+             uint save_grid_size = 100,
+             bool verbose = true) {
+    auto x = state_volume.data.copy();
     auto dims = x.dims;
     double t = tspan[0];
     double T = tspan[1];
@@ -78,6 +78,18 @@ void issa(const reaction_network& network, vec d, const volume& state_volume, do
     // create event queue
     auto eq = event_queue(event_times);
 
+    // state saving
+    auto sol = solution();
+    uint save_step;
+    double next_save_time;
+    if (record_all) {
+        sol.t.push_back(t);
+        sol.state.push_back(x.copy());
+        save_step = T / (save_grid_size - 1);
+        next_save_time = save_step;
+    }
+
+    // progress printing
     double next_report_fraction;
     if (verbose)
         next_report_fraction = 0.01;
@@ -85,15 +97,12 @@ void issa(const reaction_network& network, vec d, const volume& state_volume, do
     while (t < T) {
 
         auto time_index = eq.next();
-
         t = time_index.first;
         uvec3 index = time_index.second;
 
-        //Rcpp::Rcout << t << endl;
-
-        uint total_species = 0;
+        /*uint total_species = 0;
         for (uint i = 0; i < x.size(); i++)
-            total_species += sum(x[i]);
+            total_species += sum(x[i]);*/
 
         double r = urand();
         double reaction_cutoff = sum(rates[index].reactions) / rate_sums[index];
@@ -142,18 +151,24 @@ void issa(const reaction_network& network, vec d, const volume& state_volume, do
             }
         }
 
+        if (record_all && next_save_time <= t) {
+            sol.t.push_back(t);
+            sol.state.push_back(x.copy());
+            next_save_time = sol.t.size() == save_grid_size - 1 ? T : (next_save_time + save_step);
+        }
+
         if (verbose && next_report_fraction < t / T) {
             Rcpp::Rcout << ".";
             next_report_fraction += 0.01;
         }
-
-        //if (T < t) break; // whyyyyyyyyyyyyyyy is this needed?
     }
-    Rcpp::Rcout << endl << "DONE!!!!!" << endl;
 
-    /*if (save_all)
-        //(t = times, u = X, τ = all_tau)
-    else
-        //(t = t, u = state, τ = all_tau)
-    end*/
+    if (!record_all) {
+        sol.t.push_back(t);
+        sol.state.push_back(x.copy());
+    }
+
+    return sol;
+}
+
 }

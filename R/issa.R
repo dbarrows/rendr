@@ -1,10 +1,10 @@
 #' @export
-issa <- function() {
+nsm <- function() {
     message("Compiling network...")
     network <- "
-                 0 <-> U,  2, 6
-                 0  -> V,  8
-            2U + V  -> 3U, 3
+                 0 <-> U,  4e3, 2
+                 0  -> V,  1.2e4
+            2U + V  -> 3U, 12.5e-8
         " %>%
         parse_network() %>%
         compile_network()
@@ -15,6 +15,6 @@ issa <- function() {
     #for (i in 1:nrow(all_indicies))
     #    volume_set(vol, all_indicies[i,], c(301, 120, 0, 0))
     
-    message("Calling ISSA_CPP...")
-    issa_cpp(network, c(1, 1e-1), vol$xptr, 1/40, c(0, 3.5))
+    message("Calling NSM_CPP...")
+    nsm_cpp(network, c(1e-3, 1e-1), vol$xptr, 1/40, c(0, 3.5))
 }

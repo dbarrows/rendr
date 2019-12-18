@@ -6,9 +6,9 @@
 
 using namespace Rcpp;
 
-// issa_cpp
-Rcpp::DataFrame issa_cpp(SEXP network_ptr, arma::vec diffusions, SEXP y_volume_ptr, double h, arma::vec tspan);
-RcppExport SEXP _reactor_issa_cpp(SEXP network_ptrSEXP, SEXP diffusionsSEXP, SEXP y_volume_ptrSEXP, SEXP hSEXP, SEXP tspanSEXP) {
+// nsm_cpp
+Rcpp::List nsm_cpp(SEXP network_ptr, arma::vec diffusions, SEXP y_volume_ptr, double h, arma::vec tspan);
+RcppExport SEXP _reactor_nsm_cpp(SEXP network_ptrSEXP, SEXP diffusionsSEXP, SEXP y_volume_ptrSEXP, SEXP hSEXP, SEXP tspanSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -17,7 +17,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< SEXP >::type y_volume_ptr(y_volume_ptrSEXP);
     Rcpp::traits::input_parameter< double >::type h(hSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type tspan(tspanSEXP);
-    rcpp_result_gen = Rcpp::wrap(issa_cpp(network_ptr, diffusions, y_volume_ptr, h, tspan));
+    rcpp_result_gen = Rcpp::wrap(nsm_cpp(network_ptr, diffusions, y_volume_ptr, h, tspan));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -38,7 +38,7 @@ END_RCPP
 RcppExport SEXP _rcpp_module_boot_volume_cpp();
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_reactor_issa_cpp", (DL_FUNC) &_reactor_issa_cpp, 5},
+    {"_reactor_nsm_cpp", (DL_FUNC) &_reactor_nsm_cpp, 5},
     {"_reactor_ssa_cpp", (DL_FUNC) &_reactor_ssa_cpp, 3},
     {"_rcpp_module_boot_volume_cpp", (DL_FUNC) &_rcpp_module_boot_volume_cpp, 0},
     {NULL, NULL, 0}

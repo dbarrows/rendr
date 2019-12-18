@@ -18,9 +18,8 @@ struct node {
 
     node(double time, uvec3 index) : time(time), index(index) {}
     ~node() {
-        if(up != nullptr) delete up;
-        if(left != nullptr) delete left;
-        if(right != nullptr) delete right;
+        if (left != nullptr) delete left;
+        if (right != nullptr) delete right;
     }
 
     uint size();
@@ -41,7 +40,7 @@ class event_queue {
 public:
     event_queue() {}
     event_queue(array3<double> times);
-    ~event_queue() { if (root != nullptr) delete root; }
+    ~event_queue() { /*if (root != nullptr) delete root;*/ }
     uint size();
     pair<double, uvec3> next() { return pair<double, uvec3>(root->time, root->index); }
     void push(double time, uvec3 index);
