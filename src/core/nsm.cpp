@@ -82,6 +82,7 @@ rdsolution nsm(const reaction_network& network,
 
     // state saving
     auto sol = rdsolution();
+    sol.species = network.species;
     uint save_step;
     double next_save_time;
     if (record_all) {
