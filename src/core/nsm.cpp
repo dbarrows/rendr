@@ -1,5 +1,3 @@
-#pragma once
-
 #include "nsm.h"
 #include "event_queue.h"
 #include "diffusions.h"
@@ -26,10 +24,14 @@ void update_rates(voxel_rates& rates,
         rates.diffusions[i] = diffusion_propensities[i](state);
 }
 
-rdsolution nsm(const reaction_network& network, vec d, const volume& state_volume, double h, vec tspan,
-             bool record_all = true,
-             uint save_grid_size = 100,
-             bool verbose = true) {
+rdsolution nsm(const reaction_network& network,
+               vec d,
+               const volume& state_volume,
+               double h,
+               vec tspan,
+               bool record_all,
+               uint save_grid_size,
+               bool verbose) {
     auto x = state_volume.data.copy();
     auto dims = x.dims;
     double t = tspan[0];
@@ -79,12 +81,12 @@ rdsolution nsm(const reaction_network& network, vec d, const volume& state_volum
     auto eq = event_queue(event_times);
 
     // state saving
-    auto sol = solution();
+    auto sol = rdsolution();
     uint save_step;
     double next_save_time;
     if (record_all) {
-        sol.t.push_back(t);
-        sol.state.push_back(x.copy());
+        sol.times.push_back(t);
+        sol.states.push_back(x.copy());
         save_step = T / (save_grid_size - 1);
         next_save_time = save_step;
     }
@@ -152,9 +154,9 @@ rdsolution nsm(const reaction_network& network, vec d, const volume& state_volum
         }
 
         if (record_all && next_save_time <= t) {
-            sol.t.push_back(t);
-            sol.state.push_back(x.copy());
-            next_save_time = sol.t.size() == save_grid_size - 1 ? T : (next_save_time + save_step);
+            sol.times.push_back(t);
+            sol.states.push_back(x.copy());
+            next_save_time = sol.times.size() == save_grid_size - 1 ? T : (next_save_time + save_step);
         }
 
         if (verbose && next_report_fraction < t / T) {
@@ -164,8 +166,8 @@ rdsolution nsm(const reaction_network& network, vec d, const volume& state_volum
     }
 
     if (!record_all) {
-        sol.t.push_back(t);
-        sol.state.push_back(x.copy());
+        sol.times.push_back(t);
+        sol.states.push_back(x.copy());
     }
 
     return sol;

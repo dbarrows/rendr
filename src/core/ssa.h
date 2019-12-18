@@ -7,11 +7,13 @@
 using namespace std;
 using namespace arma;
 
+namespace rsolver {
+
 struct state {
     double t;
     vec y;
 };
-Rcpp::DataFrame data_frame(const vector<string>& species, const vector<state>& states) {
+inline Rcpp::DataFrame data_frame(const vector<string>& species, const vector<state>& states) {
     Rcpp::List list = Rcpp::List(1 + states[0].y.size());
     
     uint ncols = 1 + species.size();
@@ -37,7 +39,7 @@ Rcpp::DataFrame data_frame(const vector<string>& species, const vector<state>& s
     return Rcpp::DataFrame(list);
 }
 
-Rcpp::DataFrame ssa(const reaction_network& network, vec y, vec tspan, bool record_all = true) {
+inline Rcpp::DataFrame ssa(const reaction_network& network, vec y, vec tspan, bool record_all = true) {
     auto t = tspan[0];
     auto T = tspan[1];
 
@@ -75,4 +77,6 @@ Rcpp::DataFrame ssa(const reaction_network& network, vec y, vec tspan, bool reco
 
     return data_frame(network.species,
                       record_all ? X : vector<state> { {t, x} });
+}
+
 }

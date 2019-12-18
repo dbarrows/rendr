@@ -19,7 +19,7 @@ public:
 
     uint index(uint x, uint y, uint z) { return x + y*dims[0] + z*dims[0]*dims[1]; }
     uint index(uvec3 i) { return index(i[0], i[1], i[2]); }
-    uvec3 index3(uint i);
+    uvec3 index3(uint i) const;
     uint size() const { return dims[0] * dims[1] * dims[2]; }
 
     T operator ()(uint x, uint y, uint z) const { return data[index(x, y, z)]; }
@@ -38,7 +38,7 @@ private:
 };
 
 template <typename T>
-uvec3 array3<T>::index3(uint i) {
+uvec3 array3<T>::index3(uint i) const {
     auto z = static_cast<uint>(floor(i / (dims[0]*dims[1])));
     auto y = static_cast<uint>(floor((i % (dims[0]*dims[1])) / dims[0]));
     auto x = static_cast<uint>(floor(i - (y*dims[0] + z*dims[0]*dims[1])));

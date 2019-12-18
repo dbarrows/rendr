@@ -1,5 +1,3 @@
-// [[Rcpp::plugins(cpp17)]]
-
 #include <RcppArmadillo.h>
 #include <reaction_network.h>
 #include "core/nsm.h"
@@ -12,7 +10,7 @@ Rcpp::List nsm_cpp(SEXP network_ptr, arma::vec diffusions, SEXP y_volume_ptr, do
     auto sol = rdsolver::nsm(*network_xptr, diffusions, *volume_xptr, h, tspan);
 
     return Rcpp::List::create(
-        Rcpp::Named("t") = t(sol),
-        Rcpp::Named("u") = u(sol)
+        Rcpp::Named("t") = rdsolver::t(sol),
+        Rcpp::Named("u") = rdsolver::u(sol)
     );
 }
