@@ -7,7 +7,7 @@ using namespace arma;
 
 namespace rsolver {
 
-Rcpp::DataFrame ssa(const rnet& network, vec y, vec tspan, bool record_all) {
+Rcpp::DataFrame ssa(const bondr::rnet& network, vec y, vec tspan, bool record_all) {
     auto t = tspan[0];
     auto T = tspan[1];
 

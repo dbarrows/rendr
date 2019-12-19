@@ -21,15 +21,15 @@ BEGIN_RCPP
 END_RCPP
 }
 // ssa_cpp
-Rcpp::DataFrame ssa_cpp(SEXP network_xptr, arma::vec y, arma::vec tspan);
-RcppExport SEXP _reactor_ssa_cpp(SEXP network_xptrSEXP, SEXP ySEXP, SEXP tspanSEXP) {
+Rcpp::DataFrame ssa_cpp(SEXP rnet_xptr, arma::vec y, arma::vec tspan);
+RcppExport SEXP _reactor_ssa_cpp(SEXP rnet_xptrSEXP, SEXP ySEXP, SEXP tspanSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type network_xptr(network_xptrSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type rnet_xptr(rnet_xptrSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type y(ySEXP);
     Rcpp::traits::input_parameter< arma::vec >::type tspan(tspanSEXP);
-    rcpp_result_gen = Rcpp::wrap(ssa_cpp(network_xptr, y, tspan));
+    rcpp_result_gen = Rcpp::wrap(ssa_cpp(rnet_xptr, y, tspan));
     return rcpp_result_gen;
 END_RCPP
 }

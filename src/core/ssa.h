@@ -5,7 +5,7 @@
 
 namespace rsolver {
 
-Rcpp::DataFrame ssa(const rnet& network,
+Rcpp::DataFrame ssa(const bondr::rnet& network,
                     arma::vec y,
                     arma::vec tspan,
                     bool record_all = true);

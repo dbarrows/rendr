@@ -5,7 +5,7 @@ nsm_cpp <- function(rnet_xptr, D, volume_xptr, tspan) {
     .Call(`_reactor_nsm_cpp`, rnet_xptr, D, volume_xptr, tspan)
 }
 
-ssa_cpp <- function(network_xptr, y, tspan) {
-    .Call(`_reactor_ssa_cpp`, network_xptr, y, tspan)
+ssa_cpp <- function(rnet_xptr, y, tspan) {
+    .Call(`_reactor_ssa_cpp`, rnet_xptr, y, tspan)
 }
 

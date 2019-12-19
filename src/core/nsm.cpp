@@ -12,13 +12,13 @@ struct voxel_rates {
 double sum(voxel_rates rates) { return sum(rates.reactions) + sum(rates.diffusions); }
 double event_time(double rate) { return -log(urand())/rate; };
 void update_rates(voxel_rates& rates,
-                  vector<reaction> reactions,
-                  vector<rdsolver::diffusion> diffusions,
-                  vec state) {
+                  const vector<rdsolver::reaction>& reactions,
+                  const vector<rdsolver::diffusion>& diffusions,
+                  const array3<vec>& x) {
     for (uint i = 0; i < reactions.size(); i++)
-        rates.reactions[i] = reactions[i].propensity(state);
+        rates.reactions[i] = reactions[i].propensity(x);
     for (uint i = 0; i < diffusions.size(); i++)
-        rates.diffusions[i] = diffusions[i].propensity(state);
+        rates.diffusions[i] = diffusions[i].propensity(x);
 }
 
 namespace rdsolver {
@@ -36,12 +36,11 @@ rdsol nsm(const rdnet& network,
     double T = tspan[1];
 
     Rcpp::Rcout << "Starting NSM simulation with parameters:" << endl
-                << " - Reactions:   " << network.reactions.size() << endl
+                << " - Reactions:   " << network.reactions[0].size() << endl
                 << " - Species:     " << network.species.size() << endl
                 << " - Dimensions:  " << dims[0] << "x" << dims[1] << "x" << dims[2] << endl
                 << " - h:           " << h << endl
                 << " - time: [" << t << ", " << T << "]" << endl;
-
 
     auto rates = array3<voxel_rates>(dims);
     auto rate_sums = array3<double>(dims);
@@ -50,10 +49,10 @@ rdsol nsm(const rdnet& network,
     // initial rates
     for (uint i = 0; i < x.size(); i++) {
         rates[i] = {
-            vec(network.reactions.size()),
+            vec(network.reactions[i].size()),
             vec(network.diffusions[i].size())
         };
-        update_rates(rates[i], network.reactions, network.diffusions[i], x[i]);
+        update_rates(rates[i], network.reactions[i], network.diffusions[i], x);
         rate_sums[i] = sum(rates[i]);
         event_times[i] = event_time(rate_sums[i]);
     }
@@ -78,8 +77,6 @@ rdsol nsm(const rdnet& network,
     if (verbose)
         next_report_fraction = 0.01;
 
-    auto reaction_counts = uvec(network.reactions.size(), fill::zeros);
-
     while (t < T) {
 
         auto time_index = eq.next();
@@ -98,14 +95,12 @@ rdsol nsm(const rdnet& network,
             double target = r / reaction_cutoff * rate_cumsum[rate_cumsum.size() - 1];
             while (rate_cumsum[j] < target)
                 j++;
-            
-            reaction_counts[j]++;
 
             // update system
-            network.reactions[j].update(x[index]);
+            network.reactions[index][j].update(x);
 
             // update rates, etc. for affected voxel
-            update_rates(rates[index], network.reactions, network.diffusions[index], x[index]);
+            update_rates(rates[index], network.reactions[index], network.diffusions[index], x);
             rate_sums[index] = sum(rates[index]);
 
             // update event queue
@@ -126,7 +121,7 @@ rdsol nsm(const rdnet& network,
 
             // update rates, etc. for affected voxels
             for (const auto& v_index : affected_voxels) {
-                update_rates(rates[v_index], network.reactions, network.diffusions[v_index], x[v_index]);
+                update_rates(rates[v_index], network.reactions[v_index], network.diffusions[v_index], x);
                 rate_sums[v_index] = sum(rates[v_index]);
 
                 // update event queue
@@ -146,8 +141,6 @@ rdsol nsm(const rdnet& network,
             next_report_fraction += 0.01;
         }
     }
-
-    Rcpp::Rcout << "Reaction counts:" << endl << reaction_counts << endl;
 
     if (!record_all) {
         sol.times.push_back(t);

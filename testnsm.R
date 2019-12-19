@@ -26,7 +26,7 @@ vol <- volume(dims = c(40, 1, 1),
               seed = c(25, 75))
     
 message("Compiling")
-compile_network(network)
+compile_network(network, force = TRUE)
 message("Solving")
 (runtime <- bench_time({
     sol <- nsm(network = network,
@@ -43,5 +43,4 @@ p <- agg_df %>%
     pivot_longer(c("U", "V"), names_to = "Species", values_to = "Average") %>%
     ggplot(aes(Time, Average, colour = Species)) +
         geom_line()
-}
-ggsave("nsm-turing.svg", p, dpi = "retina", width = 7, height = 4, units = "in")
+ggsave("nsm-turing.svg", p, dpi = "retina", width = 162, height = 100, units = "mm")

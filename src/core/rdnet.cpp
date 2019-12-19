@@ -37,8 +37,8 @@ array3<vector<diffusion>> generate_diffusions(uvec3 dims, vec D, double h) {
         for (const auto& neighbour_index : neighbours(index, dims)) {
             for (uint s = 0; s < D.size(); s++)
                 diffusions[i].push_back({
-                    [s, D, h2](const vec& x) {
-                        return x[s]*D[s]/h2;
+                    [s, D, h2, index](const array3<vec>& x) {
+                        return x[index][s]*D[s]/h2;
                     },
                     [s, index, neighbour_index](array3<vec>& x) {
                         x[index][s] -= 1;
@@ -51,27 +51,35 @@ array3<vector<diffusion>> generate_diffusions(uvec3 dims, vec D, double h) {
     return diffusions;
 }
 
-vector<reaction> scale_reactions(const vector<reaction>& reactions, uvec3 dims, double h) {
+array3<vector<reaction>> generate_reactions(const vector<bondr::reaction>& bondr_reactions, uvec3 dims, double h) {
     uint ndims = sum(vectorise(1 < dims));
     double v = pow(h, ndims);
 
-    auto scaled_reactions = vector<reaction>();
-    transform(reactions.begin(), reactions.end(), back_inserter(scaled_reactions), [&](const reaction& r) {
-        double adjustment = pow(v, static_cast<int>(1 - r.order));
-        return reaction {
-            r.order,
-            [r, adjustment](const arma::vec& x) { return adjustment*r.propensity(x); },
-            r.update
-        };
-    });
+    auto reactions = array3<vector<reaction>>(dims);
 
-    return scaled_reactions;
+    for (uint i = 0; i < reactions.size(); i++) {
+        uvec3 index = reactions.index3(i);
+
+        transform(bondr_reactions.begin(), bondr_reactions.end(), back_inserter(reactions[i]), [&](const bondr::reaction& r) {
+            double adjustment = pow(v, static_cast<int>(1 - r.order));
+            return reaction {
+                [&r, adjustment, index](const array3<vec>& x) {
+                    return adjustment*r.propensity(x[index]);
+                },
+                [&r, index](array3<vec>& x) {
+                    r.update(x[index]);
+                }
+            };
+        });
+    }
+
+    return reactions;
 }
 
-rdnet::rdnet(const rnet& net, const volume& vol, arma::vec D) {
-    species = net.species;
+rdnet::rdnet(const bondr::rnet& rnet, const volume& vol, vec D) {
+    species = rnet.species;
     dims = vol.state.dims;
-    reactions = scale_reactions(net.reactions, vol.state.dims, vol.h);
+    reactions = generate_reactions(rnet.reactions, vol.state.dims, vol.h);
     diffusions = generate_diffusions(dims, D, vol.h);
 }
 
