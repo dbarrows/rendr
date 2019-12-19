@@ -5,8 +5,6 @@
 using namespace std;
 using namespace arma;
 
-namespace rdsolver {
-
 struct voxel_rates {
     vec reactions;
     vec diffusions;
@@ -15,13 +13,15 @@ double sum(voxel_rates rates) { return sum(rates.reactions) + sum(rates.diffusio
 double event_time(double rate) { return -log(urand())/rate; };
 void update_rates(voxel_rates& rates,
                   vector<reaction> reactions,
-                  vector<diffusion> diffusions,
+                  vector<rdsolver::diffusion> diffusions,
                   vec state) {
     for (uint i = 0; i < reactions.size(); i++)
         rates.reactions[i] = reactions[i].propensity(state);
     for (uint i = 0; i < diffusions.size(); i++)
         rates.diffusions[i] = diffusions[i].propensity(state);
 }
+
+namespace rdsolver {
 
 rdsol nsm(const rdnet& network,
           const volume& vol,
@@ -46,27 +46,6 @@ rdsol nsm(const rdnet& network,
     auto rates = array3<voxel_rates>(dims);
     auto rate_sums = array3<double>(dims);
     auto event_times = array3<double>(dims);
-
-    // diffusion propensity and update functions
-    //auto diffs = diffusions(d, dims, h);
-
-    /*
-    // reaction propensity vector
-    double v = pow(h, 3);
-    auto reaction_propensities = vector<function<double(const vec&)>>();
-    for (const auto& reaction : network.reactions) {
-        double adjustment = pow(h, 1 - reaction.order);
-        auto f = [reaction, adjustment](const arma::vec& x) { return adjustment*reaction.propensity(x); };
-        reaction_propensities.push_back(f);
-    }
-    */
-
-    // diffusion propensity array3
-    /*auto diffusion_propensities = array3<vector<function<double(const vec&)>>>(diffs.dims);
-    for (uint i = 0; i < diffs.size(); i++)
-        for (uint s = 0; s < diffs[i].size(); s++)
-            diffusion_propensities[i].push_back(diffs[i][s].propensity);
-    */
 
     // initial rates
     for (uint i = 0; i < x.size(); i++) {
@@ -99,6 +78,8 @@ rdsol nsm(const rdnet& network,
     if (verbose)
         next_report_fraction = 0.01;
 
+    auto reaction_counts = uvec(network.reactions.size(), fill::zeros);
+
     while (t < T) {
 
         auto time_index = eq.next();
@@ -114,10 +95,12 @@ rdsol nsm(const rdnet& network,
             // pick a reaction
             vec rate_cumsum = cumsum(rates[index].reactions);
             uint j = 0;
-            double target = rate_cumsum[rate_cumsum.size() - 1] * r / reaction_cutoff;
+            double target = r / reaction_cutoff * rate_cumsum[rate_cumsum.size() - 1];
             while (rate_cumsum[j] < target)
                 j++;
             
+            reaction_counts[j]++;
+
             // update system
             network.reactions[j].update(x[index]);
 
@@ -136,7 +119,7 @@ rdsol nsm(const rdnet& network,
             // pick diffusion
             vec diffusion_cumsum = cumsum(rates[index].diffusions);
             uint j = 0;
-            double target = diffusion_cumsum[diffusion_cumsum.size() - 1] * (r - reaction_cutoff) / (1.0 - reaction_cutoff);
+            double target =  (r - reaction_cutoff) / (1.0 - reaction_cutoff) * diffusion_cumsum[diffusion_cumsum.size() - 1];
             while (diffusion_cumsum[j] < target)
                 j++;
 
@@ -166,6 +149,8 @@ rdsol nsm(const rdnet& network,
         }
         //break;
     }
+
+    Rcpp::Rcout << "Reaction counts:" << endl << reaction_counts << endl;
 
     if (!record_all) {
         sol.times.push_back(t);
