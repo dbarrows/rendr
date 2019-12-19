@@ -4,7 +4,7 @@
 \alias{volume}
 \title{Volume class for setting initial conditions of inhomogeneous systems}
 \usage{
-volume(dims, seed = numeric())
+volume(dims, h, seed = numeric())
 }
 \description{
 Volume class for setting initial conditions of inhomogeneous systems

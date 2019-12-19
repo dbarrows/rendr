@@ -12,7 +12,25 @@ aggregate_x <- function(sol, species_names) {
     df
 }
 
-sol <- nsm()
+message("Parsing network")
+network <- parse_network("
+         0 <-> U,  4e3, 2
+         0  -> V,  1.2e4
+    2U + V  -> 3U, 12.5e-8
+")
+
+message("Constructing volume")
+vol <- volume(dims = c(40, 1, 1),
+              h = 1/40,
+              seed = c(25, 75))
+    
+message("Compiling and solving")
+sol <- nsm(network = network,
+           D = c(1e-3, 1e-1),
+           volume = vol,
+           tspan = c(0, 3.5))
+
+if (TRUE) {
 saveRDS(sol, "solution.rds")
 sol <- readRDS("solution.rds")
 
@@ -21,3 +39,4 @@ p <- agg_df %>%
     pivot_longer(c("U", "V"), names_to = "Species", values_to = "Average") %>%
     ggplot(aes(Time, Average, colour = Species)) +
         geom_line()
+}

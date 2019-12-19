@@ -51,10 +51,27 @@ array3<vector<diffusion>> generate_diffusions(uvec3 dims, vec D, double h) {
     return diffusions;
 }
 
+vector<reaction> scale_reactions(const vector<reaction>& reactions, uvec3 dims, double h) {
+    auto ndims = sum(vectorise(1 < dims)*h);
+    double v = pow(h, ndims);
+
+    auto scaled_reactions = vector<reaction>();
+    transform(reactions.begin(), reactions.end(), back_inserter(scaled_reactions), [&](const reaction& r) {
+        double adjustment = pow(v, 1 - r.order);
+        return reaction {
+            r.order,
+            [r, adjustment](const arma::vec& x) { return adjustment*r.propensity(x); },
+            r.update
+        };
+    });
+
+    return scaled_reactions;
+}
+
 rdnet::rdnet(const rnet& net, const volume& vol, arma::vec D) {
     species = net.species;
-    reactions = net.reactions;
     dims = vol.state.dims;
+    reactions = scale_reactions(reactions, vol.state.dims, vol.h);
     diffusions = generate_diffusions(dims, D, vol.h);
 }
 

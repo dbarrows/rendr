@@ -14,8 +14,8 @@ public:
         data = std::vector<T>(dx*dy*dz, seed);
     }
 
-    uint index(uint x, uint y, uint z) { return x + y*dims[0] + z*dims[0]*dims[1]; }
-    uint index(arma::uvec3 i) { return index(i[0], i[1], i[2]); }
+    uint index(uint x, uint y, uint z) const { return x + y*dims[0] + z*dims[0]*dims[1]; }
+    uint index(arma::uvec3 i) const { return index(i[0], i[1], i[2]); }
     arma::uvec3 index3(uint i) const;
     uint size() const { return dims[0] * dims[1] * dims[2]; }
 

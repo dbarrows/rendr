@@ -2,8 +2,8 @@
 #'
 #' @useDynLib reactor, .registration = TRUE
 #' @export
-volume <- function(dims, seed = numeric()) {
-    vol <- new(volume_cpp, dims, seed)
+volume <- function(dims, h, seed = numeric()) {
+    vol <- new(volume_cpp, dims, h, seed)
 }
 
 #' Set reaction system state
