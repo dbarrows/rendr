@@ -28,7 +28,7 @@ message("Compiling and solving")
 sol <- nsm(network = network,
            D = c(1e-3, 1e-1),
            volume = vol,
-           tspan = c(0, 3.5))
+           tspan = c(0, 0.35))
 
 if (TRUE) {
 saveRDS(sol, "solution.rds")

@@ -85,13 +85,13 @@ rdsol nsm(const rdnet& network,
     // state saving
     auto sol = rdsol();
     sol.species = network.species;
-    uint save_step;
+    double save_time_step;
     double next_save_time;
     if (record_all) {
         sol.times.push_back(t);
         sol.states.push_back(x.copy());
-        save_step = T / (save_grid_size - 1);
-        next_save_time = save_step;
+        save_time_step = T / (save_grid_size - 1);
+        next_save_time = save_time_step;
     }
 
     // progress printing
@@ -128,13 +128,15 @@ rdsol nsm(const rdnet& network,
             // update event queue
             double tau = event_time(rate_sums[index]);
             eq.push(t + tau, index);
+
+            //break;
         } else {
             // next event is a diffusion
 
             // pick diffusion
             vec diffusion_cumsum = cumsum(rates[index].diffusions);
             uint j = 0;
-            double target = diffusion_cumsum[diffusion_cumsum.size() - 1] * (r - reaction_cutoff) / (1 - reaction_cutoff);
+            double target = diffusion_cumsum[diffusion_cumsum.size() - 1] * (r - reaction_cutoff) / (1.0 - reaction_cutoff);
             while (diffusion_cumsum[j] < target)
                 j++;
 
@@ -155,13 +157,14 @@ rdsol nsm(const rdnet& network,
         if (record_all && next_save_time <= t) {
             sol.times.push_back(t);
             sol.states.push_back(x.copy());
-            next_save_time = sol.times.size() == save_grid_size - 1 ? T : (next_save_time + save_step);
+            next_save_time = sol.times.size() == save_grid_size - 1 ? T : (next_save_time + save_time_step);
         }
 
         if (verbose && next_report_fraction < t / T) {
             Rcpp::Rcout << ".";
             next_report_fraction += 0.01;
         }
+        //break;
     }
 
     if (!record_all) {
