@@ -56,10 +56,8 @@ vector<reaction> scale_reactions(const vector<reaction>& reactions, uvec3 dims, 
     double v = pow(h, ndims);
 
     auto scaled_reactions = vector<reaction>();
-    uint count = 0;
     transform(reactions.begin(), reactions.end(), back_inserter(scaled_reactions), [&](const reaction& r) {
         double adjustment = pow(v, static_cast<int>(1 - r.order));
-        Rcpp::Rcout << count << ": " << adjustment << endl;
         return reaction {
             r.order,
             [r, adjustment](const arma::vec& x) { return adjustment*r.propensity(x); },

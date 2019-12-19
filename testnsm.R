@@ -1,5 +1,6 @@
 library(tidyverse)
 library(emplot)
+library(bench)
 devtools::load_all()
 
 aggregate_x <- function(sol, species_names) {
@@ -24,15 +25,18 @@ vol <- volume(dims = c(40, 1, 1),
               h = 1/40,
               seed = c(25, 75))
     
-message("Compiling and solving")
-sol <- nsm(network = network,
+message("Compiling")
+compile_network(network)
+message("Solving")
+(runtime <- bench_time({
+    sol <- nsm(network = network,
            D = c(1e-3, 1e-1),
            volume = vol,
            tspan = c(0, 3.5))
+}))
 
-if (TRUE) {
-saveRDS(sol, "solution.rds")
-sol <- readRDS("solution.rds")
+#saveRDS(sol, "solution.rds")
+#sol <- readRDS("solution.rds")
 
 agg_df <- aggregate_x(sol, c("U", "V"))
 p <- agg_df %>%
@@ -40,3 +44,4 @@ p <- agg_df %>%
     ggplot(aes(Time, Average, colour = Species)) +
         geom_line()
 }
+ggsave("nsm-turing.svg", p, dpi = "retina", width = 7, height = 4, units = "in")

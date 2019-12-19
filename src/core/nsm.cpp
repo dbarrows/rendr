@@ -111,8 +111,6 @@ rdsol nsm(const rdnet& network,
             // update event queue
             double tau = event_time(rate_sums[index]);
             eq.push(t + tau, index);
-
-            //break;
         } else {
             // next event is a diffusion
 
@@ -147,7 +145,6 @@ rdsol nsm(const rdnet& network,
             Rcpp::Rcout << ".";
             next_report_fraction += 0.01;
         }
-        //break;
     }
 
     Rcpp::Rcout << "Reaction counts:" << endl << reaction_counts << endl;
