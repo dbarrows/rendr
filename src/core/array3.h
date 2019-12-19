@@ -49,3 +49,12 @@ array3<T> array3<T>::copy() const {
         c[i] = data[i];
     return c;
 }
+
+template <typename S>
+static std::vector<S> flatten(const array3<std::vector<S>>& a) {
+    auto v = std::vector<S>();
+    for (uint i = 0; i < a.size(); i++)
+        for (uint j = 0; j < a[i].size(); j++)
+            v.push_back(a[i][j]);
+    return v;
+}

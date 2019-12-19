@@ -6,6 +6,20 @@
 
 using namespace Rcpp;
 
+// issa_cpp
+Rcpp::List issa_cpp(SEXP rnet_xptr, arma::vec D, SEXP volume_xptr, arma::vec tspan);
+RcppExport SEXP _reactor_issa_cpp(SEXP rnet_xptrSEXP, SEXP DSEXP, SEXP volume_xptrSEXP, SEXP tspanSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type rnet_xptr(rnet_xptrSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type D(DSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type volume_xptr(volume_xptrSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type tspan(tspanSEXP);
+    rcpp_result_gen = Rcpp::wrap(issa_cpp(rnet_xptr, D, volume_xptr, tspan));
+    return rcpp_result_gen;
+END_RCPP
+}
 // nsm_cpp
 Rcpp::List nsm_cpp(SEXP rnet_xptr, arma::vec D, SEXP volume_xptr, arma::vec tspan);
 RcppExport SEXP _reactor_nsm_cpp(SEXP rnet_xptrSEXP, SEXP DSEXP, SEXP volume_xptrSEXP, SEXP tspanSEXP) {
@@ -37,6 +51,7 @@ END_RCPP
 RcppExport SEXP _rcpp_module_boot_volume_cpp();
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_reactor_issa_cpp", (DL_FUNC) &_reactor_issa_cpp, 4},
     {"_reactor_nsm_cpp", (DL_FUNC) &_reactor_nsm_cpp, 4},
     {"_reactor_ssa_cpp", (DL_FUNC) &_reactor_ssa_cpp, 3},
     {"_rcpp_module_boot_volume_cpp", (DL_FUNC) &_rcpp_module_boot_volume_cpp, 0},
