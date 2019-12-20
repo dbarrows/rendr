@@ -46,25 +46,42 @@ volume_dims <- function(volume) {
     volume$cpp$dims
 }
 
+#' Voxel side length
+#' 
+#' @param volume an instance of the \code{volume} class
+#' 
+#' @return the side length of each voxel
 #' @export
-as.data.frame.volume <- function(x, row.names = NULL, optional = FALSE, ...) {
-    dims <- volume_dims(x)
+volume_h <- function(volume) {
+    volume$cpp$h
+}
+
+#' Volume states in table format
+#' 
+#' @param volume an instance of the \code{volume} class
+#' 
+#' @return the states of \code{volume} as a \code{tibble}
+#' @export
+volume_states <- function(volume, species = NULL, ...) {
+    dims <- volume_dims(volume)
     df_index <- expand.grid(x = 1:dims[1], y = 1:dims[2], z = 1:dims[3])
     df_state <- sapply(1:nrow(df_index), function(i) {
-            s <- df_index[i,] %>% as.numeric() %>% volume_get(x, .)
+            s <- df_index[i,] %>% as.numeric() %>% volume_get(volume, .)
         }) %>%
         t() %>%
         rbind() %>%
         as.data.frame()
-    names(df_state) <- str_c("S", 1:ncol(df_state))
-    cbind(df_index, df_state)
+    names(df_state) <- if(is.null(species)) str_c("S", 1:ncol(df_state)) else species
+    cbind(df_index, df_state) %>% as_tibble()
 }
 
 #' @export
 print.volume <- function(x, ...) {
     dims <- x$cpp$dims
-    cat(paste0(blurred("# Volume: "), blue(paste0(dims[1], " x ", dims[2], " x ", dims[3])), "\n"))
-    print(as.data.frame(x))
+    cat(paste0(blurred("#"), blue(" dims: "), paste0(dims[1], " x ", dims[2], " x ", dims[3], "\n")))
+    cat(paste0(blurred("#"), blue(" h: "), paste0(x$cpp$h, "\n")))
+    cat(paste0(blurred("#"), blue(" states: "), blurred(paste0("\n", "# "))))
+    print(volume_states(x, ...), ...)
 }
 
 Rcpp::loadModule("volume_cpp", TRUE)

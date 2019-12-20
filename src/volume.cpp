@@ -5,6 +5,7 @@ RCPP_MODULE(volume_cpp) {
     Rcpp::class_<volume>("volume_cpp")
         .constructor<uvec, double>()
         .constructor<uvec, double, vec>()
+        .field_readonly("h", &volume::h, "Voxel side length")
         .method("set", &volume::set, "Set the state at a given index")
         .method("get", &volume::get, "Get the state at a given index")
         .property("dims", &volume::dims, "Volume dimensions")
