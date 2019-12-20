@@ -7,7 +7,7 @@
 volume_dims(volume)
 }
 \arguments{
-\item{volume}{an instance of the volume class}
+\item{volume}{an instance of the \code{volume} class}
 }
 \value{
 the dimensions of the system in the order (x, y, z)

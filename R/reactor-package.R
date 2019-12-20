@@ -11,13 +11,13 @@
 #' @import Rcpp
 #' @importFrom magrittr %>%
 #' @importFrom stringr str_c str_sub
-#' @importFrom tibble as_tibble
+#' @importFrom tibble as_tibble trunc_mat
 #' @importFrom dplyr rename
 #' @importFrom tidyr pivot_longer
 #' @importFrom digest digest
 #' @importFrom deSolve ode
 #' @importFrom methods new
-#' @importFrom crayon blurred blue
+#' @importFrom crayon blurred blue silver
 NULL
 
 ## quiets concerns of R CMD check re:

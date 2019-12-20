@@ -14,7 +14,7 @@ volume(dims, h, seed = numeric())
 \item{seed}{optional vector containing the initial state value for each voxel in the order returned by \code{species(network)}}
 }
 \value{
-an instance of the volume class
+an instance of the \code{volume} class
 }
 \description{
 Volume class for setting initial conditions of inhomogeneous systems

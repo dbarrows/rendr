@@ -7,7 +7,7 @@
 volume_set(volume, index, state)
 }
 \arguments{
-\item{volume}{an instance of the volume class}
+\item{volume}{an instance of the \code{volume} class}
 
 \item{index}{the index (x, y, z) of the voxel to assign the state to}
 
