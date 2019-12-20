@@ -8,7 +8,7 @@
 #' @useDynLib reactor, .registration = TRUE
 #' @export
 volume <- function(dims, h, seed = numeric()) {
-    vol <- new(volume_cpp, dims, h, seed)
+    new(volume_cpp, dims, h, seed)
 }
 
 #' Set reaction system state
@@ -42,5 +42,16 @@ volume_get <- function(volume, index) {
 volume_dims <- function(volume) {
     volume$dims
 }
+
+#' @export
+#print.volume_cpp <- function(x, ...) {
+#    dims <- x$dims
+#    cat(paste0(blurred("# Volume: "), blue(paste0(dims[1], " x ", dims[2], " x ", dims[3]))))
+#}
+
+setMethod("show", "Rcpp_volume_cpp", function(object) {
+    dims <- object$dims
+    cat(paste0(blurred("# Volume: "), blue(paste0(dims[1], " x ", dims[2], " x ", dims[3])), "\n"))
+})
 
 Rcpp::loadModule("volume_cpp", TRUE)

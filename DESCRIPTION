@@ -26,7 +26,8 @@ Imports:
     emplot,
     ggplot2,
     tidyr,
-    methods
+    methods,
+    crayon
 LinkingTo: 
     Rcpp,
     RcppArmadillo,

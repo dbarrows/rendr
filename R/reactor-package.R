@@ -17,6 +17,7 @@
 #' @importFrom digest digest
 #' @importFrom deSolve ode
 #' @importFrom methods new
+#' @importFrom crayon blurred blue
 NULL
 
 ## quiets concerns of R CMD check re:
