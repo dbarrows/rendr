@@ -4,16 +4,10 @@
 \alias{nsm}
 \title{Next Subvolume Method implementation of an ISSA solver}
 \usage{
-nsm(network, D, volume, tspan)
+nsm(model)
 }
 \arguments{
-\item{network}{a reaction network object created using \code{parse_network} from the \code{bondr} package}
-
-\item{D}{vector of diffusion constants for each species, in the order matching \code{species(network)}}
-
-\item{volume}{an instance of the \code{volume} S3 class}
-
-\item{tspan}{the simulation time}
+\item{model}{an instance of the \code{rdmodel} class}
 }
 \value{
 the solution to the system as a list

@@ -11,8 +11,8 @@
 #' @import Rcpp
 #' @importFrom magrittr %>%
 #' @importFrom stringr str_c str_sub
-#' @importFrom tibble as_tibble trunc_mat
-#' @importFrom dplyr rename
+#' @importFrom tibble tibble as_tibble
+#' @importFrom dplyr rename select pull
 #' @importFrom tidyr pivot_longer
 #' @importFrom digest digest
 #' @importFrom deSolve ode

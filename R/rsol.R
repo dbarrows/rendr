@@ -1,6 +1,7 @@
 #' Reaction network solution plot
 #' 
 #' @param rsol a solution to a well-stirred reaction system
+#' 
 #' @return a \code{ggplot2} plot of the solution
 #' @export
 rsol_plot <- function(rsol) {

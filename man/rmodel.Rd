@@ -4,12 +4,12 @@
 \alias{rmodel}
 \title{Reaction network models}
 \usage{
-rmodel(network, x, tspan)
+rmodel(network, state, tspan)
 }
 \arguments{
 \item{network}{an instance of the \code{network} class from the \code{bondr} package}
 
-\item{x}{vector containing the initial species quantities in the order returned by \code{species(network)}}
+\item{state}{vector containing the initial species quantities in the order returned by \code{species(network)}}
 
 \item{tspan}{vector containing the start and stop times for simulation}
 }

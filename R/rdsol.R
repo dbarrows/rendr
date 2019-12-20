@@ -1,0 +1,39 @@
+#' Reaction network solution plot
+#' 
+#' @param rsol a solution to a well-stirred reaction system
+#' 
+#' @return a \code{ggplot2} plot of the solution
+#' @export
+rdsol_plot <- function(rsol) {
+    rsol %>%
+        pivot_longer(-Time, names_to = "Species", values_to = "Quantity") %>%
+        ggplot(aes(Time, Quantity, colour = Species)) +
+            geom_line() +
+            theme_emplot()
+}
+
+#' Aggregator for species quantities
+#' 
+#' @param rdsol a solution to a reaction-diffusion system
+#' @param index an optional voxel index to filter quantity extraction
+#' 
+#' @return a tibble with a column for the solution time points, and a column for each species' quantities
+#' @export
+rdsol_quantities <- function(rdsol, average = FALSE, index = NULL) {
+    df <- tibble(Time = rdsol$t)
+
+    species_names <- rdsol$u[[1]] %>% names() %>% .[4:length(.)]
+    for (s in species_names) {
+        df[s] <- rdsol$u %>% sapply(function(udf) {
+            if (!is.null(index))
+                udf <- udf %>% filter(x == index[1], y == index[2], z == index[3])
+            q <- udf %>% pull(s)
+            if(average) mean(q) else sum(q)
+        })
+    }
+    df
+}
+
+## quiets concerns of R CMD check re:
+##  - variables that appear in magrittr pipelines
+if(getRversion() >= "2.15.1") utils::globalVariables(c("Time", "Quantity", "Species"))

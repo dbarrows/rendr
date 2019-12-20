@@ -13,26 +13,13 @@ aggregate_x <- function(sol, species_names) {
     df
 }
 
-message("Parsing network")
-network <- parse_network("
-         0 <-> U,  4e3, 2
-         0  -> V,  1.2e4
-    2U + V  -> 3U, 12.5e-8
-")
-
-message("Constructing volume")
-vol <- volume(dims = c(40, 1, 1),
-              h = 1/40,
-              seed = c(25, 75))
+model <- rdmodel_examples("schnakenberg")
     
 message("Compiling")
-compile_network(network, force = TRUE)
+compile_network(model$network, force = TRUE)
 message("Solving")
 (runtime <- bench_time({
-    sol <- issa(network = network,
-           D = c(1e-3, 1e-1),
-           volume = vol,
-           tspan = c(0, 3.5))
+    sol <- issa(model)
 }))
 
 #saveRDS(sol, "solution.rds")
