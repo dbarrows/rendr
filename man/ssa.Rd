@@ -16,7 +16,7 @@ ssa(network, y, tspan, force_compile = FALSE)
 \item{force_compile}{if set to \code{TRUE}, forces the overwriting and recompilation of the network source file}
 }
 \value{
-the solution to the system as a \code{tibble}
+the solution to the system as a \code{data.frame}
 }
 \description{
 Generates a realization of the Chemical Master Equation solution using the Stochastic Simulation Algorithm

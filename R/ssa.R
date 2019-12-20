@@ -5,11 +5,10 @@
 #' @param tspan the simulation time
 #' @param force_compile if set to \code{TRUE}, forces the overwriting and recompilation of the network source file
 #' 
-#' @return the solution to the system as a \code{tibble}
+#' @return the solution to the system as a \code{data.frame}
 #' @export
 ssa <- function(network, y, tspan, force_compile = FALSE) {
     network %>%
         compile_network(force_compile) %>%
-        ssa_cpp(y, tspan) %>%
-        as_tibble()
+        ssa_cpp(y, tspan)
 }

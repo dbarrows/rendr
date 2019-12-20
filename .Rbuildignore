@@ -1,1 +1,4 @@
 test.R
+\.o$
+^LICENSE\.md$
+^README\.Rmd$

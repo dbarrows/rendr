@@ -33,5 +33,3 @@ LinkingTo:
     bondr
 RcppModules:
     reaction_network
-Suggests: 
-    testthat

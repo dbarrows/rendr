@@ -6,6 +6,16 @@
 \usage{
 volume(dims, h, seed = numeric())
 }
+\arguments{
+\item{dims}{the dimensions of the system in the order (x, y, z)}
+
+\item{h}{the side length of each cubic voxel}
+
+\item{seed}{optional vector containing the initial state value for each voxel in the order returned by \code{species(network)}}
+}
+\value{
+an instance of the volume class
+}
 \description{
 Volume class for setting initial conditions of inhomogeneous systems
 }
