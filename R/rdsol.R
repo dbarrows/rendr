@@ -1,11 +1,12 @@
 #' Reaction network solution plot
 #' 
-#' @param rsol a solution to a well-stirred reaction system
+#' @param rsol a solution to a reaction-diffusion system
 #' 
 #' @return a \code{ggplot2} plot of the solution
 #' @export
 rdsol_plot <- function(rsol) {
     rsol %>%
+        rdsol_quantities() %>%
         pivot_longer(-Time, names_to = "Species", values_to = "Quantity") %>%
         ggplot(aes(Time, Quantity, colour = Species)) +
             geom_line() +
@@ -15,6 +16,7 @@ rdsol_plot <- function(rsol) {
 #' Aggregator for species quantities
 #' 
 #' @param rdsol a solution to a reaction-diffusion system
+#' @param average if TRUE, will return quantities averages over the number of voxels at each time
 #' @param index an optional voxel index to filter quantity extraction
 #' 
 #' @return a tibble with a column for the solution time points, and a column for each species' quantities
