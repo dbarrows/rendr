@@ -2,16 +2,22 @@
 % Please edit documentation in R/rdmodel.R
 \name{rdmodel}
 \alias{rdmodel}
-\title{Predefined models for use with reaction-diffusion network solvers}
+\title{Reaction-diffusion network models}
 \usage{
-rdmodel(name)
+rdmodel(network, volume, D, tspan)
 }
 \arguments{
-\item{name}{model name, one of: schnakenberg, ...}
+\item{network}{an instance of the \code{network} class from the \code{bondr} package}
+
+\item{volume}{an instance of the \code{volume} class}
+
+\item{D}{diffusion coefficients for each species in the order returned by \code{species(network)}}
+
+\item{tspan}{vector containing the start and stop times for simulation}
 }
 \value{
-an instance of the \code{rdmodel} class
+
 }
 \description{
-Predefined models for use with reaction-diffusion network solvers
+Reaction-diffusion network models
 }

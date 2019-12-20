@@ -1,14 +1,35 @@
+#' Reaction-diffusion network models
+#' 
+#' @param network an instance of the \code{network} class from the \code{bondr} package
+#' @param volume an instance of the \code{volume} class
+#' @param D diffusion coefficients for each species in the order returned by \code{species(network)}
+#' @param tspan vector containing the start and stop times for simulation
+#' 
+#' @return
+#' @export
+rdmodel <- function(network, volume, D, tspan) {
+    structure(list(
+            network = network,
+            volume = volume,
+            D = D,
+            tspan = tspan
+        ),
+        class = "rdmodel"
+    )
+}
+
 #' Predefined models for use with reaction-diffusion network solvers
 #' 
 #' @param name model name, one of: schnakenberg, ...
 #' 
 #' @return an instance of the \code{rdmodel} class
 #' @export
-rdmodel <- function(name) {
-    data <- switch(name,
+rdmodel_examples <- function(name) {
+    switch(name,
         "schnakenberg" = schnakenberg()
-    )
-    structure(data, class = "rdmodel")
+    ) %>%
+    with(rdmodel(network, volume, D, tspan)) %>%
+    structure(class = "rdmodel")
 }
 
 schnakenberg <- function() {
@@ -42,12 +63,16 @@ print.rdmodel <- function(x, ...) {
     cat("\n")
 
     cat(paste0(silver("$D"), "\n"))
-    species_names <- species(x$network)
-    for (i in 1:length(species_names))
-        cat(paste0(blurred(i), "  ", blue(species_names[i]), ": ", x$D[i], "\n"))
+    #species_names <- species(x$network)
+    #for (i in 1:length(species_names))
+    #    cat(paste0(blurred(i), "  ", blue(species_names[i]), ": ", x$D[i], "\n"))
+    D <- x$D
+    names(D) <- species(x$network)
+    print(D)
     cat("\n")
 
     cat(paste0(silver("$tspan"), "\n"))
-    cat(paste0(blurred("#  "), blue("t:"), " [", x$tspan[1], ", ", x$tspan[2], "]", "\n"))
+    #cat(paste0(blurred("#  "), blue("t:"), " [", x$tspan[1], ", ", x$tspan[2], "]", "\n"))
+    print(x$tspan)
     cat("\n")
 }

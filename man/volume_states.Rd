@@ -4,7 +4,7 @@
 \alias{volume_states}
 \title{Volume states in table format}
 \usage{
-volume_states(volume)
+volume_states(volume, species = NULL, ...)
 }
 \arguments{
 \item{volume}{an instance of the \code{volume} class}
