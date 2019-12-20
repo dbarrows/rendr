@@ -4,14 +4,10 @@
 \alias{rre}
 \title{Solves a reaction system deterministically using the Reaction Rate Equation}
 \usage{
-rre(network, y, tspan)
+rre(model)
 }
 \arguments{
-\item{network}{a reaction network object created using \code{parse_network} from the \code{bondr} package}
-
-\item{y}{the starting state of the system at the initial time}
-
-\item{tspan}{the simulation time}
+\item{model}{an instance of the \code{rmodel} class}
 }
 \value{
 the solution to the system as a \code{tibble}

@@ -8,6 +8,10 @@ volume_states(volume, species = NULL, ...)
 }
 \arguments{
 \item{volume}{an instance of the \code{volume} class}
+
+\item{species}{an optional vector of species names to be used in the output header}
+
+\item{...}{additional options}
 }
 \value{
 the states of \code{volume} as a \code{tibble}

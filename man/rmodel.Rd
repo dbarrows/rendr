@@ -14,7 +14,7 @@ rmodel(network, state, tspan)
 \item{tspan}{vector containing the start and stop times for simulation}
 }
 \value{
-
+an instance of the \code{rmodel} class
 }
 \description{
 Reaction network models

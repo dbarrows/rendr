@@ -16,7 +16,7 @@ rdmodel(network, volume, D, tspan)
 \item{tspan}{vector containing the start and stop times for simulation}
 }
 \value{
-
+an instance of the \code{rdmodel} class
 }
 \description{
 Reaction-diffusion network models

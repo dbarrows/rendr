@@ -11,8 +11,8 @@ knitr::opts_chunk$set(
     dev = 'svglite',
     fig.path = "man/figures/README-",
     fig.showtext = TRUE,
-    fig.width = 7,
-    fig.height = 4,
+    fig.width = 6.377953,
+    fig.height = 3.93701,
     out.width = "100%"
 )
 ```
@@ -47,16 +47,18 @@ library(reactor)
 A deterministic solver that uses the Reaction Rate Equation (RRE) in conjunction with an ode solver.
 
 ```{r}
-y <- c(301, 120, 0, 0)
-tspan <- c(0, 30)
-sol <- rre(mm_network, y, tspan)
-head(sol)
+(model <- rmodel(network = mm_network,
+                 state = c(301, 120, 0, 0),
+                 tspan = c(0, 30)))
+```
+```{r}
+(sol <- rre(model))
 ```
 
 A function is provided for easy visualisation of solutions.
 
 ```{r}
-solution_plot(sol)
+rsol_plot(sol)
 ```
 
 #### SSA
@@ -64,6 +66,6 @@ solution_plot(sol)
 Generate a single realisation of the Chemical Master Equation (CME) solution via the Stochastic Solution Algorithm (SSA).
 
 ```{r}
-ssa(mm_network, c(301, 120, 0, 0), c(0, 30)) %>%
-    solution_plot()
+ssa(model) %>%
+    rsol_plot()
 ```

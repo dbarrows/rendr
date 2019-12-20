@@ -12,7 +12,7 @@
 #' @importFrom magrittr %>%
 #' @importFrom stringr str_c str_sub
 #' @importFrom tibble tibble as_tibble
-#' @importFrom dplyr rename select pull
+#' @importFrom dplyr rename select pull filter
 #' @importFrom tidyr pivot_longer
 #' @importFrom digest digest
 #' @importFrom deSolve ode

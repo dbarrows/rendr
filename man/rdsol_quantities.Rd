@@ -9,6 +9,8 @@ rdsol_quantities(rdsol, average = FALSE, index = NULL)
 \arguments{
 \item{rdsol}{a solution to a reaction-diffusion system}
 
+\item{average}{if TRUE, will return quantities averages over the number of voxels at each time}
+
 \item{index}{an optional voxel index to filter quantity extraction}
 }
 \value{

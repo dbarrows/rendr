@@ -59,6 +59,8 @@ volume_h <- function(volume) {
 #' Volume states in table format
 #' 
 #' @param volume an instance of the \code{volume} class
+#' @param species an optional vector of species names to be used in the output header
+#' @param ... additional options
 #' 
 #' @return the states of \code{volume} as a \code{tibble}
 #' @export

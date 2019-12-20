@@ -7,7 +7,7 @@
 rdsol_plot(rsol)
 }
 \arguments{
-\item{rsol}{a solution to a well-stirred reaction system}
+\item{rsol}{a solution to a reaction-diffusion system}
 }
 \value{
 a \code{ggplot2} plot of the solution

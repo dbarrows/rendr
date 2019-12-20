@@ -38,4 +38,4 @@ rdsol_quantities <- function(rdsol, average = FALSE, index = NULL) {
 
 ## quiets concerns of R CMD check re:
 ##  - variables that appear in magrittr pipelines
-if(getRversion() >= "2.15.1") utils::globalVariables(c("Time", "Quantity", "Species"))
+if(getRversion() >= "2.15.1") utils::globalVariables(c("Time", "Quantity", "Species", "x", "y", "z"))

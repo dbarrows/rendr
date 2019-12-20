@@ -7,8 +7,11 @@
 #' 
 #' @return the solution to the system as a \code{data.frame}
 #' @export
-ssa <- function(network, y, tspan, force_compile = FALSE) {
-    network %>%
-        compile_network(force_compile) %>%
-        ssa_cpp(y, tspan)
+ssa <- function(model, force_compile = FALSE) {
+    with(model, {
+        network %>%
+            compile_network(force_compile) %>%
+            ssa_cpp(state, tspan) %>%
+            as_tibble()
+    })
 }

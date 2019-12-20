@@ -5,7 +5,7 @@
 #' @param D diffusion coefficients for each species in the order returned by \code{species(network)}
 #' @param tspan vector containing the start and stop times for simulation
 #' 
-#' @return
+#' @return an instance of the \code{rdmodel} class
 #' @export
 rdmodel <- function(network, volume, D, tspan) {
     structure(list(
@@ -76,3 +76,7 @@ print.rdmodel <- function(x, ...) {
     print(x$tspan)
     cat("\n")
 }
+
+## quiets concerns of R CMD check re:
+##  - variables that appear in magrittr pipelines
+if(getRversion() >= "2.15.1") utils::globalVariables(c("network", "D", "tspan"))
