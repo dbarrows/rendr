@@ -40,7 +40,7 @@ rdsol nsm(const rdnet& network,
                 << " - Species:     " << network.species.size() << endl
                 << " - Dimensions:  " << dims[0] << "x" << dims[1] << "x" << dims[2] << endl
                 << " - h:           " << h << endl
-                << " - time: [" << t << ", " << T << "]" << endl;
+                << " - time:        [" << t << ", " << T << "]" << endl;
 
     auto rates = array3<voxel_rates>(dims);
     auto rate_sums = array3<double>(dims);
@@ -141,6 +141,8 @@ rdsol nsm(const rdnet& network,
             next_report_fraction += 0.01;
         }
     }
+    if (verbose)
+        Rcpp::Rcout << endl;
 
     if (!record_all) {
         sol.times.push_back(t);

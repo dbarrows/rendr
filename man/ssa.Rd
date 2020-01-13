@@ -4,16 +4,16 @@
 \alias{ssa}
 \title{Generates a realization of the Chemical Master Equation solution using the Stochastic Simulation Algorithm}
 \usage{
-ssa(network, y, tspan, force_compile = FALSE)
+ssa(model, force_compile = FALSE)
 }
 \arguments{
+\item{force_compile}{if set to \code{TRUE}, forces the overwriting and recompilation of the network source file}
+
 \item{network}{a reaction network object created using \code{parse_network} from the \code{bondr} package}
 
 \item{y}{the starting state of the system at the initial time}
 
 \item{tspan}{the simulation time}
-
-\item{force_compile}{if set to \code{TRUE}, forces the overwriting and recompilation of the network source file}
 }
 \value{
 the solution to the system as a \code{data.frame}

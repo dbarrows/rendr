@@ -75,7 +75,7 @@ conjunction with an ode solver.
 #>  8 2.12   227.  54.8  65.2  8.53 
 #>  9 2.42   221.  50.9  69.1 10.6  
 #> 10 2.73   216.  47.6  72.4 12.7  
-#> # ... with 90 more rows
+#> # … with 90 more rows
 ```
 
 A function is provided for easy visualisation of solutions.
