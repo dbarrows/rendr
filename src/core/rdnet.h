@@ -28,11 +28,11 @@ public:
 
 // Functions --------------------------------------------------------------------------------
 
-inline std::vector<uvec3> neighbours(arma::uvec3 index, arma::uvec3 dims) {
+inline std::vector<arma::uvec3> neighbours(arma::uvec3 index, arma::uvec3 dims) {
     uint x = index[0];
     uint y = index[1];
     uint z = index[2];
-    auto all_neighbours = std::vector<uvec3> {
+    auto all_neighbours = std::vector<arma::uvec3> {
         {x-1, y, z},
         {x+1, y, z},
         {x, y-1, z},
@@ -40,11 +40,11 @@ inline std::vector<uvec3> neighbours(arma::uvec3 index, arma::uvec3 dims) {
         {x, y, z-1},
         {x, y, z+1}
     };
-    auto valid_neighbours = std::vector<uvec3>();
+    auto valid_neighbours = std::vector<arma::uvec3>();
     copy_if(all_neighbours.begin(),
             all_neighbours.end(),
             back_inserter(valid_neighbours),
-            [dims](uvec3 n){ return all(0 <= n) && all(n < dims); } );
+            [dims](arma::uvec3 n){ return all(0 <= n) && all(n < dims); } );
     return valid_neighbours;
 }
 
@@ -58,13 +58,13 @@ inline array3<std::vector<diffusion>> generate_diffusions(arma::uvec3 dims, arma
         for (const auto& neighbour_index : neighbours(index, dims)) {
             for (uint s = 0; s < D.size(); s++)
                 diffusions[i].push_back({
-                    [s, D, h2, index](const array3<vec>& x) {
+                    [s, D, h2, index](const array3<arma::vec>& x) {
                         return x[index][s]*D[s]/h2;
                     },
-                    [s, index, neighbour_index](array3<vec>& x) {
+                    [s, index, neighbour_index](array3<arma::vec>& x) {
                         x[index][s] -= 1;
                         x[neighbour_index][s] += 1;
-                        return std::vector<uvec3> { index, neighbour_index };
+                        return std::vector<arma::uvec3> { index, neighbour_index };
                     }
                 });
         }
@@ -86,10 +86,10 @@ inline array3<std::vector<reaction>> generate_reactions(const std::vector<bondr:
         transform(bondr_reactions.begin(), bondr_reactions.end(), back_inserter(reactions[i]), [&](const bondr::reaction& r) {
             double adjustment = pow(v, static_cast<int>(1 - r.order));
             return reaction {
-                [&r, adjustment, index](const array3<vec>& x) {
+                [&r, adjustment, index](const array3<arma::vec>& x) {
                     return adjustment*r.propensity(x[index]);
                 },
-                [&r, index](array3<vec>& x) {
+                [&r, index](array3<arma::vec>& x) {
                     r.update(x[index]);
                 }
             };
@@ -99,7 +99,7 @@ inline array3<std::vector<reaction>> generate_reactions(const std::vector<bondr:
     return reactions;
 }
 
-inline rdnet::rdnet(const bondr::rnet& rnet, const volume& vol, vec D) {
+inline rdnet::rdnet(const bondr::rnet& rnet, const volume& vol, arma::vec D) {
     species = rnet.species;
     dims = vol.state.dims;
     reactions = generate_reactions(rnet.reactions, vol.state.dims, vol.h);

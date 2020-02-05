@@ -20,12 +20,12 @@ rdsol issa(const rdnet& network,
     double t = tspan[0];
     double T = tspan[1];
 
-    Rcpp::Rcout << "Starting ISSA simulation with parameters:" << endl
-                << " - Reactions:   " << network.reactions[0].size() << endl
-                << " - Species:     " << network.species.size() << endl
-                << " - Dimensions:  " << dims[0] << "x" << dims[1] << "x" << dims[2] << endl
-                << " - h:           " << h << endl
-                << " - time:        [" << t << ", " << T << "]" << endl;
+    Rcpp::Rcout << "Starting ISSA simulation with parameters:" << std::endl
+                << " - Reactions:   " << network.reactions[0].size() << std::endl
+                << " - Species:     " << network.species.size() << std::endl
+                << " - Dimensions:  " << dims[0] << "x" << dims[1] << "x" << dims[2] << std::endl
+                << " - h:           " << h << std::endl
+                << " - time:        [" << t << ", " << T << "]" << std::endl;
 
     auto reactions = flatten(network.reactions);
     auto diffusions = flatten(network.diffusions);
@@ -96,7 +96,7 @@ rdsol issa(const rdnet& network,
         }
     }
     if (verbose)
-        Rcpp::Rcout << endl;
+        Rcpp::Rcout << std::endl;
 
     if (!record_all) {
         sol.times.push_back(t);
