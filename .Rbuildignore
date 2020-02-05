@@ -2,3 +2,4 @@ test.R
 \.o$
 ^LICENSE\.md$
 ^README\.Rmd$
+^README\.html$

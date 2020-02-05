@@ -42,7 +42,7 @@ library(reactor)
 (mm_network <- parse_network(bondr::mm_string))
 ```
 
-#### RRE
+### RRE
 
 A deterministic solver that uses the Reaction Rate Equation (RRE) in conjunction with an ode solver.
 
@@ -61,7 +61,7 @@ A function is provided for easy visualisation of solutions.
 rsol_plot(sol)
 ```
 
-#### SSA
+### SSA
 
 Generate a single realisation of the Chemical Master Equation (CME) solution via the Stochastic Solution Algorithm (SSA).
 
@@ -69,3 +69,34 @@ Generate a single realisation of the Chemical Master Equation (CME) solution via
 ssa(model) %>%
     rsol_plot()
 ```
+
+## Reaction-diffusion system solvers
+
+Reaction-diffusion models created via the `rdmodel` class, which are constructed similarly to `rmodel`s.
+
+```{r}
+(model <- rdmodel(
+    network = parse_network("
+             0 <-> U,  4e3, 2
+             0  -> V,  1.2e4
+        2U + V  -> 3U, 12.5e-8
+    "),
+    volume = volume(
+        dims = c(40, 1, 1),
+        h = 1/40,
+        seed = c(25, 75)
+    ),
+    D = c(1e-3, 1e-1),
+    tspan = c(0, 3.5)
+))
+```
+
+### ISSA
+
+Generate a single realisation of the Reaction-diffusion Master Equation (RDME) solution via the Inhomogeneous Stochastic Solution Algorithm (ISSA).
+
+```{r}
+issa(model) %>%
+    rdsol_plot()
+```
+

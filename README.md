@@ -36,7 +36,7 @@ library(reactor)
 #> 3          SE -> E + P        1e-1
 ```
 
-#### RRE
+### RRE
 
 A deterministic solver that uses the Reaction Rate Equation (RRE) in
 conjunction with an ode solver.
@@ -86,7 +86,7 @@ rsol_plot(sol)
 
 <img src="man/figures/README-unnamed-chunk-5-1.svg" width="100%" />
 
-#### SSA
+### SSA
 
 Generate a single realisation of the Chemical Master Equation (CME)
 solution via the Stochastic Solution Algorithm (SSA).
@@ -97,3 +97,73 @@ ssa(model) %>%
 ```
 
 <img src="man/figures/README-unnamed-chunk-6-1.svg" width="100%" />
+
+## Reaction-diffusion system solvers
+
+Reaction-diffusion models created via the `rdmodel` class, which are
+constructed similarly to `rmodel`s.
+
+``` r
+(model <- rdmodel(
+    network = parse_network("
+             0 <-> U,  4e3, 2
+             0  -> V,  1.2e4
+        2U + V  -> 3U, 12.5e-8
+    "),
+    volume = volume(
+        dims = c(40, 1, 1),
+        h = 1/40,
+        seed = c(25, 75)
+    ),
+    D = c(1e-3, 1e-1),
+    tspan = c(0, 3.5)
+))
+#> $network
+#> # Reaction network: 4 reactions x 2 species
+#>     Reactants    Products     Rate
+#> 1           0 -> U             4e3
+#> 2           U -> 0               2
+#> 3           0 -> V           1.2e4
+#> 4      2U + V -> 3U        12.5e-8
+#> 
+#> $volume
+#> # dims: 40 x 1 x 1
+#> # h: 0.025
+#> # states: 
+#> # # A tibble: 40 x 5
+#>       x     y     z     U     V
+#>   <int> <int> <int> <dbl> <dbl>
+#> 1     1     1     1    25    75
+#> 2     2     1     1    25    75
+#> 3     3     1     1    25    75
+#> 4     4     1     1    25    75
+#> 5     5     1     1    25    75
+#> # … with 35 more rows
+#> 
+#> $D
+#>     U     V 
+#> 0.001 0.100 
+#> 
+#> $tspan
+#> [1] 0.0 3.5
+```
+
+### ISSA
+
+Generate a single realisation of the Reaction-diffusion Master Equation
+(RDME) solution via the Inhomogeneous Stochastic Solution Algorithm
+(ISSA).
+
+``` r
+issa(model) %>%
+    rdsol_plot()
+#> Starting ISSA simulation with parameters:
+#>  - Reactions:   4
+#>  - Species:     2
+#>  - Dimensions:  40x1x1
+#>  - h:           0.025
+#>  - time: [0, 3.5]
+#> ....................................................................................................
+```
+
+<img src="man/figures/README-unnamed-chunk-8-1.svg" width="100%" />

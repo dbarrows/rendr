@@ -7,13 +7,9 @@
 ssa(model, force_compile = FALSE)
 }
 \arguments{
+\item{model}{an instance of the \code{rmodel} class}
+
 \item{force_compile}{if set to \code{TRUE}, forces the overwriting and recompilation of the network source file}
-
-\item{network}{a reaction network object created using \code{parse_network} from the \code{bondr} package}
-
-\item{y}{the starting state of the system at the initial time}
-
-\item{tspan}{the simulation time}
 }
 \value{
 the solution to the system as a \code{data.frame}
