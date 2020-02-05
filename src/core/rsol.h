@@ -4,11 +4,16 @@
 
 namespace rsolver {
 
+// Definitions ------------------------------------------------------------------------------
+
 struct rsol {
     std::vector<double> times;
     std::vector<std::string> species;
     std::vector<arma::vec> states;
 };
+
+// Functions --------------------------------------------------------------------------------
+
 inline Rcpp::DataFrame DataFrame(const rsol& sol) {
     Rcpp::List list = Rcpp::List(1 + sol.species.size());
 
