@@ -9,10 +9,13 @@
 namespace rsolver {
 
 Rcpp::DataFrame ssa(const bondr::rnet& network, arma::vec y, arma::vec tspan, arma::vec k = arma::vec(), bool record_all = true) {
-    auto t = tspan[0];
-    auto T = tspan[1];
+    double t = tspan[0];
+    double T = tspan[1];
 
     arma::vec x = arma::vec(y);
+
+    auto t_last = t;
+    auto x_last = x;
     
     auto sol = rsol();
     sol.species = network.species;
@@ -40,6 +43,9 @@ Rcpp::DataFrame ssa(const bondr::rnet& network, arma::vec y, arma::vec tspan, ar
         // get reaction time
         double tau = -log(urand())/asum;
 
+        // stash current system state
+        t_last = t;
+        x_last = x;
         // advance system
         network.reactions[j].update(x);
         t += tau;
@@ -50,10 +56,10 @@ Rcpp::DataFrame ssa(const bondr::rnet& network, arma::vec y, arma::vec tspan, ar
         }
     }
 
-    if (!record_all) {
-        sol.times.push_back(t);
-        sol.states.push_back(x);
-    }
+    arma::vec x_interp = arma::round(((T - t_last)*x_last + (t - T)*x) / (t - t_last));
+
+    sol.times.push_back(T);
+    sol.states.push_back(x_interp);
 
     return DataFrame(sol);
 }

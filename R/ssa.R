@@ -7,7 +7,7 @@
 #' 
 #' @return the solution to the system as a \code{data.frame}
 #' @export
-ssa <- function(model, k = numeric(), record_all = TRUE, force_compile = FALSE) {
+ssa <- function(model, k = NULL, record_all = TRUE, force_compile = FALSE) {
     with(model, {
         network %>%
             compile_network(force = force_compile, rateless = (0 < length(k))) %>%
