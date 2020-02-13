@@ -8,7 +8,7 @@
 
 namespace rsolver {
 
-Rcpp::DataFrame ssa(const bondr::rnet& network, arma::vec y, arma::vec tspan, bool record_all = true) {
+Rcpp::DataFrame ssa(const bondr::rnet& network, arma::vec y, arma::vec tspan, arma::vec k = arma::vec(), bool record_all = true) {
     auto t = tspan[0];
     auto T = tspan[1];
 
@@ -27,7 +27,7 @@ Rcpp::DataFrame ssa(const bondr::rnet& network, arma::vec y, arma::vec tspan, bo
     while (t < T) {
         // setup
         for (uint i = 0; i < a.size(); i++)
-            a[i] = network.reactions[i].propensity(x);
+            a[i] = (k.size() != 0 ? k[i] : 1.0)*network.reactions[i].propensity(x);
         arma::vec csum = cumsum(a);
         double asum = csum[csum.size() - 1];
 

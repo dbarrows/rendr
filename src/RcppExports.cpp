@@ -35,15 +35,17 @@ BEGIN_RCPP
 END_RCPP
 }
 // ssa_cpp
-Rcpp::DataFrame ssa_cpp(SEXP rnet_xptr, arma::vec y, arma::vec tspan);
-RcppExport SEXP _rendr_ssa_cpp(SEXP rnet_xptrSEXP, SEXP ySEXP, SEXP tspanSEXP) {
+Rcpp::DataFrame ssa_cpp(SEXP rnet_xptr, arma::vec y, arma::vec tspan, arma::vec k, bool record_all);
+RcppExport SEXP _rendr_ssa_cpp(SEXP rnet_xptrSEXP, SEXP ySEXP, SEXP tspanSEXP, SEXP kSEXP, SEXP record_allSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type rnet_xptr(rnet_xptrSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type y(ySEXP);
     Rcpp::traits::input_parameter< arma::vec >::type tspan(tspanSEXP);
-    rcpp_result_gen = Rcpp::wrap(ssa_cpp(rnet_xptr, y, tspan));
+    Rcpp::traits::input_parameter< arma::vec >::type k(kSEXP);
+    Rcpp::traits::input_parameter< bool >::type record_all(record_allSEXP);
+    rcpp_result_gen = Rcpp::wrap(ssa_cpp(rnet_xptr, y, tspan, k, record_all));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -53,7 +55,7 @@ RcppExport SEXP _rcpp_module_boot_volume_cpp();
 static const R_CallMethodDef CallEntries[] = {
     {"_rendr_issa_cpp", (DL_FUNC) &_rendr_issa_cpp, 4},
     {"_rendr_nsm_cpp", (DL_FUNC) &_rendr_nsm_cpp, 4},
-    {"_rendr_ssa_cpp", (DL_FUNC) &_rendr_ssa_cpp, 3},
+    {"_rendr_ssa_cpp", (DL_FUNC) &_rendr_ssa_cpp, 5},
     {"_rcpp_module_boot_volume_cpp", (DL_FUNC) &_rcpp_module_boot_volume_cpp, 0},
     {NULL, NULL, 0}
 };

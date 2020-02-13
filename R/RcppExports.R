@@ -9,7 +9,7 @@ nsm_cpp <- function(rnet_xptr, D, volume_xptr, tspan) {
     .Call(`_rendr_nsm_cpp`, rnet_xptr, D, volume_xptr, tspan)
 }
 
-ssa_cpp <- function(rnet_xptr, y, tspan) {
-    .Call(`_rendr_ssa_cpp`, rnet_xptr, y, tspan)
+ssa_cpp <- function(rnet_xptr, y, tspan, k, record_all = TRUE) {
+    .Call(`_rendr_ssa_cpp`, rnet_xptr, y, tspan, k, record_all)
 }
 
