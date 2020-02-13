@@ -73,8 +73,8 @@ inline array3<std::vector<diffusion>> generate_diffusions(arma::uvec3 dims, arma
 }
 
 inline array3<std::vector<reaction>> generate_reactions(const std::vector<bondr::reaction>& bondr_reactions,
-                                                 arma::uvec3 dims,
-                                                 double h) {
+                                                        arma::uvec3 dims,
+                                                        double h) {
     uint ndims = arma::sum(vectorise(1 < dims));
     double v = pow(h, ndims);
 

@@ -32,5 +32,3 @@ LinkingTo:
     Rcpp,
     RcppArmadillo,
     bondr
-RcppModules:
-    reaction_network
