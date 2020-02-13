@@ -8,7 +8,7 @@ nsm <- function(model) {
     with(model, {
         sol <- network %>%
             compile_network() %>%
-            nsm_cpp(D, volume$cpp$xptr, tspan)
+            nsm_cpp(D, volume$cpp$xptr, T)
         sol$u <- lapply(sol$u, as_tibble)
         sol
     })

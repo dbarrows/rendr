@@ -26,7 +26,7 @@ Networks](https://github.com/dbarrows/bondr#creating-networks) for more
 details.
 
 ``` r
-library(reactor)
+library(rendr)
 
 (mm_network <- parse_network(bondr::mm_string))
 #> # Reaction network: 3 reactions x 4 species
@@ -44,7 +44,7 @@ conjunction with an ode solver.
 ``` r
 (model <- rmodel(network = mm_network,
                  state = c(301, 120, 0, 0),
-                 tspan = c(0, 30)))
+                 T = 30))
 #> $network
 #> # Reaction network: 3 reactions x 4 species
 #>     Reactants    Products     Rate
@@ -56,8 +56,8 @@ conjunction with an ode solver.
 #>   S   E  SE   P 
 #> 301 120   0   0 
 #> 
-#> $tspan
-#> [1]  0 30
+#> $T
+#> [1] 30
 ```
 
 ``` r
@@ -116,7 +116,7 @@ constructed similarly to `rmodel`s.
         seed = c(25, 75)
     ),
     D = c(1e-3, 1e-1),
-    tspan = c(0, 3.5)
+    T = 3.5
 ))
 #> $network
 #> # Reaction network: 4 reactions x 2 species
@@ -144,8 +144,8 @@ constructed similarly to `rmodel`s.
 #>     U     V 
 #> 0.001 0.100 
 #> 
-#> $tspan
-#> [1] 0.0 3.5
+#> $T
+#> [1] 3.5
 ```
 
 ### ISSA

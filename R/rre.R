@@ -6,7 +6,7 @@
 #' @export
 rre <- function(model) {
     with(model, {
-        times <- seq(tspan[1], tspan[2], length.out = 100)
+        times <- seq(0, T, length.out = 100)
         deriv <- deriv_function(network)
         sol <- ode(state, times, deriv) %>%
             data.frame() %>%

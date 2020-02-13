@@ -11,7 +11,7 @@ ssa <- function(model, k = NULL, record_all = TRUE, force_compile = FALSE) {
     with(model, {
         network %>%
             compile_network(force = force_compile, rateless = (0 < length(k))) %>%
-            ssa_cpp(state, tspan, k = k, record_all = record_all) %>%
+            ssa_cpp(state, T, k = k, record_all = record_all) %>%
             as_tibble()
     })
 }

@@ -10,15 +10,14 @@ namespace rdsolver {
 
 rdsol issa(const rdnet& network,
            const volume& volume,
-           arma::vec tspan,
+           double T,
            bool record_all = true,
            uint save_grid_size = 100,
            bool verbose = true) {
     auto x = volume.state.copy();
     arma::uvec3 dims = x.dims;
     double h = volume.h;
-    double t = tspan[0];
-    double T = tspan[1];
+    double t = 0;
 
     Rcpp::Rcout << "Starting ISSA simulation with parameters:" << std::endl
                 << " - Reactions:   " << network.reactions[0].size() << std::endl

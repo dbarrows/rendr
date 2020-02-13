@@ -33,15 +33,14 @@ inline void update_rates(voxel_rates& rates,
 
 inline rdsol nsm(const rdnet& network,
           const volume& vol,
-          arma::vec tspan,
+          double T,
           bool record_all = true,
           uint save_grid_size = 100,
           bool verbose = true) {
     auto x = vol.state.copy();
     arma::uvec3 dims = x.dims;
     double h = vol.h;
-    double t = tspan[0];
-    double T = tspan[1];
+    double t = 0;
 
     Rcpp::Rcout << "Starting NSM simulation with parameters:" << std::endl
                 << " - Reactions:   " << network.reactions[0].size() << std::endl

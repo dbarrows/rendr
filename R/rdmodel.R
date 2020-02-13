@@ -3,16 +3,16 @@
 #' @param network an instance of the \code{network} class from the \code{bondr} package
 #' @param volume an instance of the \code{volume} class
 #' @param D diffusion coefficients for each species in the order returned by \code{species(network)}
-#' @param tspan vector containing the start and stop times for simulation
+#' @param T simulation length
 #' 
 #' @return an instance of the \code{rdmodel} class
 #' @export
-rdmodel <- function(network, volume, D, tspan) {
+rdmodel <- function(network, volume, D, T) {
     structure(list(
             network = network,
             volume = volume,
             D = D,
-            tspan = tspan
+            T = T
         ),
         class = "rdmodel"
     )
@@ -28,7 +28,7 @@ rdmodel_examples <- function(name) {
     switch(name,
         "schnakenberg" = schnakenberg()
     ) %>%
-    with(rdmodel(network, volume, D, tspan)) %>%
+    with(rdmodel(network, volume, D, T)) %>%
     structure(class = "rdmodel")
 }
 
@@ -43,7 +43,7 @@ schnakenberg <- function() {
                         h = 1/40,
                         seed = c(25, 75)),
         D = c(1e-3, 1e-1),
-        tspan = c(0, 3.5)
+        T = 3.5
     )
 }
 
@@ -63,20 +63,16 @@ print.rdmodel <- function(x, ...) {
     cat("\n")
 
     cat(paste0(silver("$D"), "\n"))
-    #species_names <- species(x$network)
-    #for (i in 1:length(species_names))
-    #    cat(paste0(blurred(i), "  ", blue(species_names[i]), ": ", x$D[i], "\n"))
     D <- x$D
     names(D) <- species(x$network)
     print(D)
     cat("\n")
 
-    cat(paste0(silver("$tspan"), "\n"))
-    #cat(paste0(blurred("#  "), blue("t:"), " [", x$tspan[1], ", ", x$tspan[2], "]", "\n"))
-    print(x$tspan)
+    cat(paste0(silver("$T"), "\n"))
+    print(x$T)
     cat("\n")
 }
 
 ## quiets concerns of R CMD check re:
 ##  - variables that appear in magrittr pipelines
-if(getRversion() >= "2.15.1") utils::globalVariables(c("network", "D", "tspan"))
+if(getRversion() >= "2.15.1") utils::globalVariables(c("network", "D", "T"))

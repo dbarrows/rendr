@@ -39,7 +39,7 @@ devtools::install_github("dbarrows/reactor")
 Networks are created using the [`bondr`](https://github.com/dbarrows/bondr) package. See [Creating Networks](https://github.com/dbarrows/bondr#creating-networks) for more details.
 
 ```{r}
-library(reactor)
+library(rendr)
 
 (mm_network <- parse_network(bondr::mm_string))
 ```
@@ -51,7 +51,7 @@ A deterministic solver that uses the Reaction Rate Equation (RRE) in conjunction
 ```{r}
 (model <- rmodel(network = mm_network,
                  state = c(301, 120, 0, 0),
-                 tspan = c(0, 30)))
+                 T = 30))
 ```
 ```{r}
 (sol <- rre(model))
@@ -89,7 +89,7 @@ Reaction-diffusion models created via the `rdmodel` class, which are constructed
         seed = c(25, 75)
     ),
     D = c(1e-3, 1e-1),
-    tspan = c(0, 3.5)
+    T = 3.5
 ))
 ```
 

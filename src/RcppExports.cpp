@@ -7,45 +7,45 @@
 using namespace Rcpp;
 
 // issa_cpp
-Rcpp::List issa_cpp(SEXP rnet_xptr, arma::vec D, SEXP volume_xptr, arma::vec tspan);
-RcppExport SEXP _rendr_issa_cpp(SEXP rnet_xptrSEXP, SEXP DSEXP, SEXP volume_xptrSEXP, SEXP tspanSEXP) {
+Rcpp::List issa_cpp(SEXP rnet_xptr, arma::vec D, SEXP volume_xptr, double T);
+RcppExport SEXP _rendr_issa_cpp(SEXP rnet_xptrSEXP, SEXP DSEXP, SEXP volume_xptrSEXP, SEXP TSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type rnet_xptr(rnet_xptrSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type D(DSEXP);
     Rcpp::traits::input_parameter< SEXP >::type volume_xptr(volume_xptrSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type tspan(tspanSEXP);
-    rcpp_result_gen = Rcpp::wrap(issa_cpp(rnet_xptr, D, volume_xptr, tspan));
+    Rcpp::traits::input_parameter< double >::type T(TSEXP);
+    rcpp_result_gen = Rcpp::wrap(issa_cpp(rnet_xptr, D, volume_xptr, T));
     return rcpp_result_gen;
 END_RCPP
 }
 // nsm_cpp
-Rcpp::List nsm_cpp(SEXP rnet_xptr, arma::vec D, SEXP volume_xptr, arma::vec tspan);
-RcppExport SEXP _rendr_nsm_cpp(SEXP rnet_xptrSEXP, SEXP DSEXP, SEXP volume_xptrSEXP, SEXP tspanSEXP) {
+Rcpp::List nsm_cpp(SEXP rnet_xptr, arma::vec D, SEXP volume_xptr, double T);
+RcppExport SEXP _rendr_nsm_cpp(SEXP rnet_xptrSEXP, SEXP DSEXP, SEXP volume_xptrSEXP, SEXP TSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type rnet_xptr(rnet_xptrSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type D(DSEXP);
     Rcpp::traits::input_parameter< SEXP >::type volume_xptr(volume_xptrSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type tspan(tspanSEXP);
-    rcpp_result_gen = Rcpp::wrap(nsm_cpp(rnet_xptr, D, volume_xptr, tspan));
+    Rcpp::traits::input_parameter< double >::type T(TSEXP);
+    rcpp_result_gen = Rcpp::wrap(nsm_cpp(rnet_xptr, D, volume_xptr, T));
     return rcpp_result_gen;
 END_RCPP
 }
 // ssa_cpp
-Rcpp::DataFrame ssa_cpp(SEXP rnet_xptr, arma::vec y, arma::vec tspan, Rcpp::Nullable<arma::vec> k_vec, bool record_all);
-RcppExport SEXP _rendr_ssa_cpp(SEXP rnet_xptrSEXP, SEXP ySEXP, SEXP tspanSEXP, SEXP k_vecSEXP, SEXP record_allSEXP) {
+Rcpp::DataFrame ssa_cpp(SEXP rnet_xptr, arma::vec y, double T, Rcpp::Nullable<arma::vec> k_vec, bool record_all);
+RcppExport SEXP _rendr_ssa_cpp(SEXP rnet_xptrSEXP, SEXP ySEXP, SEXP TSEXP, SEXP k_vecSEXP, SEXP record_allSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type rnet_xptr(rnet_xptrSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type y(ySEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type tspan(tspanSEXP);
+    Rcpp::traits::input_parameter< double >::type T(TSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<arma::vec> >::type k_vec(k_vecSEXP);
     Rcpp::traits::input_parameter< bool >::type record_all(record_allSEXP);
-    rcpp_result_gen = Rcpp::wrap(ssa_cpp(rnet_xptr, y, tspan, k_vec, record_all));
+    rcpp_result_gen = Rcpp::wrap(ssa_cpp(rnet_xptr, y, T, k_vec, record_all));
     return rcpp_result_gen;
 END_RCPP
 }

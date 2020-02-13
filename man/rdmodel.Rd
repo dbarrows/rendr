@@ -4,7 +4,7 @@
 \alias{rdmodel}
 \title{Reaction-diffusion network models}
 \usage{
-rdmodel(network, volume, D, tspan)
+rdmodel(network, volume, D, T)
 }
 \arguments{
 \item{network}{an instance of the \code{network} class from the \code{bondr} package}
@@ -13,7 +13,7 @@ rdmodel(network, volume, D, tspan)
 
 \item{D}{diffusion coefficients for each species in the order returned by \code{species(network)}}
 
-\item{tspan}{vector containing the start and stop times for simulation}
+\item{T}{simulation length}
 }
 \value{
 an instance of the \code{rdmodel} class

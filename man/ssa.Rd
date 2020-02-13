@@ -4,7 +4,7 @@
 \alias{ssa}
 \title{Generates a realization of the Chemical Master Equation solution using the Stochastic Simulation Algorithm}
 \usage{
-ssa(model, k = numeric(), record_all = TRUE, force_compile = FALSE)
+ssa(model, k = NULL, record_all = TRUE, force_compile = FALSE)
 }
 \arguments{
 \item{model}{an instance of the \code{rmodel} class}

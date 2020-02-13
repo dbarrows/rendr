@@ -8,7 +8,7 @@ issa <- function(model) {
     with(model, {
         sol <- network %>%
             compile_network() %>%
-            issa_cpp(D, volume$cpp$xptr, tspan)
+            issa_cpp(D, volume$cpp$xptr, T)
         sol$u <- lapply(sol$u, as_tibble)
         sol
     })

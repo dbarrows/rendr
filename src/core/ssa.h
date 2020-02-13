@@ -8,10 +8,8 @@
 
 namespace rsolver {
 
-Rcpp::DataFrame ssa(const bondr::rnet& network, arma::vec y, arma::vec tspan, arma::vec k = arma::vec(), bool record_all = true) {
-    double t = tspan[0];
-    double T = tspan[1];
-
+Rcpp::DataFrame ssa(const bondr::rnet& network, arma::vec y, double T, arma::vec k = arma::vec(), bool record_all = true) {
+    double t = 0;
     arma::vec x = arma::vec(y);
 
     auto t_last = t;

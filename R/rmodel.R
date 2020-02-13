@@ -2,15 +2,15 @@
 #' 
 #' @param network an instance of the \code{network} class from the \code{bondr} package
 #' @param state vector containing the initial species quantities in the order returned by \code{species(network)}
-#' @param tspan vector containing the start and stop times for simulation
+#' @param T simulation length
 #' 
 #' @return an instance of the \code{rmodel} class
 #' @export
-rmodel <- function(network, state, tspan) {
+rmodel <- function(network, state, T) {
     structure(list(
             network = network,
             state = state,
-            tspan = tspan
+            T = T
         ),
         class = "rmodel"
     )
@@ -27,7 +27,7 @@ rmodel_examples <- function(name) {
         "mm" = mm(),
         "schlogl" = schlogl()
     ) %>%
-    with(rmodel(network, state, tspan)) %>%
+    with(rmodel(network, state, T)) %>%
     structure(class = "rmodel")
 }
 
@@ -35,7 +35,7 @@ mm <- function() {
     list(
         network = parse_network(mm_string),
         state = c(300, 120, 0, 0),
-        tspan = c(0, 30)
+        T = 30
     )
 }
 
@@ -43,7 +43,7 @@ schlogl <- function() {
     list(
         network = parse_network(schlogl_string),
         state = c(248),
-        tspan = c(0, 15)
+        T = 15
     )
 }
 
@@ -64,8 +64,8 @@ print.rmodel <- function(x, ...) {
     print(state)
     cat("\n")
 
-    cat(paste0(silver("$tspan"), "\n"))
-    print(x$tspan)
+    cat(paste0(silver("$T"), "\n"))
+    print(x$T)
     cat("\n")
 }
 
