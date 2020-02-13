@@ -1,9 +1,9 @@
-#' \code{reactor} package
+#' \code{rendr} package
 #'
 #' Solvers for Chemical Networks
 #'
 #' @docType package
-#' @name reactor
+#' @name rendr
 #' 
 #' @import bondr
 #' @import ggplot2

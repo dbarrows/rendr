@@ -2,14 +2,14 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 issa_cpp <- function(rnet_xptr, D, volume_xptr, tspan) {
-    .Call(`_reactor_issa_cpp`, rnet_xptr, D, volume_xptr, tspan)
+    .Call(`_rendr_issa_cpp`, rnet_xptr, D, volume_xptr, tspan)
 }
 
 nsm_cpp <- function(rnet_xptr, D, volume_xptr, tspan) {
-    .Call(`_reactor_nsm_cpp`, rnet_xptr, D, volume_xptr, tspan)
+    .Call(`_rendr_nsm_cpp`, rnet_xptr, D, volume_xptr, tspan)
 }
 
 ssa_cpp <- function(rnet_xptr, y, tspan) {
-    .Call(`_reactor_ssa_cpp`, rnet_xptr, y, tspan)
+    .Call(`_rendr_ssa_cpp`, rnet_xptr, y, tspan)
 }
 

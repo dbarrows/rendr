@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# reactor
+# rendr
 
 <!-- badges: start -->
 
@@ -167,3 +167,13 @@ issa(model) %>%
 ```
 
 <img src="man/figures/README-unnamed-chunk-8-1.svg" width="100%" />
+
+### NSM
+
+Generate a single realisation of the Reaction-diffusion Master Equation
+(RDME) solution via the Next Subvolume Method (NSM). Usage of the `nsm`
+function is the same as with the [ISSA solver](#issa). The NSM algorithm
+is usually faster for systems with a large number of subvolume (voxels)
+relative to the reaction network size. You may have to try both the ISSA
+and NSM solver to see which is faster for a given reaction-diffusion
+system.
