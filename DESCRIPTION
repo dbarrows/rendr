@@ -28,6 +28,9 @@ Imports:
     tidyr,
     methods,
     crayon
+Remotes:
+    dbarrows/bondr,
+    dbarrows/emplot
 LinkingTo: 
     Rcpp,
     RcppArmadillo,
