@@ -7,7 +7,7 @@
 #' 
 #' @return an instance of the \code{rdsys} class
 #' @export
-rdsystem <- function(network, volume, D, T) {
+rdsys <- function(network, volume, D, T) {
     structure(list(
             network = network,
             volume = volume,
@@ -24,11 +24,11 @@ rdsystem <- function(network, volume, D, T) {
 #' 
 #' @return an instance of the \code{rdsys} class
 #' @export
-rdsystem_examples <- function(name) {
+rdsys_examples <- function(name) {
     switch(name,
         "schnakenberg" = schnakenberg()
     ) %>%
-    with(rdsystem(network, volume, D, T)) %>%
+    with(rdsys(network, volume, D, T)) %>%
     structure(class = "rdsys")
 }
 
@@ -48,12 +48,12 @@ schnakenberg <- function() {
 }
 
 #' @export
-species.rdsystem <- function(system) {
-    species(system$network)
+species.rdsys <- function(sys) {
+    species(sys$network)
 }
 
 #' @export
-print.rdsystem <- function(x, ...) {
+print.rdsys <- function(x, ...) {
     cat(paste0(silver("$network"), "\n"))
     print(x$network)
     cat("\n")

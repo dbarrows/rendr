@@ -4,9 +4,9 @@
 #' @param state vector containing the initial species quantities in the order returned by \code{species(network)}
 #' @param T simulation length
 #' 
-#' @return an instance of the \code{rsystem} class
+#' @return an instance of the \code{rsys} class
 #' @export
-rsystem <- function(network, state, T) {
+rsys <- function(network, state, T) {
     structure(list(
             network = network,
             state = state,
@@ -20,15 +20,15 @@ rsystem <- function(network, state, T) {
 #' 
 #' @param name system name, one of: mm, schlogl, gbk, pc
 #' 
-#' @return an instance of the \code{rsystem} class
+#' @return an instance of the \code{rsys} class
 #' @export
-rsystem_examples <- function(name) {
+rsys_examples <- function(name) {
     switch(name,
         "mm" = mm(),
         "schlogl" = schlogl()
     ) %>%
-    with(rsystem(network, state, T)) %>%
-    structure(class = "rsystem")
+    with(rsys(network, state, T)) %>%
+    structure(class = "rsys")
 }
 
 mm <- function() {
@@ -48,12 +48,12 @@ schlogl <- function() {
 }
 
 #' @export
-species.rsystem <- function(system) {
-    species(system$network)
+species.rsys <- function(sys) {
+    species(sys$network)
 }
 
 #' @export
-print.rsystem <- function(x, ...) {
+print.rsys <- function(x, ...) {
     cat(paste0(silver("$network"), "\n"))
     print(x$network)
     cat("\n")

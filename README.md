@@ -42,9 +42,9 @@ A deterministic solver that uses the Reaction Rate Equation (RRE) in
 conjunction with an ode solver.
 
 ``` r
-(model <- rmodel(network = mm_network,
-                 state = c(301, 120, 0, 0),
-                 T = 30))
+(sys <- rsys(network = mm_network,
+             state = c(301, 120, 0, 0),
+             T = 30))
 #> $network
 #> # Reaction network: 3 reactions x 4 species
 #>     Reactants    Products     Rate
@@ -61,7 +61,7 @@ conjunction with an ode solver.
 ```
 
 ``` r
-(sol <- rre(model))
+(sol <- rre(sys))
 #> # A tibble: 100 x 5
 #>     Time     S     E    SE      P
 #>    <dbl> <dbl> <dbl> <dbl>  <dbl>
@@ -92,7 +92,7 @@ Generate a single realisation of the Chemical Master Equation (CME)
 solution via the Stochastic Solution Algorithm (SSA).
 
 ``` r
-ssa(model) %>%
+ssa(sys) %>%
     rsol_plot()
 ```
 
@@ -100,11 +100,11 @@ ssa(model) %>%
 
 ## Reaction-diffusion system solvers
 
-Reaction-diffusion models created via the `rdmodel` class, which are
-constructed similarly to `rmodel`s.
+Reaction-diffusion systems created via the `rdsys` class, which are
+constructed similarly to `rsys`s.
 
 ``` r
-(model <- rdmodel(
+(sys <- rdsys(
     network = parse_network("
              0 <-> U,  4e3, 2
              0  -> V,  1.2e4
@@ -155,7 +155,7 @@ Generate a single realisation of the Reaction-diffusion Master Equation
 (ISSA).
 
 ``` r
-issa(model) %>%
+issa(sys) %>%
     rdsol_plot()
 #> Starting ISSA simulation with parameters:
 #>  - Reactions:   4

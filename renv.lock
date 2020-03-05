@@ -75,8 +75,14 @@
     "bondr": {
       "Package": "bondr",
       "Version": "0.0.0.9000",
-      "Source": "unknown",
-      "Hash": "493cd2436373b3474b7b7746b79591db"
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "dbarrows",
+      "RemoteRepo": "bondr",
+      "RemoteRef": "master",
+      "RemoteSha": "e9d87e7f21642546967ea809cda283aa158bf346",
+      "Hash": "35b896d4c26a605678d1b4038ca8c18d"
     },
     "cli": {
       "Package": "cli",
@@ -130,8 +136,14 @@
     "emplot": {
       "Package": "emplot",
       "Version": "0.0.0.9000",
-      "Source": "unknown",
-      "Hash": "8f534d93d94106e95c9a7a7a539cbee5"
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "dbarrows",
+      "RemoteRepo": "emplot",
+      "RemoteRef": "master",
+      "RemoteSha": "b92f479719fa67b7bcb90752becaa6b0fc6fe272",
+      "Hash": "6d5bf62269219e94f6dc9aa023b8b8dc"
     },
     "evaluate": {
       "Package": "evaluate",

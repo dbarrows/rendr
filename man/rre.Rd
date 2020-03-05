@@ -4,10 +4,10 @@
 \alias{rre}
 \title{Solves a reaction system deterministically using the Reaction Rate Equation}
 \usage{
-rre(system)
+rre(sys)
 }
 \arguments{
-\item{system}{an instance of the \code{rsys} class}
+\item{sys}{an instance of the \code{rsys} class}
 }
 \value{
 the solution to the system as a \code{tibble}

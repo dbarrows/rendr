@@ -4,12 +4,12 @@
 \alias{ssa}
 \title{Generates a realization of the Chemical Master Equation solution using the Stochastic Simulation Algorithm}
 \usage{
-ssa(system, k = NULL, record_all = TRUE, force_compile = FALSE)
+ssa(sys, k = NULL, record_all = TRUE, force_compile = FALSE)
 }
 \arguments{
-\item{system}{an instance of the \code{rsys} class}
+\item{sys}{an instance of the \code{rsys} class}
 
-\item{k}{a vector of reaction rates corresponding to the reactions in \code{system}, overrides those contained in \code{system}}
+\item{k}{a vector of reaction rates corresponding to the reactions in \code{sys}, overrides those contained in \code{sys}}
 
 \item{record_all}{if \code{TRUE} (default), record the system state at all time steps}
 
