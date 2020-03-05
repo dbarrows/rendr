@@ -1,35 +1,35 @@
-#' Reaction-diffusion network models
+#' Reaction-diffusion network systems
 #' 
 #' @param network an instance of the \code{network} class from the \code{bondr} package
 #' @param volume an instance of the \code{volume} class
 #' @param D diffusion coefficients for each species in the order returned by \code{species(network)}
 #' @param T simulation length
 #' 
-#' @return an instance of the \code{rdmodel} class
+#' @return an instance of the \code{rdsys} class
 #' @export
-rdmodel <- function(network, volume, D, T) {
+rdsystem <- function(network, volume, D, T) {
     structure(list(
             network = network,
             volume = volume,
             D = D,
             T = T
         ),
-        class = "rdmodel"
+        class = "rdsys"
     )
 }
 
-#' Predefined models for use with reaction-diffusion network solvers
+#' Predefined systems for use with reaction-diffusion network solvers
 #' 
-#' @param name model name, one of: schnakenberg, ...
+#' @param name system name, one of: schnakenberg, ...
 #' 
-#' @return an instance of the \code{rdmodel} class
+#' @return an instance of the \code{rdsys} class
 #' @export
-rdmodel_examples <- function(name) {
+rdsystem_examples <- function(name) {
     switch(name,
         "schnakenberg" = schnakenberg()
     ) %>%
-    with(rdmodel(network, volume, D, T)) %>%
-    structure(class = "rdmodel")
+    with(rdsystem(network, volume, D, T)) %>%
+    structure(class = "rdsys")
 }
 
 schnakenberg <- function() {
@@ -48,12 +48,12 @@ schnakenberg <- function() {
 }
 
 #' @export
-species.rdmodel <- function(model) {
-    species(model$network)
+species.rdsystem <- function(system) {
+    species(system$network)
 }
 
 #' @export
-print.rdmodel <- function(x, ...) {
+print.rdsystem <- function(x, ...) {
     cat(paste0(silver("$network"), "\n"))
     print(x$network)
     cat("\n")

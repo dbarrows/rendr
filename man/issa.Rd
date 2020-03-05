@@ -4,10 +4,10 @@
 \alias{issa}
 \title{Inhomogeneous Stochastic Simulation Algorithm solver}
 \usage{
-issa(model)
+issa(system)
 }
 \arguments{
-\item{model}{an instance of the \code{rdmodel} class}
+\item{system}{an instance of the \code{rdsys} class}
 }
 \value{
 the solution to the system as a list

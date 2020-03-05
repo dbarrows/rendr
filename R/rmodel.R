@@ -1,34 +1,34 @@
-#' Reaction network models
+#' Reaction network systems
 #' 
 #' @param network an instance of the \code{network} class from the \code{bondr} package
 #' @param state vector containing the initial species quantities in the order returned by \code{species(network)}
 #' @param T simulation length
 #' 
-#' @return an instance of the \code{rmodel} class
+#' @return an instance of the \code{rsystem} class
 #' @export
-rmodel <- function(network, state, T) {
+rsystem <- function(network, state, T) {
     structure(list(
             network = network,
             state = state,
             T = T
         ),
-        class = "rmodel"
+        class = "rsys"
     )
 }
 
-#' Predefined models for use with reaction network solvers
+#' Predefined systems for use with reaction network solvers
 #' 
-#' @param name model name, one of: mm, schlogl, gbk, pc
+#' @param name system name, one of: mm, schlogl, gbk, pc
 #' 
-#' @return an instance of the \code{rmodel} class
+#' @return an instance of the \code{rsystem} class
 #' @export
-rmodel_examples <- function(name) {
+rsystem_examples <- function(name) {
     switch(name,
         "mm" = mm(),
         "schlogl" = schlogl()
     ) %>%
-    with(rmodel(network, state, T)) %>%
-    structure(class = "rmodel")
+    with(rsystem(network, state, T)) %>%
+    structure(class = "rsystem")
 }
 
 mm <- function() {
@@ -48,12 +48,12 @@ schlogl <- function() {
 }
 
 #' @export
-species.rmodel <- function(model) {
-    species(model$network)
+species.rsystem <- function(system) {
+    species(system$network)
 }
 
 #' @export
-print.rmodel <- function(x, ...) {
+print.rsystem <- function(x, ...) {
     cat(paste0(silver("$network"), "\n"))
     print(x$network)
     cat("\n")
