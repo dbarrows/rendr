@@ -67,7 +67,7 @@ Rcpp::DataFrame ssa(const bondr::rnet& network, arma::vec y, double T, arma::vec
 
     if (!early_exit) {
         sol.times.push_back(T);
-        arma::vec x_interp = arma::round(((T - t_last)*x_last + (t - T)*x) / (t - t_last));
+        arma::vec x_interp = arma::round(((T - t_last)*x + (t - T)*x_last) / (t - t_last));
         sol.states.push_back(x_interp);
     }
 
