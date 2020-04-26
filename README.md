@@ -94,6 +94,8 @@ solution via the Stochastic Solution Algorithm (SSA).
 ``` r
 ssa(sys) %>%
     rsol_plot()
+#> Warning in ssa_cpp(., state, T, k = k, record_all = record_all): partial
+#> argument match of 'k' to 'k_vec'
 ```
 
 <img src="man/figures/README-unnamed-chunk-6-1.svg" width="100%" />
