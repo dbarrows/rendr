@@ -53,10 +53,10 @@
     },
     "RcppArmadillo": {
       "Package": "RcppArmadillo",
-      "Version": "0.9.860.2.0",
+      "Version": "0.9.870.2.0",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "da1503de8d67c2101d181250c41b75e1"
+      "Hash": "f7fee4557377d47093bd2b65f2642e52"
     },
     "assertthat": {
       "Package": "assertthat",
@@ -88,8 +88,8 @@
       "RemoteRepo": "bondr",
       "RemoteUsername": "dbarrows",
       "RemoteRef": "master",
-      "RemoteSha": "e9d87e7f21642546967ea809cda283aa158bf346",
-      "Hash": "35b896d4c26a605678d1b4038ca8c18d"
+      "RemoteSha": "0772902a9e8846178daa5ab422f24d88b3c6b9b5",
+      "Hash": "620146655bc89f360f487153cb0921dc"
     },
     "callr": {
       "Package": "callr",

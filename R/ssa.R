@@ -18,7 +18,7 @@ ssa <- function(sys, k = NULL, record_all = TRUE, force_compile = FALSE) {
                 else
                     NULL
             }) %>%
-            ssa_cpp(state, T, k = k, record_all = record_all) %>%
+            ssa_cpp(state, T, k_vec = k, record_all = record_all) %>%
             as_tibble()
     })
 }
