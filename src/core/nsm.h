@@ -7,13 +7,17 @@
 #include "volume.h"
 #include "random.h"
 
+namespace core {
 namespace rdsolver {
+
+using namespace arma;
+using namespace std;
 
 // Definitions ------------------------------------------------------------------------------
 
 struct voxel_rates {
-    arma::vec reactions;
-    arma::vec diffusions;
+    vec reactions;
+    vec diffusions;
 };
 
 // Functions --------------------------------------------------------------------------------
@@ -21,9 +25,9 @@ struct voxel_rates {
 inline double sum(voxel_rates rates) { return sum(rates.reactions) + sum(rates.diffusions); }
 inline double event_time(double rate) { return -log(urand())/rate; };
 inline void update_rates(voxel_rates& rates,
-                  const std::vector<rdsolver::reaction>& reactions,
-                  const std::vector<rdsolver::diffusion>& diffusions,
-                  const array3<arma::vec>& x) {
+                  const vector<rdsolver::reaction>& reactions,
+                  const vector<rdsolver::diffusion>& diffusions,
+                  const array3<vec>& x) {
     for (uint i = 0; i < reactions.size(); i++)
         rates.reactions[i] = reactions[i].propensity(x);
     for (uint i = 0; i < diffusions.size(); i++)
@@ -38,16 +42,16 @@ inline rdsol nsm(const rdnet& network,
           uint save_grid_size = 100,
           bool verbose = true) {
     auto x = vol.state.copy();
-    arma::uvec3 dims = x.dims;
+    uvec3 dims = x.dims;
     double h = vol.h;
     double t = 0;
 
-    Rcpp::Rcout << "Starting NSM simulation with parameters:" << std::endl
-                << " - Reactions:   " << network.reactions[0].size() << std::endl
-                << " - Species:     " << network.species.size() << std::endl
-                << " - Dimensions:  " << dims[0] << "x" << dims[1] << "x" << dims[2] << std::endl
-                << " - h:           " << h << std::endl
-                << " - time:        [" << t << ", " << T << "]" << std::endl;
+    Rcpp::Rcout << "Starting NSM simulation with parameters:" << endl
+                << " - Reactions:   " << network.reactions[0].size() << endl
+                << " - Species:     " << network.species.size() << endl
+                << " - Dimensions:  " << dims[0] << "x" << dims[1] << "x" << dims[2] << endl
+                << " - h:           " << h << endl
+                << " - time:        [" << t << ", " << T << "]" << endl;
 
     auto rates = array3<voxel_rates>(dims);
     auto rate_sums = array3<double>(dims);
@@ -56,8 +60,8 @@ inline rdsol nsm(const rdnet& network,
     // initial rates
     for (uint i = 0; i < x.size(); i++) {
         rates[i] = {
-            arma::vec(network.reactions[i].size()),
-            arma::vec(network.diffusions[i].size())
+            vec(network.reactions[i].size()),
+            vec(network.diffusions[i].size())
         };
         update_rates(rates[i], network.reactions[i], network.diffusions[i], x);
         rate_sums[i] = sum(rates[i]);
@@ -88,7 +92,7 @@ inline rdsol nsm(const rdnet& network,
 
         auto time_index = eq.next();
         t = time_index.first;
-        arma::uvec3 index = time_index.second;
+        uvec3 index = time_index.second;
 
         double r = urand();
         double reaction_cutoff = sum(rates[index].reactions) / rate_sums[index];
@@ -97,7 +101,7 @@ inline rdsol nsm(const rdnet& network,
             // next event is a reaction
 
             // pick a reaction
-            arma::vec rate_cumsum = cumsum(rates[index].reactions);
+            vec rate_cumsum = cumsum(rates[index].reactions);
             uint j = 0;
             double target = r / reaction_cutoff * rate_cumsum[rate_cumsum.size() - 1];
             while (rate_cumsum[j] < target)
@@ -117,7 +121,7 @@ inline rdsol nsm(const rdnet& network,
             // next event is a diffusion
 
             // pick diffusion
-            arma::vec diffusion_cumsum = cumsum(rates[index].diffusions);
+            vec diffusion_cumsum = cumsum(rates[index].diffusions);
             uint j = 0;
             double target =  (r - reaction_cutoff) / (1.0 - reaction_cutoff) * diffusion_cumsum[diffusion_cumsum.size() - 1];
             while (diffusion_cumsum[j] < target)
@@ -149,7 +153,7 @@ inline rdsol nsm(const rdnet& network,
         }
     }
     if (verbose)
-        Rcpp::Rcout << std::endl;
+        Rcpp::Rcout << endl;
 
     if (!record_all) {
         sol.times.push_back(t);
@@ -159,4 +163,5 @@ inline rdsol nsm(const rdnet& network,
     return sol;
 }
 
+}
 }

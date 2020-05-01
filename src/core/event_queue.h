@@ -6,14 +6,19 @@
 #include "array3.h"
 #include "arma_helpers.h"
 
+namespace core {
+
+using namespace arma;
+using namespace std;
+
 struct node {
     double time;
-    arma::uvec3 index;
+    uvec3 index;
     node* up = nullptr;
     node* left = nullptr;
     node* right = nullptr;
 
-    node(double time, arma::uvec3 index) : time(time), index(index) {}
+    node(double time, uvec3 index) : time(time), index(index) {}
     ~node() {
         if (left != nullptr) delete left;
         if (right != nullptr) delete right;
@@ -39,14 +44,14 @@ public:
     event_queue(array3<double> times);
     ~event_queue() { /*if (root != nullptr) delete root;*/ }
     uint size();
-    std::pair<double, arma::uvec3> next() { return std::pair<double, arma::uvec3>(root->time, root->index); }
-    void push(double time, arma::uvec3 index);
+    pair<double, uvec3> next() { return pair<double, uvec3>(root->time, root->index); }
+    void push(double time, uvec3 index);
 private:
     node* root = nullptr;
-    std::unordered_map<arma::uvec3, node*> node_map;
+    unordered_map<uvec3, node*> node_map;
     
-    void insert(node * root, double time, arma::uvec3 index);
-    void update(double time, arma::uvec3 index);
+    void insert(node * root, double time, uvec3 index);
+    void update(double time, uvec3 index);
     template <typename T> void swap(T* a, T* b);
     void swap_data(node* a, node* b);
 };
@@ -63,7 +68,7 @@ void event_queue::swap(T* a, T* b) {
     *b = a_tmp;
 }
 
-void event_queue::insert(node* n, double time, arma::uvec3 index) {
+void event_queue::insert(node* n, double time, uvec3 index) {
     // determine key-value pair to be pushed further
     if (time < n->time) {
         swap(&(n->time), &time);
@@ -91,7 +96,7 @@ void event_queue::insert(node* n, double time, arma::uvec3 index) {
     }
 }
 
-void event_queue::update(double time, arma::uvec3 index) {
+void event_queue::update(double time, uvec3 index) {
     node* n = node_map[index];
     n->time = time;
 
@@ -118,7 +123,7 @@ void event_queue::swap_data(node* a, node* b) {
     node_map[b->index] = b;
 }
 
-void event_queue::push(double time, arma::uvec3 index) {
+void event_queue::push(double time, uvec3 index) {
     // if this is the first node, assign values to root
     if (root == nullptr) {
         root = new node(time, index);
@@ -132,4 +137,6 @@ void event_queue::push(double time, arma::uvec3 index) {
     } else {
         insert(root, time, index);
     }
+}
+
 }

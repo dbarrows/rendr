@@ -81,6 +81,9 @@ conjunction with an ode solver.
 A function is provided for easy visualisation of solutions.
 
 ``` r
+library(mplot)
+ggplot2::theme_set(theme_m())
+
 rsol_plot(sol)
 ```
 

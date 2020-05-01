@@ -2,6 +2,8 @@
 
 #include <RcppArmadillo.h>
 
+namespace core {
+
 template <typename T>
 class array3 {
 public:
@@ -57,4 +59,6 @@ static std::vector<S> flatten(const array3<std::vector<S>>& a) {
         for (uint j = 0; j < a[i].size(); j++)
             v.push_back(a[i][j]);
     return v;
+}
+
 }

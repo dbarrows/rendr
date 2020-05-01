@@ -7,7 +7,6 @@
 #' 
 #' @import bondr
 #' @import ggplot2
-#' @import emplot
 #' @import Rcpp
 #' @importFrom magrittr %>%
 #' @importFrom stringr str_c str_sub

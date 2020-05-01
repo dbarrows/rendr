@@ -6,7 +6,11 @@
 #include "volume.h"
 #include "random.h"
 
+namespace core {
 namespace rdsolver {
+
+using namespace arma;
+using namespace std;
 
 rdsol issa(const rdnet& network,
            const volume& volume,
@@ -15,22 +19,22 @@ rdsol issa(const rdnet& network,
            uint save_grid_size = 100,
            bool verbose = true) {
     auto x = volume.state.copy();
-    arma::uvec3 dims = x.dims;
+    uvec3 dims = x.dims;
     double h = volume.h;
     double t = 0;
 
-    Rcpp::Rcout << "Starting ISSA simulation with parameters:" << std::endl
-                << " - Reactions:   " << network.reactions[0].size() << std::endl
-                << " - Species:     " << network.species.size() << std::endl
-                << " - Dimensions:  " << dims[0] << "x" << dims[1] << "x" << dims[2] << std::endl
-                << " - h:           " << h << std::endl
-                << " - time:        [" << t << ", " << T << "]" << std::endl;
+    Rcpp::Rcout << "Starting ISSA simulation with parameters:" << endl
+                << " - Reactions:   " << network.reactions[0].size() << endl
+                << " - Species:     " << network.species.size() << endl
+                << " - Dimensions:  " << dims[0] << "x" << dims[1] << "x" << dims[2] << endl
+                << " - h:           " << h << endl
+                << " - time:        [" << t << ", " << T << "]" << endl;
 
     auto reactions = flatten(network.reactions);
     auto diffusions = flatten(network.diffusions);
 
-    auto propensities = std::vector<std::function<double(const array3<arma::vec>&)>>();
-    auto updates = std::vector<std::function<void(array3<arma::vec>&)>>();
+    auto propensities = vector<function<double(const array3<vec>&)>>();
+    auto updates = vector<function<void(array3<vec>&)>>();
     for (const auto& reaction : reactions) {
         propensities.push_back(reaction.propensity);
         updates.push_back(reaction.update);
@@ -40,8 +44,8 @@ rdsol issa(const rdnet& network,
         updates.push_back(diffusion.update);
     }
 
-    auto a = std::vector<double>(propensities.size(), 0);
-    auto csum = std::vector<double>(propensities.size(), 0);
+    auto a = vector<double>(propensities.size(), 0);
+    auto csum = vector<double>(propensities.size(), 0);
 
     // state saving
     auto sol = rdsol();
@@ -95,7 +99,7 @@ rdsol issa(const rdnet& network,
         }
     }
     if (verbose)
-        Rcpp::Rcout << std::endl;
+        Rcpp::Rcout << endl;
 
     if (!record_all) {
         sol.times.push_back(t);
@@ -105,4 +109,5 @@ rdsol issa(const rdnet& network,
     return sol;
 }
 
+}
 }

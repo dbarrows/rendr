@@ -1,22 +1,15 @@
 #' Reaction network solution plot
 #' 
 #' @param rsol a solution to a reaction-diffusion system
-#' @param theme if FALSE (default TRUE) the plot will use the default ggplot2 theme instead of emplot
-#' @param theme_dark if TRUE (default FALSE), the plot will use the dark emplot theme, requires \code{theme} to be true
 #' 
 #' @return a \code{ggplot2} plot of the solution
 #' @export
-rdsol_plot <- function(rsol, theme = TRUE, theme_dark = FALSE) {
-    p <- rsol %>%
+rdsol_plot <- function(rsol) {
+    rsol %>%
         rdsol_quantities() %>%
         pivot_longer(-Time, names_to = "Species", values_to = "Quantity") %>%
         ggplot(aes(Time, Quantity, colour = Species)) +
             geom_line()
-    if (theme) {
-        p + if (theme_dark) theme_emplotdark() else theme_emplot()
-    } else {
-        p
-    }
 }
 
 #' Aggregator for species quantities

@@ -2,14 +2,18 @@
 
 #include <RcppArmadillo.h>
 
+namespace core {
 namespace rsolver {
+
+using namespace arma;
+using namespace std;
 
 // Definitions ------------------------------------------------------------------------------
 
 struct rsol {
-    std::vector<double> times;
-    std::vector<std::string> species;
-    std::vector<arma::vec> states;
+    vector<double> times;
+    vector<string> species;
+    vector<vec> states;
 };
 
 // Functions --------------------------------------------------------------------------------
@@ -34,4 +38,5 @@ inline Rcpp::DataFrame DataFrame(const rsol& sol) {
     return Rcpp::DataFrame(list);
 }
 
+}
 }

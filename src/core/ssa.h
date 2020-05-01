@@ -6,11 +6,15 @@
 #include "random.h"
 #include "rsol.h"
 
+namespace core {
 namespace rsolver {
 
-Rcpp::DataFrame ssa(const bondr::rnet& network, arma::vec y, double T, arma::vec k = arma::vec(), bool record_all = true) {
+using namespace arma;
+using namespace std;
+
+Rcpp::DataFrame ssa(const bondr::rnet& network, vec y, double T, vec k = vec(), bool record_all = true) {
     double t = 0;
-    arma::vec x = arma::vec(y);
+    vec x = vec(y);
 
     auto t_last = t;
     auto x_last = x;
@@ -18,7 +22,7 @@ Rcpp::DataFrame ssa(const bondr::rnet& network, arma::vec y, double T, arma::vec
     auto sol = rsol();
     sol.species = network.species;
 
-    arma::vec a = arma::vec(network.reactions.size(), arma::fill::zeros);
+    vec a = vec(network.reactions.size(), fill::zeros);
 
     if (record_all) {
         sol.times.push_back(t);
@@ -32,7 +36,7 @@ Rcpp::DataFrame ssa(const bondr::rnet& network, arma::vec y, double T, arma::vec
         // setup
         for (uint i = 0; i < a.size(); i++)
             a[i] = (k.size() != 0 ? k[i] : 1.0)*network.reactions[i].propensity(x);
-        arma::vec csum = cumsum(a);
+        vec csum = cumsum(a);
         double asum = csum[csum.size() - 1];
 
         // if all species consumed, report final state and finish
@@ -67,11 +71,12 @@ Rcpp::DataFrame ssa(const bondr::rnet& network, arma::vec y, double T, arma::vec
 
     if (!early_exit) {
         sol.times.push_back(T);
-        arma::vec x_interp = arma::round(((T - t_last)*x + (t - T)*x_last) / (t - t_last));
+        vec x_interp = round(((T - t_last)*x + (t - T)*x_last) / (t - t_last));
         sol.states.push_back(x_interp);
     }
 
     return DataFrame(sol);
 }
 
+}
 }

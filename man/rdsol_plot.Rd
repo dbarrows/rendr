@@ -4,14 +4,10 @@
 \alias{rdsol_plot}
 \title{Reaction network solution plot}
 \usage{
-rdsol_plot(rsol, theme = TRUE, theme_dark = FALSE)
+rdsol_plot(rsol)
 }
 \arguments{
 \item{rsol}{a solution to a reaction-diffusion system}
-
-\item{theme}{if FALSE (default TRUE) the plot will use the default ggplot2 theme instead of emplot}
-
-\item{theme_dark}{if TRUE (default FALSE), the plot will use the dark emplot theme, requires \code{theme} to be true}
 }
 \value{
 a \code{ggplot2} plot of the solution
