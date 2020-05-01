@@ -15,7 +15,7 @@ You can install the development version from
 [GitHub](https://github.com/) with:
 
 ``` r
-devtools::install_github("dbarrows/reactor")
+devtools::install_github("dbarrows/rendr")
 ```
 
 ## Reaction system solvers
