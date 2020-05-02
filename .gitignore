@@ -1,3 +1,4 @@
 README.html
 *.o.tmp
 renv/
+*_cache/

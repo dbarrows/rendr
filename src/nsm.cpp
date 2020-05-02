@@ -7,7 +7,10 @@ Rcpp::List nsm_cpp(SEXP rnet_xptr, arma::vec D, SEXP volume_xptr, double T, bool
     core::volume vol = *Rcpp::XPtr<core::volume>(volume_xptr);
     auto net = core::rdnet(rnet, vol, D);
 
-    auto sol = core::nsm(net, vol, T, 100, verbose);
+    auto sol = core::nsm(net, vol, T,
+                         true, // record_all
+                         100,  // save grid
+                         verbose);
 
     return Rcpp::List::create(
         Rcpp::Named("t") = core::t(sol),

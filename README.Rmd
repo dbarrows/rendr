@@ -80,18 +80,17 @@ ssa(sys) %>%
 Reaction-diffusion systems created via the `rdsys` class, which are constructed similarly to `rsys`s.
 
 ```{r}
-vol <- volume(
-    dims = c(40, 1, 1),
-    h = 1/40,
-    seed = c(25, 75)
-)
 (sys <- rdsys(
     network = parse_network("
              0 <-> U,  4e3, 2
              0  -> V,  1.2e4
         2U + V  -> 3U, 12.5e-8
     "),
-    volume = vol,
+    volume = volume(
+        dims = c(40, 1, 1),
+        h = 1/40,
+        seed = c(25, 75)
+    ),
     D = c(1e-3, 1e-1),
     T = 3.5
 ))
@@ -110,8 +109,19 @@ issa(sys) %>%
 
 Generate a single realisation of the Reaction-diffusion Master Equation (RDME) solution via the Next Subvolume Method (NSM). Usage of the `nsm` function is the same as with the [ISSA solver](#issa). The NSM algorithm is usually faster for systems with a large number of subvolume (voxels) relative to the reaction network size. You may have to try both the ISSA and NSM solver to see which is faster for a given reaction-diffusion system.
 
-```{r}
+```{r time-small, cache = TRUE}
 system.time(issa(sys, verbose = FALSE))
 system.time(nsm(sys, verbose = FALSE))
+```
+
+```{r time-big, cache = TRUE}
+sys_big <- sys
+sys_big$volume <- volume(
+        dims = c(100, 1, 1),
+        h = 1/40,
+        seed = c(25, 75)
+    )
+system.time(issa(sys_big, verbose = FALSE))
+system.time(nsm(sys_big, verbose = FALSE))
 ```
 

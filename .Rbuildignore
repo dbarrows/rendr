@@ -5,3 +5,5 @@ test.R
 ^LICENSE\.md$
 ^README\.Rmd$
 ^README\.html$
+\.*_cache$
+makefile
