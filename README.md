@@ -107,17 +107,18 @@ Reaction-diffusion systems created via the `rdsys` class, which are
 constructed similarly to `rsys`s.
 
 ``` r
+vol <- volume(
+    dims = c(40, 1, 1),
+    h = 1/40,
+    seed = c(25, 75)
+)
 (sys <- rdsys(
     network = parse_network("
              0 <-> U,  4e3, 2
              0  -> V,  1.2e4
         2U + V  -> 3U, 12.5e-8
     "),
-    volume = volume(
-        dims = c(40, 1, 1),
-        h = 1/40,
-        seed = c(25, 75)
-    ),
+    volume = vol,
     D = c(1e-3, 1e-1),
     T = 3.5
 ))
@@ -180,3 +181,26 @@ is usually faster for systems with a large number of subvolume (voxels)
 relative to the reaction network size. You may have to try both the ISSA
 and NSM solver to see which is faster for a given reaction-diffusion
 system.
+
+``` r
+system.time(issa(sys))
+#> Starting ISSA simulation with parameters:
+#>  - Reactions:   4
+#>  - Species:     2
+#>  - Dimensions:  40x1x1
+#>  - h:           0.025
+#>  - time:        [0, 3.5]
+#> ....................................................................................................
+#>    user  system elapsed 
+#>  32.485   0.049  32.555
+system.time(nsm(sys))
+#> Starting NSM simulation with parameters:
+#>  - Reactions:   4
+#>  - Species:     2
+#>  - Dimensions:  40x1x1
+#>  - h:           0.025
+#>  - time:        [0, 3.5]
+#> ....................................................................................................
+#>    user  system elapsed 
+#>  44.108   0.064  44.201
+```

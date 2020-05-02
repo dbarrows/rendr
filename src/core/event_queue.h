@@ -1,7 +1,7 @@
 #pragma once
 
 #include <RcppArmadillo.h>
-#include <unordered_map>
+#include <map>
 #include <functional>
 #include "array3.h"
 #include "arma_helpers.h"
@@ -48,7 +48,7 @@ public:
     void push(double time, uvec3 index);
 private:
     node* root = nullptr;
-    unordered_map<uvec3, node*> node_map;
+    map<uvec3, node*> node_map;
     
     void insert(node * root, double time, uvec3 index);
     void update(double time, uvec3 index);

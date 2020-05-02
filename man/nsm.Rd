@@ -4,10 +4,12 @@
 \alias{nsm}
 \title{Next Subvolume Method implementation of an ISSA solver}
 \usage{
-nsm(sys)
+nsm(sys, verbose = TRUE)
 }
 \arguments{
 \item{sys}{an instance of the \code{rdsys} class}
+
+\item{verbose}{controls if output is generated during during run (default TRUE)}
 }
 \value{
 the solution to the system as a list

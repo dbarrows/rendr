@@ -5,7 +5,6 @@
 #include "rdsol.h"
 
 namespace core {
-namespace rdsolver {
 
 using namespace arma;
 using namespace std;
@@ -55,5 +54,4 @@ inline Rcpp::List u(const rdsol& sol) {
     return list;
 }
 
-}
 }

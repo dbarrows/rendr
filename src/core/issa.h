@@ -7,7 +7,6 @@
 #include "random.h"
 
 namespace core {
-namespace rdsolver {
 
 using namespace arma;
 using namespace std;
@@ -23,12 +22,14 @@ rdsol issa(const rdnet& network,
     double h = volume.h;
     double t = 0;
 
-    Rcpp::Rcout << "Starting ISSA simulation with parameters:" << endl
-                << " - Reactions:   " << network.reactions[0].size() << endl
-                << " - Species:     " << network.species.size() << endl
-                << " - Dimensions:  " << dims[0] << "x" << dims[1] << "x" << dims[2] << endl
-                << " - h:           " << h << endl
-                << " - time:        [" << t << ", " << T << "]" << endl;
+    if (verbose) {
+        Rcpp::Rcout << "Starting ISSA simulation with parameters:" << endl
+                    << " - Reactions:   " << network.reactions[0].size() << endl
+                    << " - Species:     " << network.species.size() << endl
+                    << " - Dimensions:  " << dims[0] << "x" << dims[1] << "x" << dims[2] << endl
+                    << " - h:           " << h << endl
+                    << " - time:        [" << t << ", " << T << "]" << endl;
+    }
 
     auto reactions = flatten(network.reactions);
     auto diffusions = flatten(network.diffusions);
@@ -109,5 +110,4 @@ rdsol issa(const rdnet& network,
     return sol;
 }
 
-}
 }

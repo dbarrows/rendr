@@ -7,7 +7,6 @@
 #include "rsol.h"
 
 namespace core {
-namespace rsolver {
 
 using namespace arma;
 using namespace std;
@@ -78,5 +77,4 @@ Rcpp::DataFrame ssa(const bondr::rnet& network, vec y, double T, vec k = vec(), 
     return DataFrame(sol);
 }
 
-}
 }

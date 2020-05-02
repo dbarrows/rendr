@@ -3,7 +3,6 @@
 #include <RcppArmadillo.h>
 
 namespace core {
-namespace rsolver {
 
 using namespace arma;
 using namespace std;
@@ -38,5 +37,4 @@ inline Rcpp::DataFrame DataFrame(const rsol& sol) {
     return Rcpp::DataFrame(list);
 }
 
-}
 }

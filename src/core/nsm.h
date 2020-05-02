@@ -8,7 +8,6 @@
 #include "random.h"
 
 namespace core {
-namespace rdsolver {
 
 using namespace arma;
 using namespace std;
@@ -25,8 +24,8 @@ struct voxel_rates {
 inline double sum(voxel_rates rates) { return sum(rates.reactions) + sum(rates.diffusions); }
 inline double event_time(double rate) { return -log(urand())/rate; };
 inline void update_rates(voxel_rates& rates,
-                  const vector<rdsolver::reaction>& reactions,
-                  const vector<rdsolver::diffusion>& diffusions,
+                  const vector<reaction>& reactions,
+                  const vector<diffusion>& diffusions,
                   const array3<vec>& x) {
     for (uint i = 0; i < reactions.size(); i++)
         rates.reactions[i] = reactions[i].propensity(x);
@@ -46,12 +45,14 @@ inline rdsol nsm(const rdnet& network,
     double h = vol.h;
     double t = 0;
 
-    Rcpp::Rcout << "Starting NSM simulation with parameters:" << endl
-                << " - Reactions:   " << network.reactions[0].size() << endl
-                << " - Species:     " << network.species.size() << endl
-                << " - Dimensions:  " << dims[0] << "x" << dims[1] << "x" << dims[2] << endl
-                << " - h:           " << h << endl
-                << " - time:        [" << t << ", " << T << "]" << endl;
+    if (verbose) {
+        Rcpp::Rcout << "Starting NSM simulation with parameters:" << endl
+                    << " - Reactions:   " << network.reactions[0].size() << endl
+                    << " - Species:     " << network.species.size() << endl
+                    << " - Dimensions:  " << dims[0] << "x" << dims[1] << "x" << dims[2] << endl
+                    << " - h:           " << h << endl
+                    << " - time:        [" << t << ", " << T << "]" << endl;
+    }
 
     auto rates = array3<voxel_rates>(dims);
     auto rate_sums = array3<double>(dims);
@@ -163,5 +164,4 @@ inline rdsol nsm(const rdnet& network,
     return sol;
 }
 
-}
 }

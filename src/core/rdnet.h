@@ -5,7 +5,6 @@
 #include "volume.h"
 
 namespace core {
-namespace rdsolver {
 
 using namespace arma;
 using namespace std;
@@ -110,5 +109,4 @@ inline rdnet::rdnet(const bondr::rnet& rnet, const volume& vol, vec D) {
     diffusions = generate_diffusions(dims, D, vol.h);
 }
 
-}
 }
