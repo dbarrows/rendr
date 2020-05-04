@@ -52,13 +52,10 @@ BEGIN_RCPP
 END_RCPP
 }
 
-RcppExport SEXP _rcpp_module_boot_volume_cpp();
-
 static const R_CallMethodDef CallEntries[] = {
     {"_rendr_issa_cpp", (DL_FUNC) &_rendr_issa_cpp, 5},
     {"_rendr_nsm_cpp", (DL_FUNC) &_rendr_nsm_cpp, 5},
     {"_rendr_ssa_cpp", (DL_FUNC) &_rendr_ssa_cpp, 5},
-    {"_rcpp_module_boot_volume_cpp", (DL_FUNC) &_rcpp_module_boot_volume_cpp, 0},
     {NULL, NULL, 0}
 };
 

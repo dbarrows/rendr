@@ -48,8 +48,8 @@ schnakenberg <- function() {
 }
 
 #' @export
-species.rdsys <- function(sys) {
-    species(sys$network)
+species.rdsys <- function(x) {
+    species(x$network)
 }
 
 #' @export

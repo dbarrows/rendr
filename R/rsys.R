@@ -48,8 +48,8 @@ schlogl <- function() {
 }
 
 #' @export
-species.rsys <- function(sys) {
-    species(sys$network)
+species.rsys <- function(x) {
+    species(x$network)
 }
 
 #' @export

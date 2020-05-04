@@ -2,14 +2,15 @@
 
 #include <RcppArmadillo.h>
 #include <rnet.h>
+#include <random.h>
 #include "ssa.h"
-#include "random.h"
 #include "rsol.h"
 
-namespace core {
+namespace rendr {
 
 using namespace arma;
 using namespace std;
+using namespace core;
 
 Rcpp::DataFrame ssa(const bondr::rnet& network, vec y, double T, vec k = vec(), bool record_all = true) {
     double t = 0;

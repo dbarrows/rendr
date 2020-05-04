@@ -1,6 +1,6 @@
 #include <RcppArmadillo.h>
 #include <rnet.h>
-#include "core/ssa.h"
+#include "rendr/ssa.h"
 
 // [[Rcpp::export]]
 Rcpp::DataFrame ssa_cpp(SEXP rnet_xptr,
@@ -10,5 +10,5 @@ Rcpp::DataFrame ssa_cpp(SEXP rnet_xptr,
                         bool record_all = true) {
     auto net = *Rcpp::XPtr<bondr::rnet>(rnet_xptr);
     auto k = k_vec.isNull() ? arma::vec() : Rcpp::as<arma::vec>(k_vec);
-    return core::ssa(net, y, T, k, record_all);
+    return rendr::ssa(net, y, T, k, record_all);
 }

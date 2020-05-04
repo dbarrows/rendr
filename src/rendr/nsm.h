@@ -1,16 +1,17 @@
 #pragma once
 
 #include <RcppArmadillo.h>
+#include <volume.h>
+#include <random.h>
 #include "event_queue.h"
 #include "rdnet.h"
 #include "rdsol.h"
-#include "volume.h"
-#include "random.h"
 
-namespace core {
+namespace rendr {
 
 using namespace arma;
 using namespace std;
+using namespace core;
 
 // Definitions ------------------------------------------------------------------------------
 
@@ -26,7 +27,7 @@ inline double event_time(double rate) { return -log(urand())/rate; };
 inline void update_rates(voxel_rates& rates,
                   const vector<reaction>& reactions,
                   const vector<diffusion>& diffusions,
-                  const array3<vec>& x) {
+                  const vector3<vec>& x) {
     for (uint i = 0; i < reactions.size(); i++)
         rates.reactions[i] = reactions[i].propensity(x);
     for (uint i = 0; i < diffusions.size(); i++)
@@ -35,7 +36,7 @@ inline void update_rates(voxel_rates& rates,
 
 
 inline rdsol nsm(const rdnet& network,
-          const volume& vol,
+          const core::volume& vol,
           double T,
           bool record_all = true,
           uint save_grid_size = 100,
@@ -54,9 +55,9 @@ inline rdsol nsm(const rdnet& network,
                     << " - time:        [" << t << ", " << T << "]" << endl;
     }
 
-    auto rates = array3<voxel_rates>(dims);
-    auto rate_sums = array3<double>(dims);
-    auto event_times = array3<double>(dims);
+    auto rates = vector3<voxel_rates>(dims);
+    auto rate_sums = vector3<double>(dims);
+    auto event_times = vector3<double>(dims);
 
     // initial rates
     for (uint i = 0; i < x.size(); i++) {

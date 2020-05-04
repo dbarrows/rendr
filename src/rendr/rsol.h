@@ -2,10 +2,11 @@
 
 #include <RcppArmadillo.h>
 
-namespace core {
+namespace rendr {
 
 using namespace arma;
 using namespace std;
+using namespace core;
 
 // Definitions ------------------------------------------------------------------------------
 
