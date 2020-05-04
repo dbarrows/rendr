@@ -66,6 +66,7 @@ rdsol issa(const rdnet& network,
     if (verbose)
         next_report_fraction = 0.01;
 
+    uint iter = 0;
     while (t < T) {
         // setup
         for (uint i = 0; i < a.size(); i++)
@@ -99,6 +100,9 @@ rdsol issa(const rdnet& network,
             Rcpp::Rcout << ".";
             next_report_fraction += 0.01;
         }
+
+        if (iter++ % 1000 == 0)
+            Rcpp::checkUserInterrupt();
     }
     if (verbose)
         Rcpp::Rcout << endl;
