@@ -35,8 +35,8 @@ rdsol issa(const rdnet& network,
     auto reactions = flatten(network.reactions);
     auto diffusions = flatten(network.diffusions);
 
-    auto propensities = vector<function<double(const vector3<vec>&)>>();
-    auto updates = vector<function<void(vector3<vec>&)>>();
+    auto propensities = vector<function<double(const array3<vec>&)>>();
+    auto updates = vector<function<void(array3<vec>&)>>();
     for (const auto& reaction : reactions) {
         propensities.push_back(reaction.propensity);
         updates.push_back(reaction.update);

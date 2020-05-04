@@ -18,10 +18,10 @@
     },
     "MASS": {
       "Package": "MASS",
-      "Version": "7.3-51.5",
+      "Version": "7.3-51.6",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "9efe80472b21189ebab1b74169808c26"
+      "Hash": "1dad32ac9dbd8057167b2979fb932ff7"
     },
     "Matrix": {
       "Package": "Matrix",
@@ -455,8 +455,8 @@
       "RemoteRepo": "spurcore",
       "RemoteUsername": "dbarrows",
       "RemoteRef": "master",
-      "RemoteSha": "5dfaf220ae902f2e9877fa7162906c46c834a437",
-      "Hash": "c210301ff5cde0b93b527b28825c7fd4"
+      "RemoteSha": "bdc78922796264e41ca479e7597ccdc85e4d287f",
+      "Hash": "f879c7f24ba749ed983474ec412f1f7f"
     },
     "stringi": {
       "Package": "stringi",
@@ -488,10 +488,10 @@
     },
     "systemfonts": {
       "Package": "systemfonts",
-      "Version": "0.2.0",
+      "Version": "0.2.1",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "460703984c7175ca7a830b6cbf86d243"
+      "Hash": "b9cbe1031f93e8d06e36a330705c654f"
     },
     "testthat": {
       "Package": "testthat",

@@ -3,7 +3,7 @@
 #include <RcppArmadillo.h>
 #include <map>
 #include <functional>
-#include <vector3.h>
+#include <array3.h>
 #include "arma_helpers.h"
 
 namespace rendr {
@@ -42,7 +42,7 @@ node* node::smaller_twig() {
 class event_queue {
 public:
     event_queue() {}
-    event_queue(vector3<double> times);
+    event_queue(array3<double> times);
     ~event_queue() { /*if (root != nullptr) delete root;*/ }
     uint size();
     pair<double, uvec3> next() { return pair<double, uvec3>(root->time, root->index); }
@@ -57,7 +57,7 @@ private:
     void swap_data(node* a, node* b);
 };
 uint event_queue::size() { return root != nullptr ? root->size() : 0; }
-event_queue::event_queue(vector3<double> times) {
+event_queue::event_queue(array3<double> times) {
     for (uint i = 0; i < times.size(); i++)
         push(times[i], times.index3(i));
 }

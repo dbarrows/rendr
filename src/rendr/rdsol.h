@@ -1,7 +1,7 @@
 #pragma once
 
 #include <RcppArmadillo.h>
-#include <vector3.h>
+#include <array3.h>
 #include "rdsol.h"
 
 namespace rendr {
@@ -15,7 +15,7 @@ using namespace core;
 struct rdsol {
     vector<double> times;
     vector<string> species;
-    vector<vector3<vec>> states;
+    vector<array3<vec>> states;
 };
 
 // Functions --------------------------------------------------------------------------------
@@ -24,7 +24,7 @@ inline Rcpp::NumericVector t(const rdsol& sol) {
     return Rcpp::wrap(sol.times);
 }
 
-inline Rcpp::List DataFrame(const vector3<vec>& state,
+inline Rcpp::List DataFrame(const array3<vec>& state,
                             const vector<string>& species) {
     Rcpp::List list = Rcpp::List(3 + species.size());
     auto names = Rcpp::CharacterVector { "x", "y", "z" };
