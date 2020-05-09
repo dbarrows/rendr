@@ -22,7 +22,7 @@ rdsys <- function(network, volume, D, T) {
 #' 
 #' For use in [`issa`] / [`nsm`].
 #' 
-#' @param name one of: 'schnakenberg'
+#' @param name one of: 'schnakenberg'... (more to come)
 #' 
 #' @return an instance of the [`rdsys`] class
 #' @export

@@ -7,7 +7,7 @@
 rdsys_examples(name = NULL)
 }
 \arguments{
-\item{name}{one of: 'schnakenberg'}
+\item{name}{one of: 'schnakenberg'... (more to come)}
 }
 \value{
 an instance of the \code{\link{rdsys}} class

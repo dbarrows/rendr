@@ -9,7 +9,7 @@ ssa(sys, k = NULL, record_all = TRUE, force_compile = FALSE)
 \arguments{
 \item{sys}{\code{\link{rsys}} instance}
 
-\item{k}{\code{\link{vector}} of reaction rates corresponding to the reactions in \code{sys}, overrides those contained in \code{rsys} if provided}
+\item{k}{\code{\link{vector}} of reaction rates corresponding to the reactions in \code{sys}, overrides those contained if \code{sys} if provided}
 
 \item{record_all}{if \code{TRUE} (default), record the system state at all time steps}
 
