@@ -24,7 +24,7 @@ rdsys <- function(network, volume, D, T) {
 #' 
 #' @param name one of: 'schnakenberg'... (more to come)
 #' 
-#' @return an instance of the [`rdsys`] class
+#' @return [`rdsys`] instance
 #' @export
 rdsys_examples <- function(name = NULL) {
     if (is.null(name)) return(schnakenberg())

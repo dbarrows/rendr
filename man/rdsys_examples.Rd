@@ -10,7 +10,7 @@ rdsys_examples(name = NULL)
 \item{name}{one of: 'schnakenberg'... (more to come)}
 }
 \value{
-an instance of the \code{\link{rdsys}} class
+\code{\link{rdsys}} instance
 }
 \description{
 For use in \code{\link{issa}} / \code{\link{nsm}}.
