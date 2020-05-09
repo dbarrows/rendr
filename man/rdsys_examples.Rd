@@ -2,16 +2,16 @@
 % Please edit documentation in R/rdsys.R
 \name{rdsys_examples}
 \alias{rdsys_examples}
-\title{Predefined systems for use with reaction-diffusion network solvers}
+\title{Example reaction-diffusion systems}
 \usage{
-rdsys_examples(name)
+rdsys_examples(name = NULL)
 }
 \arguments{
-\item{name}{system name, one of: schnakenberg, ...}
+\item{name}{one of: 'schnakenberg'}
 }
 \value{
-an instance of the \code{rdsys} class
+an instance of the \code{\link{rdsys}} class
 }
 \description{
-Predefined systems for use with reaction-diffusion network solvers
+For use in \code{\link{issa}} / \code{\link{nsm}}.
 }

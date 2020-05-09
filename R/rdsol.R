@@ -2,7 +2,7 @@
 #' 
 #' @param rsol a solution to a reaction-diffusion system
 #' 
-#' @return a \code{ggplot2} plot of the solution
+#' @return [`ggplot2::ggplot`] plot of the solution
 #' @export
 rdsol_plot <- function(rsol) {
     rsol %>%
@@ -15,10 +15,10 @@ rdsol_plot <- function(rsol) {
 #' Aggregator for species quantities
 #' 
 #' @param rdsol a solution to a reaction-diffusion system
-#' @param average if TRUE, will return quantities averages over the number of voxels at each time
+#' @param average if `TRUE`, will return quantities averages over the number of voxels at each time
 #' @param index an optional voxel index to filter quantity extraction
 #' 
-#' @return a tibble with a column for the solution time points, and a column for each species' quantities
+#' @return [`tibble::tibble`] with a column for the solution time points, and a column for each species' quantities
 #' @export
 rdsol_quantities <- function(rdsol, average = FALSE, index = NULL) {
     df <- tibble(Time = rdsol$t)

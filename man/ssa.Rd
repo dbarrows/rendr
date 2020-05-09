@@ -2,22 +2,22 @@
 % Please edit documentation in R/ssa.R
 \name{ssa}
 \alias{ssa}
-\title{Generates a realization of the Chemical Master Equation solution using the Stochastic Simulation Algorithm}
+\title{Stochastic simulation algorithm solver}
 \usage{
 ssa(sys, k = NULL, record_all = TRUE, force_compile = FALSE)
 }
 \arguments{
-\item{sys}{an instance of the \code{rsys} class}
+\item{sys}{\code{\link{rsys}} instance}
 
-\item{k}{a vector of reaction rates corresponding to the reactions in \code{sys}, overrides those contained in \code{sys}}
+\item{k}{\code{\link{vector}} of reaction rates corresponding to the reactions in \code{sys}, overrides those contained in \code{rsys} if provided}
 
 \item{record_all}{if \code{TRUE} (default), record the system state at all time steps}
 
 \item{force_compile}{if set to \code{TRUE}, forces the overwriting and recompilation of the network source file}
 }
 \value{
-the solution to the system as a \code{data.frame}
+Solution to the system as a \code{\link{data.frame}}
 }
 \description{
-Generates a realization of the Chemical Master Equation solution using the Stochastic Simulation Algorithm
+Generates a realization of the solution to the Chemical Master Equation.
 }

@@ -1,11 +1,11 @@
 #' Reaction-diffusion network systems
 #' 
-#' @param network an instance of the \code{network} class from the \code{bondr} package
-#' @param volume an instance of the \code{volume} class
-#' @param D diffusion coefficients for each species in the order returned by \code{species(network)}
+#' @param network an instance of the [`bondr::network`] class
+#' @param volume an instance of the [`spurcore::volume`] class
+#' @param D [`vector`] of diffusion coefficients for each species
 #' @param T simulation length
 #' 
-#' @return an instance of the \code{rdsys} class
+#' @return [`rdsys`] instance
 #' @export
 rdsys <- function(network, volume, D, T) {
     structure(list(
@@ -18,13 +18,16 @@ rdsys <- function(network, volume, D, T) {
     )
 }
 
-#' Predefined systems for use with reaction-diffusion network solvers
+#' Example reaction-diffusion systems
 #' 
-#' @param name system name, one of: schnakenberg, ...
+#' For use in [`issa`] / [`nsm`].
 #' 
-#' @return an instance of the \code{rdsys} class
+#' @param name one of: 'schnakenberg'
+#' 
+#' @return an instance of the [`rdsys`] class
 #' @export
-rdsys_examples <- function(name) {
+rdsys_examples <- function(name = NULL) {
+    if (is.null(name)) return(schnakenberg())
     switch(name,
         "schnakenberg" = schnakenberg()
     ) %>%

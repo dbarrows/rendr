@@ -10,7 +10,7 @@ rdsol_plot(rsol)
 \item{rsol}{a solution to a reaction-diffusion system}
 }
 \value{
-a \code{ggplot2} plot of the solution
+\code{\link[ggplot2:ggplot]{ggplot2::ggplot}} plot of the solution
 }
 \description{
 Reaction network solution plot

@@ -9,12 +9,12 @@ rdsol_quantities(rdsol, average = FALSE, index = NULL)
 \arguments{
 \item{rdsol}{a solution to a reaction-diffusion system}
 
-\item{average}{if TRUE, will return quantities averages over the number of voxels at each time}
+\item{average}{if \code{TRUE}, will return quantities averages over the number of voxels at each time}
 
 \item{index}{an optional voxel index to filter quantity extraction}
 }
 \value{
-a tibble with a column for the solution time points, and a column for each species' quantities
+\code{\link[tibble:tibble]{tibble::tibble}} with a column for the solution time points, and a column for each species' quantities
 }
 \description{
 Aggregator for species quantities

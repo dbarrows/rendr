@@ -2,16 +2,16 @@
 % Please edit documentation in R/rsys.R
 \name{rsys_examples}
 \alias{rsys_examples}
-\title{Predefined systems for use with reaction network solvers}
+\title{Example reaction systems}
 \usage{
-rsys_examples(name)
+rsys_examples(name = NULL)
 }
 \arguments{
-\item{name}{system name, one of: mm, schlogl, gbk, pc}
+\item{name}{one of: \code{'mm'} (default, Michaelis Menten), or \code{'shlogl'}}
 }
 \value{
-an instance of the \code{rsys} class
+\code{\link{rsys}} instance
 }
 \description{
-Predefined systems for use with reaction network solvers
+For use with \code{\link{rre}} / \code{\link{ssa}}.
 }

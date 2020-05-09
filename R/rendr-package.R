@@ -1,4 +1,4 @@
-#' \code{rendr} package
+#' [rendr] package
 #'
 #' Solvers for Chemical Networks
 #'

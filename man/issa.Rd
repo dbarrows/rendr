@@ -7,12 +7,12 @@
 issa(sys, verbose = TRUE)
 }
 \arguments{
-\item{sys}{an instance of the \code{rdsys} class}
+\item{sys}{an instance of the \code{\link{rdsys}} class}
 
-\item{verbose}{controls if output is generated during during run (default TRUE)}
+\item{verbose}{controls if output is generated during during run (default \code{TRUE})}
 }
 \value{
-the solution to the system as a list
+Solution to the system as a \code{\link{list}}
 }
 \description{
 Inhomogeneous Stochastic Simulation Algorithm solver

@@ -7,16 +7,16 @@
 rdsys(network, volume, D, T)
 }
 \arguments{
-\item{network}{an instance of the \code{network} class from the \code{bondr} package}
+\item{network}{an instance of the \code{\link[bondr:network]{bondr::network}} class}
 
-\item{volume}{an instance of the \code{volume} class}
+\item{volume}{an instance of the \code{\link[spurcore:volume]{spurcore::volume}} class}
 
-\item{D}{diffusion coefficients for each species in the order returned by \code{species(network)}}
+\item{D}{\code{\link{vector}} of diffusion coefficients for each species}
 
 \item{T}{simulation length}
 }
 \value{
-an instance of the \code{rdsys} class
+\code{\link{rdsys}} instance
 }
 \description{
 Reaction-diffusion network systems

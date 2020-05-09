@@ -3,7 +3,7 @@
 \docType{package}
 \name{rendr}
 \alias{rendr}
-\title{\code{rendr} package}
+\title{\link{rendr} package}
 \description{
 Solvers for Chemical Networks
 }

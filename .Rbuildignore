@@ -1,6 +1,8 @@
 ^renv$
 ^renv\.lock$
-test.R
+^docs$
+^\.github$
+^pkgdown$
 \.o$
 ^LICENSE\.md$
 ^README\.Rmd$

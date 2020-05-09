@@ -1,10 +1,10 @@
-#' Reaction network systems
+#' Reaction systems
 #' 
-#' @param network an instance of the \code{network} class from the \code{bondr} package
-#' @param state vector containing the initial species quantities in the order returned by \code{species(network)}
+#' @param network an instance of the [`bondr::network`]
+#' @param state [`vector`] containing the initial species quantities in the order returned by `species(network)`
 #' @param T simulation length
 #' 
-#' @return an instance of the \code{rsys} class
+#' @return [`rsys`] instance
 #' @export
 rsys <- function(network, state, T) {
     structure(list(
@@ -16,13 +16,16 @@ rsys <- function(network, state, T) {
     )
 }
 
-#' Predefined systems for use with reaction network solvers
+#' Example reaction systems
 #' 
-#' @param name system name, one of: mm, schlogl, gbk, pc
+#' For use with [`rre`] / [`ssa`].
 #' 
-#' @return an instance of the \code{rsys} class
+#' @param name one of: `'mm'` (default, Michaelis Menten), or `'shlogl'`
+#' 
+#' @return [`rsys`] instance
 #' @export
-rsys_examples <- function(name) {
+rsys_examples <- function(name = NULL) {
+    if (is.null(name)) return(mm())
     switch(name,
         "mm" = mm(),
         "schlogl" = schlogl()
@@ -33,7 +36,7 @@ rsys_examples <- function(name) {
 
 mm <- function() {
     list(
-        network = parse_network(mm_string),
+        network = network_examples("mm"),
         state = c(300, 120, 0, 0),
         T = 30
     )
@@ -41,7 +44,7 @@ mm <- function() {
 
 schlogl <- function() {
     list(
-        network = parse_network(schlogl_string),
+        network = network_examples("schlogl"),
         state = c(248),
         T = 15
     )

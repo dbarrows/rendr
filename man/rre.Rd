@@ -2,16 +2,16 @@
 % Please edit documentation in R/rre.R
 \name{rre}
 \alias{rre}
-\title{Solves a reaction system deterministically using the Reaction Rate Equation}
+\title{Reaction rate equation solver}
 \usage{
 rre(sys)
 }
 \arguments{
-\item{sys}{an instance of the \code{rsys} class}
+\item{sys}{\code{\link{rsys}} instance}
 }
 \value{
-the solution to the system as a \code{tibble}
+Solution to the system as a \code{\link[tibble:tibble]{tibble::tibble}}
 }
 \description{
-Solves a reaction system deterministically using the Reaction Rate Equation
+Deterministic solver for reaction systems.
 }

@@ -7,10 +7,10 @@
 rsol_plot(rsol)
 }
 \arguments{
-\item{rsol}{a solution to a well-stirred reaction system}
+\item{rsol}{solution to a well-stirred reaction system}
 }
 \value{
-a \code{ggplot2} plot of the solution
+\code{\link[ggplot2:ggplot]{ggplot2::ggplot}} plot of the solution
 }
 \description{
 Reaction network solution plot

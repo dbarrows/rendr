@@ -1,0 +1,25 @@
+url: https://github.com/dbarrows/rendr
+
+template:
+    params:
+        bootswatch: flatly
+
+navbar:
+    structure:
+        right: [reference, home, github]
+
+reference:
+- title: "Reaction systems"
+  desc: Well-stirred chemical systems
+- contents:
+    - starts_with("rsys")
+    - ssa
+    - rre
+    - starts_with("rsol")
+- title: "Reaction-diffusion systems"
+  desc: Inhomogeneous reaction systems
+- contents:
+    - starts_with("rdsys")
+    - issa
+    - nsm
+    - starts_with("rdsol")

@@ -2,20 +2,20 @@
 % Please edit documentation in R/rsys.R
 \name{rsys}
 \alias{rsys}
-\title{Reaction network systems}
+\title{Reaction systems}
 \usage{
 rsys(network, state, T)
 }
 \arguments{
-\item{network}{an instance of the \code{network} class from the \code{bondr} package}
+\item{network}{an instance of the \code{\link[bondr:network]{bondr::network}}}
 
-\item{state}{vector containing the initial species quantities in the order returned by \code{species(network)}}
+\item{state}{\code{\link{vector}} containing the initial species quantities in the order returned by \code{species(network)}}
 
 \item{T}{simulation length}
 }
 \value{
-an instance of the \code{rsys} class
+\code{\link{rsys}} instance
 }
 \description{
-Reaction network systems
+Reaction systems
 }

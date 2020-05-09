@@ -1,13 +1,15 @@
-#' Solves a reaction system deterministically using the Reaction Rate Equation
+#' Reaction rate equation solver
 #' 
-#' @param sys an instance of the \code{rsys} class
+#' Deterministic solver for reaction systems.
 #' 
-#' @return the solution to the system as a \code{tibble}
+#' @param sys [`rsys`] instance
+#' 
+#' @return Solution to the system as a [`tibble::tibble`]
 #' @export
 rre <- function(sys) {
     with(sys, {
         times <- seq(0, T, length.out = 100)
-        deriv <- deriv_function(network)
+        deriv <- deriv(network)
         sol <- ode(state, times, deriv) %>%
             data.frame() %>%
             as_tibble()

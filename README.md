@@ -5,6 +5,10 @@
 
 <!-- badges: start -->
 
+[![R build
+status](https://github.com/dbarrows/rendr/workflows/R-CMD-check/badge.svg)](https://github.com/dbarrows/rendr/actions)
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 <!-- badges: end -->
 
 An R package for simulating reaction and reaction-diffusion systems.
@@ -27,13 +31,18 @@ details.
 
 ``` r
 library(rendr)
+#> 
+#> Attaching package: 'bondr'
+#> The following object is masked from 'package:stats':
+#> 
+#>     deriv
 
-(mm_network <- parse_network(bondr::mm_string))
+(network <- bondr::network_examples())
 #> # Reaction network: 3 reactions x 4 species
 #>     Reactants    Products     Rate
-#> 1       S + E -> SE        1.66e-3
-#> 2          SE -> S + E        1e-4
-#> 3          SE -> E + P        1e-1
+#> 1       S + E -> SE        0.00166
+#> 2          SE -> S + E       1e-04
+#> 3          SE -> E + P         0.1
 ```
 
 ### RRE
@@ -42,15 +51,15 @@ A deterministic solver that uses the Reaction Rate Equation (RRE) in
 conjunction with an ode solver.
 
 ``` r
-(sys <- rsys(network = mm_network,
+(sys <- rsys(network = network,
              state = c(301, 120, 0, 0),
              T = 30))
 #> $network
 #> # Reaction network: 3 reactions x 4 species
 #>     Reactants    Products     Rate
-#> 1       S + E -> SE        1.66e-3
-#> 2          SE -> S + E        1e-4
-#> 3          SE -> E + P        1e-1
+#> 1       S + E -> SE        0.00166
+#> 2          SE -> S + E       1e-04
+#> 3          SE -> E + P         0.1
 #> 
 #> $state
 #>   S   E  SE   P 
@@ -81,8 +90,7 @@ conjunction with an ode solver.
 A function is provided for easy visualisation of solutions.
 
 ``` r
-library(mplot)
-ggplot2::theme_set(theme_m())
+ggplot2::theme_set(wplot::theme_wc())
 
 rsol_plot(sol)
 ```
@@ -108,7 +116,7 @@ constructed similarly to `rsys`s.
 
 ``` r
 (sys <- rdsys(
-    network = parse_network("
+    network = network("
              0 <-> U,  4e3, 2
              0  -> V,  1.2e4
         2U + V  -> 3U, 12.5e-8
@@ -123,11 +131,11 @@ constructed similarly to `rsys`s.
 ))
 #> $network
 #> # Reaction network: 4 reactions x 2 species
-#>     Reactants    Products     Rate
-#> 1           0 -> U             4e3
-#> 2           U -> 0               2
-#> 3           0 -> V           1.2e4
-#> 4      2U + V -> 3U        12.5e-8
+#>     Reactants    Products      Rate
+#> 1           0 -> U             4000
+#> 2           U -> 0                2
+#> 3           0 -> V            12000
+#> 4      2U + V -> 3U        1.25e-07
 #> 
 #> $volume
 #> # dims: 40 x 1 x 1
