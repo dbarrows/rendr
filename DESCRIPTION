@@ -8,7 +8,7 @@ Authors@R:
            email = "dexter@barrows.io",
            comment = c(ORCID = "0000-0001-8169-8938"))
 Description: Provides support for natural, string-based, representation of chemical networks, which can be compiled into cpp objects for use in solvers.
-URL: https://github.com/dbarrows/rendr
+URL: https://dexter.barrows.io/rendr, https://github.com/dbarrows/rendr
 BugReports: https://github.com/dbarrows/rendr/issues
 License: MIT + file LICENSE
 Encoding: UTF-8
