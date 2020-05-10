@@ -95,8 +95,8 @@
       "RemoteRepo": "bondr",
       "RemoteUsername": "dbarrows",
       "RemoteRef": "master",
-      "RemoteSha": "58299abf2ca5aa880abc3908c90a580bdb6eba8a",
-      "Hash": "435b657ce1a2c0b32275a5148cfe1fea"
+      "RemoteSha": "e4c6109b4afa8f9cc6f13d2b61547f54eb90ba40",
+      "Hash": "514e95b1d583661ae3007f26b6cacfab"
     },
     "callr": {
       "Package": "callr",
@@ -499,8 +499,8 @@
       "RemoteRepo": "spurcore",
       "RemoteUsername": "dbarrows",
       "RemoteRef": "master",
-      "RemoteSha": "c2025aac0d212ce65fbd0a7d1bf0839d330b8c10",
-      "Hash": "854acd2895c16094c8e165bf960ebecc"
+      "RemoteSha": "85ee08ca7306c4294972cf42304c55bf3b46170d",
+      "Hash": "acc243b55b47153a59721de622d03bd9"
     },
     "stringi": {
       "Package": "stringi",

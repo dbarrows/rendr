@@ -1,4 +1,4 @@
-#' Inhomogeneous Stochastic Simulation Algorithm solver
+#' Inhomogeneous Stochastic Simulation Algorithm (ISSA) solver
 #' 
 #' @param sys an instance of the [`rdsys`] class
 #' @param verbose controls if output is generated during during run (default `TRUE`)
