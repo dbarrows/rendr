@@ -26,7 +26,7 @@ devtools::install_github("dbarrows/rendr")
 
 Networks are created using the
 [`bondr`](https://github.com/dbarrows/bondr) package. See [Creating
-Networks](https://github.com/dbarrows/bondr#creating-networks) for more
+Networks](https://dexter.barrows.io/bondr/#creating-networks) for more
 details.
 
 ``` r
@@ -107,7 +107,7 @@ ssa(sys) %>%
     rsol_plot()
 ```
 
-<img src="man/figures/README-unnamed-chunk-6-1.svg" width="100%" />
+<img src="man/figures/README-ssa-1.svg" width="100%" />
 
 ## Reaction-diffusion system solvers
 

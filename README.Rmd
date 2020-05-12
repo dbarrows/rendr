@@ -38,7 +38,7 @@ devtools::install_github("dbarrows/rendr")
 
 ## Reaction system solvers
 
-Networks are created using the [`bondr`](https://github.com/dbarrows/bondr) package. See [Creating Networks](https://github.com/dbarrows/bondr#creating-networks) for more details.
+Networks are created using the [`bondr`](https://github.com/dbarrows/bondr) package. See [Creating Networks](https://dexter.barrows.io/bondr/#creating-networks) for more details.
 
 ```{r}
 library(rendr)
@@ -71,7 +71,7 @@ rsol_plot(sol)
 
 Generate a single realisation of the Chemical Master Equation (CME) solution via the Stochastic Solution Algorithm (SSA).
 
-```{r}
+```{r ssa, cache = TRUE}
 ssa(sys) %>%
     rsol_plot()
 ```
