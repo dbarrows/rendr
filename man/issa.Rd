@@ -2,7 +2,7 @@
 % Please edit documentation in R/issa.R
 \name{issa}
 \alias{issa}
-\title{Inhomogeneous Stochastic Simulation Algorithm solver}
+\title{Inhomogeneous Stochastic Simulation Algorithm (ISSA) solver}
 \usage{
 issa(sys, verbose = TRUE)
 }
@@ -15,5 +15,5 @@ issa(sys, verbose = TRUE)
 Solution to the system as a \code{\link{list}}
 }
 \description{
-Inhomogeneous Stochastic Simulation Algorithm solver
+Inhomogeneous Stochastic Simulation Algorithm (ISSA) solver
 }

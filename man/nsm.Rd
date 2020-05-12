@@ -2,7 +2,7 @@
 % Please edit documentation in R/nsm.R
 \name{nsm}
 \alias{nsm}
-\title{Next Subvolume Method solver}
+\title{Next Subvolume Method (NSM) solver}
 \usage{
 nsm(sys, verbose = TRUE)
 }
@@ -15,5 +15,5 @@ nsm(sys, verbose = TRUE)
 Solution to the system as a \code{\link{list}}
 }
 \description{
-Next Subvolume Method solver
+Next Subvolume Method (NSM) solver
 }
