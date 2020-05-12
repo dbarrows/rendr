@@ -95,8 +95,8 @@
       "RemoteRepo": "bondr",
       "RemoteUsername": "dbarrows",
       "RemoteRef": "master",
-      "RemoteSha": "e4c6109b4afa8f9cc6f13d2b61547f54eb90ba40",
-      "Hash": "514e95b1d583661ae3007f26b6cacfab"
+      "RemoteSha": "3fd505ef8bb87fb52dc0a4f1084402cc03cac753",
+      "Hash": "cc13f7e1b2972c6b621f1a49e3602c49"
     },
     "callr": {
       "Package": "callr",
@@ -471,10 +471,10 @@
     },
     "scales": {
       "Package": "scales",
-      "Version": "1.1.0",
+      "Version": "1.1.1",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "a1c68369c629ea3188d0676e37069c65"
+      "Hash": "6f76f71042411426ec8df6c54f34e6dd"
     },
     "showtext": {
       "Package": "showtext",
@@ -567,10 +567,10 @@
     },
     "tidyselect": {
       "Package": "tidyselect",
-      "Version": "1.0.0",
+      "Version": "1.1.0",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "7d4b0f1ab542d8cb7a40c593a4de2f36"
+      "Hash": "6ea435c354e8448819627cf686f66e0a"
     },
     "tinytex": {
       "Package": "tinytex",
@@ -588,10 +588,10 @@
     },
     "vctrs": {
       "Package": "vctrs",
-      "Version": "0.2.4",
+      "Version": "0.3.0",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "6c839a149a30cb4ffc70443efa74c197"
+      "Hash": "fbf7ee297936697ec8404a22859da129"
     },
     "viridisLite": {
       "Package": "viridisLite",

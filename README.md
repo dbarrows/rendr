@@ -8,8 +8,6 @@
 [![R build
 status](https://github.com/dbarrows/rendr/workflows/R-CMD-check/badge.svg)](https://github.com/dbarrows/rendr/actions)
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
-[![Lifecycle:
 maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
 <!-- badges: end -->
 
@@ -179,7 +177,7 @@ issa(sys) %>%
 #> ....................................................................................................
 ```
 
-<img src="man/figures/README-unnamed-chunk-8-1.svg" width="100%" />
+<img src="man/figures/README-issa-1.svg" width="100%" />
 
 ### NSM
 
@@ -194,10 +192,10 @@ system.
 ``` r
 system.time(issa(sys, verbose = FALSE))
 #>    user  system elapsed 
-#>  31.800   0.023  31.836
+#>  31.102   0.133  31.394
 system.time(nsm(sys, verbose = FALSE))
 #>    user  system elapsed 
-#>  42.709   0.033  42.757
+#>  44.355   0.175  44.753
 ```
 
 ``` r
@@ -209,8 +207,8 @@ sys_big$volume <- volume(
     )
 system.time(issa(sys_big, verbose = FALSE))
 #>    user  system elapsed 
-#> 215.287   0.186 215.593
+#> 211.246   0.479 212.208
 system.time(nsm(sys_big, verbose = FALSE))
 #>    user  system elapsed 
-#> 143.132   0.112 143.321
+#> 151.232   0.683 153.428
 ```
