@@ -204,7 +204,7 @@
 <span class="co">#&gt;  - h:           0.025</span>
 <span class="co">#&gt;  - time:        [0, 3.5]</span>
 <span class="co">#&gt; ....................................................................................................</span></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-8-1.svg" width="100%"></p>
+<p><img src="reference/figures/README-issa-1.svg" width="100%"></p>
 </div>
 <div id="nsm" class="section level3">
 <h3 class="hasAnchor">
@@ -212,10 +212,10 @@
 <p>Generate a single realisation of the Reaction-diffusion Master Equation (RDME) solution via the Next Subvolume Method (NSM). Usage of the <code>nsm</code> function is the same as with the <a href="#issa">ISSA solver</a>. The NSM algorithm is usually faster for systems with a large number of subvolume (voxels) relative to the reaction network size. You may have to try both the ISSA and NSM solver to see which is faster for a given reaction-diffusion system.</p>
 <div class="sourceCode" id="cb9"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(<span class="fu"><a href="reference/issa.html">issa</a></span>(<span class="no">sys</span>, <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">FALSE</span>))
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;  31.800   0.023  31.836</span>
+<span class="co">#&gt;  31.102   0.133  31.394</span>
 <span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(<span class="fu"><a href="reference/nsm.html">nsm</a></span>(<span class="no">sys</span>, <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">FALSE</span>))
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;  42.709   0.033  42.757</span></pre></div>
+<span class="co">#&gt;  44.355   0.175  44.753</span></pre></div>
 <div class="sourceCode" id="cb10"><pre class="r"><span class="no">sys_big</span> <span class="kw">&lt;-</span> <span class="no">sys</span>
 <span class="no">sys_big</span>$<span class="no">volume</span> <span class="kw">&lt;-</span> <span class="fu">volume</span>(
         <span class="kw">dims</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">100</span>, <span class="fl">1</span>, <span class="fl">1</span>),
@@ -224,10 +224,10 @@
     )
 <span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(<span class="fu"><a href="reference/issa.html">issa</a></span>(<span class="no">sys_big</span>, <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">FALSE</span>))
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt; 215.287   0.186 215.593</span>
+<span class="co">#&gt; 211.246   0.479 212.208</span>
 <span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(<span class="fu"><a href="reference/nsm.html">nsm</a></span>(<span class="no">sys_big</span>, <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">FALSE</span>))
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt; 143.132   0.112 143.321</span></pre></div>
+<span class="co">#&gt; 151.232   0.683 153.428</span></pre></div>
 </div>
 </div>
 </div>
@@ -261,7 +261,6 @@
 <h2>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://github.com/dbarrows/rendr/actions"><img src="https://github.com/dbarrows/rendr/workflows/R-CMD-check/badge.svg" alt="R build status"></a></li>
-<li><a href="https://www.tidyverse.org/lifecycle/#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
 <li><a href="https://www.tidyverse.org/lifecycle/#maturing"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="Lifecycle: maturing"></a></li>
 </ul>
 </div>
