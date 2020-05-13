@@ -13,11 +13,11 @@ using namespace core;
 // Definitions ------------------------------------------------------------------------------
 
 struct reaction {
-    function<double(const array3<vec>&)> propensity;
+    function<double(array3<vec>&)> propensity;
     function<void(array3<vec>&)> update;
 };
 struct diffusion {
-    function<double(const array3<vec>&)> propensity;
+    function<double(array3<vec>&)> propensity;
     function<vector<uvec3>(array3<vec>&)> update;
 };
 class rdnet {
@@ -27,7 +27,7 @@ public:
     array3<vector<reaction>> reactions;
     array3<vector<diffusion>> diffusions;
     
-    rdnet(const bondr::rnet& rnet, const core::volume& vol, vec D);
+    rdnet(bondr::rnet& rnet, core::volume& vol, vec D);
 };
 
 // Functions --------------------------------------------------------------------------------
@@ -59,10 +59,10 @@ inline array3<vector<diffusion>> generate_diffusions(uvec3 dims, vec D, double h
     for (uint i = 0; i < diffusions.size(); i++) {
         uvec3 index = diffusions.index3(i);
 
-        for (const auto& neighbour_index : neighbours(index, dims)) {
+        for (auto& neighbour_index : neighbours(index, dims)) {
             for (uint s = 0; s < D.size(); s++)
                 diffusions[i].push_back({
-                    [s, D, h2, index](const array3<vec>& x) {
+                    [s, D, h2, index](array3<vec>& x) {
                         return x[index][s]*D[s]/h2;
                     },
                     [s, index, neighbour_index](array3<vec>& x) {
@@ -76,9 +76,9 @@ inline array3<vector<diffusion>> generate_diffusions(uvec3 dims, vec D, double h
     return diffusions;
 }
 
-inline array3<vector<reaction>> generate_reactions(const vector<bondr::reaction>& bondr_reactions,
-                                                        uvec3 dims,
-                                                        double h) {
+inline array3<vector<reaction>> generate_reactions(vector<bondr::reaction>& bondr_reactions,
+                                                   uvec3 dims,
+                                                   double h) {
     uint ndims = sum(vectorise(1 < dims));
     double v = pow(h, ndims);
 
@@ -87,10 +87,10 @@ inline array3<vector<reaction>> generate_reactions(const vector<bondr::reaction>
     for (uint i = 0; i < reactions.size(); i++) {
         uvec3 index = reactions.index3(i);
 
-        transform(bondr_reactions.begin(), bondr_reactions.end(), back_inserter(reactions[i]), [&](const bondr::reaction& r) {
+        transform(bondr_reactions.begin(), bondr_reactions.end(), back_inserter(reactions[i]), [&](bondr::reaction& r) {
             double adjustment = pow(v, static_cast<int>(1 - r.order));
             return reaction {
-                [&r, adjustment, index](const array3<vec>& x) {
+                [&r, adjustment, index](array3<vec>& x) {
                     return adjustment*r.propensity(x[index]);
                 },
                 [&r, index](array3<vec>& x) {
@@ -103,7 +103,7 @@ inline array3<vector<reaction>> generate_reactions(const vector<bondr::reaction>
     return reactions;
 }
 
-inline rdnet::rdnet(const bondr::rnet& rnet, const volume& vol, vec D) {
+inline rdnet::rdnet(bondr::rnet& rnet, volume& vol, vec D) {
     species = rnet.species;
     dims = vol.state.dims;
     reactions = generate_reactions(rnet.reactions, vol.state.dims, vol.h);

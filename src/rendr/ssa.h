@@ -12,7 +12,7 @@ using namespace arma;
 using namespace std;
 using namespace core;
 
-Rcpp::DataFrame ssa(const bondr::rnet& network, vec y, double T, vec k = vec(), bool record_all = true) {
+Rcpp::DataFrame ssa(bondr::rnet& network, vec y, double T, vec k = vec(), bool record_all = true) {
     double t = 0;
     vec x = vec(y);
 
@@ -49,12 +49,12 @@ Rcpp::DataFrame ssa(const bondr::rnet& network, vec y, double T, vec k = vec(), 
 
         // get reaction index `j`
         uint j = 0;
-        double atarget = asum*urand();
+        double atarget = asum*runif();
         while (csum[j] < atarget)
             j++;
 
         // get reaction time
-        double tau = -log(urand())/asum;
+        double tau = -log(runif())/asum;
 
         // stash current system state
         t_last = t;

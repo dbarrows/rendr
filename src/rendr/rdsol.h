@@ -20,15 +20,15 @@ struct rdsol {
 
 // Functions --------------------------------------------------------------------------------
 
-inline Rcpp::NumericVector t(const rdsol& sol) {
+inline Rcpp::NumericVector t(rdsol& sol) {
     return Rcpp::wrap(sol.times);
 }
 
-inline Rcpp::List DataFrame(const array3<vec>& state,
-                            const vector<string>& species) {
+inline Rcpp::List DataFrame(array3<vec>& state,
+                            vector<string>& species) {
     Rcpp::List list = Rcpp::List(3 + species.size());
     auto names = Rcpp::CharacterVector { "x", "y", "z" };
-    for (const auto& s : species)
+    for (auto& s : species)
         names.push_back(s); 
     list.names() = names;
 
@@ -48,7 +48,7 @@ inline Rcpp::List DataFrame(const array3<vec>& state,
     return Rcpp::DataFrame(list);
 }
 
-inline Rcpp::List u(const rdsol& sol) {
+inline Rcpp::List u(rdsol& sol) {
     auto list = Rcpp::List(sol.states.size());
     for (uint i = 0; i < sol.states.size(); i++)
         list[i] = DataFrame(sol.states[i], sol.species);

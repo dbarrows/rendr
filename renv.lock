@@ -92,11 +92,11 @@
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
-      "RemoteRepo": "bondr",
       "RemoteUsername": "dbarrows",
+      "RemoteRepo": "bondr",
       "RemoteRef": "master",
-      "RemoteSha": "3fd505ef8bb87fb52dc0a4f1084402cc03cac753",
-      "Hash": "cc13f7e1b2972c6b621f1a49e3602c49"
+      "RemoteSha": "c089c8e1071a9f9a73008aa7cee315efc74efa7d",
+      "Hash": "1bf3dce732342e9ddc086455b51101b1"
     },
     "callr": {
       "Package": "callr",
@@ -212,10 +212,10 @@
     },
     "glue": {
       "Package": "glue",
-      "Version": "1.4.0",
+      "Version": "1.4.1",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "2aefa994e8df5da17dc09afd80f924d5"
+      "Hash": "f43e0d5e85ccb0a4045670c0607ee504"
     },
     "gtable": {
       "Package": "gtable",
@@ -496,11 +496,11 @@
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
-      "RemoteRepo": "spurcore",
       "RemoteUsername": "dbarrows",
+      "RemoteRepo": "spurcore",
       "RemoteRef": "master",
-      "RemoteSha": "85ee08ca7306c4294972cf42304c55bf3b46170d",
-      "Hash": "acc243b55b47153a59721de622d03bd9"
+      "RemoteSha": "7e33778810d15644276ab398b753ec116f495ec3",
+      "Hash": "30786f9cf08ac1de9b1b0c69482cce96"
     },
     "stringi": {
       "Package": "stringi",
@@ -619,12 +619,12 @@
       "Version": "0.0.0.9000",
       "Source": "GitHub",
       "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "wplot",
       "RemoteUsername": "dbarrows",
+      "RemoteRepo": "wplot",
       "RemoteRef": "master",
-      "RemoteSha": "6f0ba70c0fc546197436c70f674568d0582e45cf",
-      "Hash": "2836fca4fb58694596900fea12615ca9"
+      "RemoteSha": "aaab24a9b8d2312fcdbeed0493eefd7962fcebd2",
+      "RemoteHost": "api.github.com",
+      "Hash": "80024e0c64dbc11d3a1d995f5b47881c"
     },
     "xfun": {
       "Package": "xfun",

@@ -12,8 +12,8 @@ using namespace arma;
 using namespace std;
 using namespace core;
 
-rdsol issa(const rdnet& network,
-           const core::volume& volume,
+rdsol issa(rdnet& network,
+           core::volume& volume,
            double T,
            bool record_all = true,
            uint save_grid_size = 100,
@@ -35,13 +35,13 @@ rdsol issa(const rdnet& network,
     auto reactions = flatten(network.reactions);
     auto diffusions = flatten(network.diffusions);
 
-    auto propensities = vector<function<double(const array3<vec>&)>>();
+    auto propensities = vector<function<double(array3<vec>&)>>();
     auto updates = vector<function<void(array3<vec>&)>>();
-    for (const auto& reaction : reactions) {
+    for (auto& reaction : reactions) {
         propensities.push_back(reaction.propensity);
         updates.push_back(reaction.update);
     }
-    for (const auto& diffusion : diffusions) {
+    for (auto& diffusion : diffusions) {
         propensities.push_back(diffusion.propensity);
         updates.push_back(diffusion.update);
     }
@@ -79,12 +79,12 @@ rdsol issa(const rdnet& network,
 
         // get reaction index `j`
         uint j = 0;
-        double atarget = asum*urand();
+        double atarget = asum*runif();
         while (csum[j] < atarget)
             j++;
 
         // get reaction time
-        double tau = -log(urand())/asum;
+        double tau = -log(runif())/asum;
 
         // advance system
         updates[j](x);

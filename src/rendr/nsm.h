@@ -23,11 +23,11 @@ struct voxel_rates {
 // Functions --------------------------------------------------------------------------------
 
 inline double sum(voxel_rates rates) { return sum(rates.reactions) + sum(rates.diffusions); }
-inline double event_time(double rate) { return -log(urand())/rate; };
+inline double event_time(double rate) { return -log(runif())/rate; };
 inline void update_rates(voxel_rates& rates,
-                  const vector<reaction>& reactions,
-                  const vector<diffusion>& diffusions,
-                  const array3<vec>& x) {
+                         vector<reaction>& reactions,
+                         vector<diffusion>& diffusions,
+                         array3<vec>& x) {
     for (uint i = 0; i < reactions.size(); i++)
         rates.reactions[i] = reactions[i].propensity(x);
     for (uint i = 0; i < diffusions.size(); i++)
@@ -35,12 +35,12 @@ inline void update_rates(voxel_rates& rates,
 }
 
 
-inline rdsol nsm(const rdnet& network,
-          const core::volume& vol,
-          double T,
-          bool record_all = true,
-          uint save_grid_size = 100,
-          bool verbose = true) {
+inline rdsol nsm(rdnet& network,
+                 core::volume& vol,
+                 double T,
+                 bool record_all = true,
+                 uint save_grid_size = 100,
+                 bool verbose = true) {
     auto x = vol.state.copy();
     uvec3 dims = x.dims;
     double h = vol.h;
@@ -97,7 +97,7 @@ inline rdsol nsm(const rdnet& network,
         t = time_index.first;
         uvec3 index = time_index.second;
 
-        double r = urand();
+        double r = runif();
         double reaction_cutoff = sum(rates[index].reactions) / rate_sums[index];
 
         if (r < reaction_cutoff) {
@@ -134,7 +134,7 @@ inline rdsol nsm(const rdnet& network,
             auto affected_voxels = network.diffusions[index][j].update(x);
 
             // update rates, etc. for affected voxels
-            for (const auto& v_index : affected_voxels) {
+            for (auto& v_index : affected_voxels) {
                 update_rates(rates[v_index], network.reactions[v_index], network.diffusions[v_index], x);
                 rate_sums[v_index] = sum(rates[v_index]);
 
