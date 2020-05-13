@@ -71,7 +71,7 @@ rsol_plot(sol)
 
 Generate a single realisation of the Chemical Master Equation (CME) solution via the Stochastic Solution Algorithm (SSA).
 
-```{r ssa, cache = TRUE}
+```{r ssa}
 ssa(sys) %>%
     rsol_plot()
 ```
@@ -101,28 +101,28 @@ Reaction-diffusion systems created via the `rdsys` class, which are constructed 
 
 Generate a single realisation of the Reaction-diffusion Master Equation (RDME) solution via the Inhomogeneous Stochastic Solution Algorithm (ISSA).
 
-```{r issa, cache = TRUE}
+```{r issa}
 issa(sys) %>%
     rdsol_plot()
 ```
 
 ### NSM
 
-Generate a single realisation of the Reaction-diffusion Master Equation (RDME) solution via the Next Subvolume Method (NSM). Usage of the `nsm` function is the same as with the [ISSA solver](#issa). The NSM algorithm is usually faster for systems with a large number of subvolume (voxels) relative to the reaction network size. You may have to try both the ISSA and NSM solver to see which is faster for a given reaction-diffusion system.
+Generate a single realisation of the (RDME) solution via the Next Subvolume Method (NSM). Usage of the `nsm` function is the same as with the [ISSA solver](#issa). The NSM algorithm is usually faster for systems with a large number of subvolume (voxels) relative to the reaction network size. You may have to try both the ISSA and NSM solver to see which is faster for a given reaction-diffusion system.
 
-```{r time-small, cache = TRUE}
+```{r time-small}
 system.time(issa(sys, verbose = FALSE))
 system.time(nsm(sys, verbose = FALSE))
 ```
 
-```{r time-big, cache = TRUE}
-sys_big <- sys
-sys_big$volume <- volume(
-        dims = c(100, 1, 1),
+```{r time-big}
+sys_small <- sys
+sys_small$volume <- volume(
+        dims = c(4, 1, 1),
         h = 1/40,
         seed = c(25, 75)
     )
-system.time(issa(sys_big, verbose = FALSE))
-system.time(nsm(sys_big, verbose = FALSE))
+system.time(issa(sys_small, verbose = FALSE))
+system.time(nsm(sys_small, verbose = FALSE))
 ```
 

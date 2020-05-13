@@ -192,23 +192,23 @@ system.
 ``` r
 system.time(issa(sys, verbose = FALSE))
 #>    user  system elapsed 
-#>  31.102   0.133  31.394
+#>  17.601   0.038  17.666
 system.time(nsm(sys, verbose = FALSE))
 #>    user  system elapsed 
-#>  44.355   0.175  44.753
+#>   9.250   0.024   9.290
 ```
 
 ``` r
-sys_big <- sys
-sys_big$volume <- volume(
-        dims = c(100, 1, 1),
+sys_small <- sys
+sys_small$volume <- volume(
+        dims = c(4, 1, 1),
         h = 1/40,
         seed = c(25, 75)
     )
-system.time(issa(sys_big, verbose = FALSE))
+system.time(issa(sys_small, verbose = FALSE))
 #>    user  system elapsed 
-#> 211.246   0.479 212.208
-system.time(nsm(sys_big, verbose = FALSE))
+#>   0.231   0.002   0.233
+system.time(nsm(sys_small, verbose = FALSE))
 #>    user  system elapsed 
-#> 151.232   0.683 153.428
+#>   0.292   0.002   0.294
 ```
