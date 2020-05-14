@@ -79,8 +79,8 @@ inline rdsol nsm(rdnet& network,
     double save_time_step;
     double next_save_time;
     if (record_all) {
-        sol.times.push_back(t);
-        sol.states.push_back(x.copy());
+        sol.t.push_back(t);
+        sol.u.push_back(x.copy());
         save_time_step = T / (save_grid_size - 1);
         next_save_time = save_time_step;
     }
@@ -145,9 +145,9 @@ inline rdsol nsm(rdnet& network,
         }
 
         if (record_all && next_save_time <= t) {
-            sol.times.push_back(t);
-            sol.states.push_back(x.copy());
-            next_save_time = sol.times.size() == save_grid_size - 1 ? T : (next_save_time + save_time_step);
+            sol.t.push_back(t);
+            sol.u.push_back(x.copy());
+            next_save_time = sol.t.size() == save_grid_size - 1 ? T : (next_save_time + save_time_step);
         }
 
         if (verbose && next_report_fraction < t / T) {
@@ -162,8 +162,8 @@ inline rdsol nsm(rdnet& network,
         Rcpp::Rcout << endl;
 
     if (!record_all) {
-        sol.times.push_back(t);
-        sol.states.push_back(x.copy());
+        sol.t.push_back(t);
+        sol.u.push_back(x.copy());
     }
 
     return sol;

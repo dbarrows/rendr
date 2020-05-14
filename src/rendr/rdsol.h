@@ -13,18 +13,18 @@ using namespace core;
 // Definitions ------------------------------------------------------------------------------
 
 struct rdsol {
-    vector<double> times;
     vector<string> species;
-    vector<array3<vec>> states;
+    vector<double> t;
+    vector<array3<vec>> u;
 };
 
 // Functions --------------------------------------------------------------------------------
 
 inline Rcpp::NumericVector t(rdsol& sol) {
-    return Rcpp::wrap(sol.times);
+    return Rcpp::wrap(sol.t);
 }
 
-inline Rcpp::List DataFrame(array3<vec>& state,
+inline Rcpp::List DataFrame(array3<vec>& u,
                             vector<string>& species) {
     Rcpp::List list = Rcpp::List(3 + species.size());
     auto names = Rcpp::CharacterVector { "x", "y", "z" };
@@ -33,15 +33,15 @@ inline Rcpp::List DataFrame(array3<vec>& state,
     list.names() = names;
 
     for (uint dim = 0; dim < 3; dim++) {
-        auto col = Rcpp::IntegerVector();
-        for (uint i  = 0; i < state.size(); i++)
-            col.push_back(state.index3(i)[dim]);
+        auto col = Rcpp::IntegerVector(u.size());
+        for (uint i  = 0; i < u.size(); i++)
+            col[i] = u.index3(i)[dim];
         list[dim] = col;
     }
     for (uint s = 0; s < species.size(); s++) {
-        auto col = Rcpp::IntegerVector();
-        for (uint i  = 0; i < state.size(); i++)
-            col.push_back(state[i][s]);
+        auto col = Rcpp::IntegerVector(u.size());
+        for (uint i  = 0; i < u.size(); i++)
+            col[i] = u[i][s];
         list[3 + s] = col;
     }
 
@@ -49,9 +49,9 @@ inline Rcpp::List DataFrame(array3<vec>& state,
 }
 
 inline Rcpp::List u(rdsol& sol) {
-    auto list = Rcpp::List(sol.states.size());
-    for (uint i = 0; i < sol.states.size(); i++)
-        list[i] = DataFrame(sol.states[i], sol.species);
+    auto list = Rcpp::List(sol.u.size());
+    for (uint i = 0; i < sol.u.size(); i++)
+        list[i] = DataFrame(sol.u[i], sol.species);
     return list;
 }
 

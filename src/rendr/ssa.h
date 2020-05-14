@@ -24,8 +24,10 @@ inline Rcpp::DataFrame ssa(bondr::rnet network, vec y, double T, vec k = vec(), 
 
     vec a = vec(network.reactions.size(), fill::zeros);
 
-    if (record_all)
-        sol.states.push_back({t, x});
+    if (record_all) {
+        sol.t.push_back(t);
+        sol.u.push_back(x);
+    }
 
     // keep track of case of early termination due to app reactants consumed
     bool early_exit = false;
@@ -39,7 +41,8 @@ inline Rcpp::DataFrame ssa(bondr::rnet network, vec y, double T, vec k = vec(), 
 
         // if all species consumed, report final state and finish
         if (asum < 1e-15) {
-            sol.states.push_back({t, x});
+            sol.t.push_back(t);
+            sol.u.push_back(x);
             early_exit = true;
             break;
         }
@@ -60,13 +63,16 @@ inline Rcpp::DataFrame ssa(bondr::rnet network, vec y, double T, vec k = vec(), 
         network.reactions[j].update(x);
         t += tau;
 
-        if (record_all && t < T)
-            sol.states.push_back({t, x});
+        if (record_all && t < T) {
+            sol.t.push_back(t);
+            sol.u.push_back(x);
+        }
     }
 
     if (!early_exit) {
         vec x_interp = round(((T - t_last)*x + (t - T)*x_last) / (t - t_last));
-        sol.states.push_back({T, x_interp});
+        sol.t.push_back(T);
+        sol.u.push_back(x_interp);
     }
 
     return DataFrame(sol);

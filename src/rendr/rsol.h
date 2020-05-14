@@ -10,13 +10,10 @@ using namespace core;
 
 // Definitions ------------------------------------------------------------------------------
 
-struct state {
-    double t;
-    vec x;
-};
 struct rsol {
     vector<string> species;
-    vector<state> states;
+    vector<double> t;
+    vector<vec> u;
 };
 
 // Functions --------------------------------------------------------------------------------
@@ -29,15 +26,15 @@ inline Rcpp::DataFrame DataFrame(rsol& sol) {
         names.push_back(s);
     list.names() = names;
     
-    auto times = Rcpp::NumericVector(sol.states.size());
-    for (uint i = 0; i < sol.states.size(); i++)
-        times[i] = sol.states[i].t;
+    auto times = Rcpp::NumericVector(sol.t.size());
+    for (uint i = 0; i < sol.t.size(); i++)
+        times[i] = sol.t[i];
     list[0] = times;
 
     for (auto c = 1; c < list.size(); c++) {
-        auto col = Rcpp::IntegerVector(sol.states.size());
-        for (uint i = 0; i < sol.states.size(); i++)
-            col[i] = sol.states[i].x[c - 1];
+        auto col = Rcpp::IntegerVector(sol.u.size());
+        for (uint i = 0; i < sol.u.size(); i++)
+            col[i] = sol.u[i][c - 1];
         list[c] = col;
     }
 
