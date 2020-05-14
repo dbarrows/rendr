@@ -13,7 +13,3 @@ ssa_cpp <- function(rnet_xptr, y, T, k_vec = NULL, record_all = TRUE) {
     .Call(`_rendr_ssa_cpp`, rnet_xptr, y, T, k_vec, record_all)
 }
 
-ssa_cpp_multiple <- function(rnet_xptr, y, T, N, k_vec = NULL, record_all = TRUE) {
-    .Call(`_rendr_ssa_cpp_multiple`, rnet_xptr, y, T, N, k_vec, record_all)
-}
-
