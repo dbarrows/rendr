@@ -10,6 +10,8 @@ issa(sys, verbose = TRUE, force_compile = FALSE)
 \item{sys}{an instance of the \code{\link{rdsys}} class}
 
 \item{verbose}{controls if output is generated during during run (default \code{TRUE})}
+
+\item{force_compile}{if \code{TRUE} (default \code{FALSE}), force a recompile of the reaction network}
 }
 \value{
 Solution to the system as a \code{\link{list}}

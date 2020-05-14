@@ -2,6 +2,7 @@
 #' 
 #' @param sys an instance of the [`rdsys`] class
 #' @param verbose controls if output is generated during during run (default `TRUE`)
+#' @param force_compile if `TRUE` (default `FALSE`), force a recompile of the reaction network
 #' 
 #' @return Solution to the system as a [`list`]
 #' @export
@@ -13,10 +14,11 @@ issa <- function(sys, verbose = TRUE, force_compile = FALSE) {
 #' 
 #' @param sys an instance of the [`rdsys`] class
 #' @param verbose controls if output is generated during during run (default `TRUE`)
+#' @param force_compile if `TRUE` (default `FALSE`), force a recompile of the reaction network
 #' 
 #' @return Solution to the system as a [`list`]
 #' @export
-nsm <- function(sys, verbose = TRUE) {
+nsm <- function(sys, verbose = TRUE, force_compile = FALSE) {
     solve_rdsys(sys, nsm_cpp, verbose = verbose, force_compile = force_compile)
 }
 
