@@ -120,7 +120,7 @@
     <p>Inhomogeneous Stochastic Simulation Algorithm (ISSA) solver</p>
     </div>
 
-    <pre class="usage"><span class='fu'>issa</span>(<span class='no'>sys</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>issa</span>(<span class='no'>sys</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>force_compile</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -132,6 +132,10 @@
     <tr>
       <th>verbose</th>
       <td><p>controls if output is generated during during run (default <code>TRUE</code>)</p></td>
+    </tr>
+    <tr>
+      <th>force_compile</th>
+      <td><p>if <code>TRUE</code> (default <code>FALSE</code>), force a recompile of the reaction network</p></td>
     </tr>
     </table>
 

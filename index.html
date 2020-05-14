@@ -209,13 +209,13 @@
 <div id="nsm" class="section level3">
 <h3 class="hasAnchor">
 <a href="#nsm" class="anchor"></a>NSM</h3>
-<p>Generate a single realisation of the Reaction-diffusion Master Equation (RDME) solution via the Next Subvolume Method (NSM). Usage of the <code>nsm</code> function is the same as with the <a href="#issa">ISSA solver</a>. The NSM algorithm is usually faster for systems with a large number of subvolume (voxels) relative to the reaction network size. You may have to try both the ISSA and NSM solver to see which is faster for a given reaction-diffusion system.</p>
+<p>Generate a single realisation of the (RDME) solution via the Next Subvolume Method (NSM). Usage of the <code>nsm</code> function is the same as with the <a href="#issa">ISSA solver</a>. The NSM algorithm is usually faster for systems with a large number of subvolume (voxels) relative to the reaction network size. You may have to try both the ISSA and NSM solver to see which is faster for a given reaction-diffusion system.</p>
 <div class="sourceCode" id="cb9"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(<span class="fu"><a href="reference/issa.html">issa</a></span>(<span class="no">sys</span>, <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">FALSE</span>))
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;  17.601   0.038  17.666</span>
+<span class="co">#&gt;  18.530   0.062  18.650</span>
 <span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(<span class="fu"><a href="reference/nsm.html">nsm</a></span>(<span class="no">sys</span>, <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">FALSE</span>))
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;   9.250   0.024   9.290</span></pre></div>
+<span class="co">#&gt;   9.380   0.034   9.444</span></pre></div>
 <div class="sourceCode" id="cb10"><pre class="r"><span class="no">sys_small</span> <span class="kw">&lt;-</span> <span class="no">sys</span>
 <span class="no">sys_small</span>$<span class="no">volume</span> <span class="kw">&lt;-</span> <span class="fu">volume</span>(
         <span class="kw">dims</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">4</span>, <span class="fl">1</span>, <span class="fl">1</span>),
@@ -224,10 +224,10 @@
     )
 <span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(<span class="fu"><a href="reference/issa.html">issa</a></span>(<span class="no">sys_small</span>, <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">FALSE</span>))
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;   0.231   0.002   0.233</span>
+<span class="co">#&gt;   0.248   0.003   0.253</span>
 <span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(<span class="fu"><a href="reference/nsm.html">nsm</a></span>(<span class="no">sys_small</span>, <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">FALSE</span>))
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;   0.292   0.002   0.294</span></pre></div>
+<span class="co">#&gt;   0.290   0.002   0.292</span></pre></div>
 </div>
 </div>
 </div>

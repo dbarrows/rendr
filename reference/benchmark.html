@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Next Subvolume Method (NSM) solver — nsm • rendr</title>
+<title>Benchmark <code><a href='rendr.html'>rendr</a></code> solvers — benchmark • rendr</title>
 
 
 <!-- jquery -->
@@ -41,8 +41,8 @@
   <link href="../extra.css" rel="stylesheet">
   
 
-<meta property="og:title" content="Next Subvolume Method (NSM) solver — nsm" />
-<meta property="og:description" content="Next Subvolume Method (NSM) solver" />
+<meta property="og:title" content="Benchmark <code><a href='rendr.html'>rendr</a></code> solvers — benchmark" />
+<meta property="og:description" content="Benchmark rendr solvers" />
 
 
 
@@ -111,37 +111,58 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Next Subvolume Method (NSM) solver</h1>
-    <small class="dont-index">Source: <a href='https://github.com/dbarrows/rendr/blob/master/R/issa.R'><code>R/issa.R</code></a></small>
-    <div class="hidden name"><code>nsm.Rd</code></div>
+    <h1>Benchmark <code><a href='rendr.html'>rendr</a></code> solvers</h1>
+    <small class="dont-index">Source: <a href='https://github.com/dbarrows/rendr/blob/master/R/benchmark.R'><code>R/benchmark.R</code></a></small>
+    <div class="hidden name"><code>benchmark.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Next Subvolume Method (NSM) solver</p>
+    <p>Benchmark <code><a href='rendr.html'>rendr</a></code> solvers</p>
     </div>
 
-    <pre class="usage"><span class='fu'>nsm</span>(<span class='no'>sys</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>force_compile</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>benchmark</span>(
+  <span class='kw'>N</span> <span class='kw'>=</span> <span class='fl'>100</span>,
+  <span class='kw'>sys</span> <span class='kw'>=</span> <span class='fu'><a href='rsys_examples.html'>rsys_examples</a></span>(<span class='st'>"schlogl"</span>),
+  <span class='kw'>solver</span> <span class='kw'>=</span> <span class='no'>ssa</span>,
+  <span class='kw'>progress</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>cores</span> <span class='kw'>=</span> <span class='fu'>detectCores</span>(),
+  <span class='no'>...</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>N</th>
+      <td><p>number of simulations (default 100)</p></td>
+    </tr>
+    <tr>
       <th>sys</th>
-      <td><p>an instance of the <code><a href='rdsys.html'>rdsys</a></code> class</p></td>
+      <td><p>an instance of either <code><a href='rsys.html'>rsys</a></code> or <code><a href='rdsys.html'>rdsys</a></code>, must match <code>solver</code> type (well-stirred vs inhomogeneous) (default <code><a href='rsys_examples.html'>rsys_examples('schlogl')</a></code>)</p></td>
     </tr>
     <tr>
-      <th>verbose</th>
-      <td><p>controls if output is generated during during run (default <code>TRUE</code>)</p></td>
+      <th>solver</th>
+      <td><p>one of 'ssa' (default), 'rre', 'issa', 'nsm'</p></td>
     </tr>
     <tr>
-      <th>force_compile</th>
-      <td><p>if <code>TRUE</code> (default <code>FALSE</code>), force a recompile of the reaction network</p></td>
+      <th>progress</th>
+      <td><p>if <code>TRUE</code> (default <code>FALSE</code>) display progress of completed runs</p></td>
+    </tr>
+    <tr>
+      <th>parallel</th>
+      <td><p>if <code>TRUE</code> (default <code>FALSE</code>) runs the solver instances in parallel on <code>cores</code> number of CPU cores</p></td>
+    </tr>
+    <tr>
+      <th>cores</th>
+      <td><p>number of cores to use if <code>parallel</code> is <code>TRUE</code></p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>additional options to be passed to <code>solver</code></p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>Solution to the system as a <code><a href='https://rdrr.io/r/base/list.html'>list</a></code></p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
