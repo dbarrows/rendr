@@ -6,6 +6,21 @@
 #' @return Solution to the system as a [`list`]
 #' @export
 issa <- function(sys, verbose = TRUE, force_compile = FALSE) {
+    solve_rdsys(sys, issa_cpp, verbose = verbose, force_compile = force_compile)
+}
+
+#' Next Subvolume Method (NSM) solver
+#' 
+#' @param sys an instance of the [`rdsys`] class
+#' @param verbose controls if output is generated during during run (default `TRUE`)
+#' 
+#' @return Solution to the system as a [`list`]
+#' @export
+nsm <- function(sys, verbose = TRUE) {
+    solve_rdsys(sys, nsm_cpp, verbose = verbose, force_compile = force_compile)
+}
+
+solve_rdsys <- function(sys, algorithm_cpp, verbose = TRUE, force_compile = FALSE) {
     with(sys, {
         sol <- network %>%
             (function(network) {
@@ -16,7 +31,7 @@ issa <- function(sys, verbose = TRUE, force_compile = FALSE) {
                 else
                     NULL
             }) %>%
-            issa_cpp(D, volume$cpp$xptr, T, verbose)
+            algorithm_cpp(D, volume$cpp$xptr, T, verbose)
         sol$u <- lapply(sol$u, as_tibble)
         sol
     })
