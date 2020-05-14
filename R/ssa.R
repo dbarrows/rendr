@@ -24,3 +24,11 @@ ssa <- function(sys, k = NULL, record_all = TRUE, force_compile = FALSE) {
             as_tibble()
     })
 }
+
+ssa_multiple <- function(sys, N = 1, record_all = TRUE) {
+    ssa_cpp_multiple(sys$network %>% compile(),
+                 sys$state,
+                 sys$T,
+                 N,
+                 record_all = record_all)
+}

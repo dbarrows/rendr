@@ -9,7 +9,7 @@
 #' @import bondr
 #' @import ggplot2
 #' @import Rcpp
-#' @importFrom magrittr %>%
+#' @importFrom magrittr %>% %<>%
 #' @importFrom stringr str_c str_sub
 #' @importFrom tibble tibble as_tibble
 #' @importFrom dplyr rename select pull filter
@@ -19,6 +19,7 @@
 #' @importFrom deSolve ode
 #' @importFrom methods new
 #' @importFrom crayon blurred blue silver
+#' @importFrom parallel detectCores mclapply
 #' @useDynLib rendr, .registration = TRUE
 #' @importFrom Rcpp sourceCpp
 NULL

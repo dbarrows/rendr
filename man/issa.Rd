@@ -4,7 +4,7 @@
 \alias{issa}
 \title{Inhomogeneous Stochastic Simulation Algorithm (ISSA) solver}
 \usage{
-issa(sys, verbose = TRUE)
+issa(sys, verbose = TRUE, force_compile = FALSE)
 }
 \arguments{
 \item{sys}{an instance of the \code{\link{rdsys}} class}

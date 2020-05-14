@@ -51,11 +51,28 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// ssa_cpp_multiple
+SEXP ssa_cpp_multiple(SEXP rnet_xptr, arma::vec y, double T, int N, Rcpp::Nullable<arma::vec> k_vec, bool record_all);
+RcppExport SEXP _rendr_ssa_cpp_multiple(SEXP rnet_xptrSEXP, SEXP ySEXP, SEXP TSEXP, SEXP NSEXP, SEXP k_vecSEXP, SEXP record_allSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type rnet_xptr(rnet_xptrSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type y(ySEXP);
+    Rcpp::traits::input_parameter< double >::type T(TSEXP);
+    Rcpp::traits::input_parameter< int >::type N(NSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<arma::vec> >::type k_vec(k_vecSEXP);
+    Rcpp::traits::input_parameter< bool >::type record_all(record_allSEXP);
+    rcpp_result_gen = Rcpp::wrap(ssa_cpp_multiple(rnet_xptr, y, T, N, k_vec, record_all));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_rendr_issa_cpp", (DL_FUNC) &_rendr_issa_cpp, 5},
     {"_rendr_nsm_cpp", (DL_FUNC) &_rendr_nsm_cpp, 5},
     {"_rendr_ssa_cpp", (DL_FUNC) &_rendr_ssa_cpp, 5},
+    {"_rendr_ssa_cpp_multiple", (DL_FUNC) &_rendr_ssa_cpp_multiple, 6},
     {NULL, NULL, 0}
 };
 

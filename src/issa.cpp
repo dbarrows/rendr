@@ -8,9 +8,9 @@ Rcpp::List issa_cpp(SEXP rnet_xptr, arma::vec D, SEXP volume_xptr, double T, boo
     auto net = rendr::rdnet(rnet, vol, D);
 
     auto sol = rendr::issa(net, vol, T,
-                          true, // record_all
-                          100,  // save grid
-                          verbose);
+                           true, // record_all
+                           100,  // save grid
+                           verbose);
 
     return Rcpp::List::create(
         Rcpp::Named("t") = rendr::t(sol),

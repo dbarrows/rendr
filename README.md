@@ -181,21 +181,20 @@ issa(sys) %>%
 
 ### NSM
 
-Generate a single realisation of the Reaction-diffusion Master Equation
-(RDME) solution via the Next Subvolume Method (NSM). Usage of the `nsm`
-function is the same as with the [ISSA solver](#issa). The NSM algorithm
-is usually faster for systems with a large number of subvolume (voxels)
-relative to the reaction network size. You may have to try both the ISSA
-and NSM solver to see which is faster for a given reaction-diffusion
-system.
+Generate a single realisation of the (RDME) solution via the Next
+Subvolume Method (NSM). Usage of the `nsm` function is the same as with
+the [ISSA solver](#issa). The NSM algorithm is usually faster for
+systems with a large number of subvolume (voxels) relative to the
+reaction network size. You may have to try both the ISSA and NSM solver
+to see which is faster for a given reaction-diffusion system.
 
 ``` r
 system.time(issa(sys, verbose = FALSE))
 #>    user  system elapsed 
-#>  17.601   0.038  17.666
+#>  18.530   0.062  18.650
 system.time(nsm(sys, verbose = FALSE))
 #>    user  system elapsed 
-#>   9.250   0.024   9.290
+#>   9.380   0.034   9.444
 ```
 
 ``` r
@@ -207,8 +206,8 @@ sys_small$volume <- volume(
     )
 system.time(issa(sys_small, verbose = FALSE))
 #>    user  system elapsed 
-#>   0.231   0.002   0.233
+#>   0.248   0.003   0.253
 system.time(nsm(sys_small, verbose = FALSE))
 #>    user  system elapsed 
-#>   0.292   0.002   0.294
+#>   0.290   0.002   0.292
 ```

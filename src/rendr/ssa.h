@@ -12,7 +12,7 @@ using namespace arma;
 using namespace std;
 using namespace core;
 
-Rcpp::DataFrame ssa(bondr::rnet& network, vec y, double T, vec k = vec(), bool record_all = true) {
+inline Rcpp::DataFrame ssa(bondr::rnet network, vec y, double T, vec k = vec(), bool record_all = true) {
     double t = 0;
     vec x = vec(y);
 
@@ -24,10 +24,8 @@ Rcpp::DataFrame ssa(bondr::rnet& network, vec y, double T, vec k = vec(), bool r
 
     vec a = vec(network.reactions.size(), fill::zeros);
 
-    if (record_all) {
-        sol.times.push_back(t);
-        sol.states.push_back(x);
-    }
+    if (record_all)
+        sol.states.push_back({t, x});
 
     // keep track of case of early termination due to app reactants consumed
     bool early_exit = false;
@@ -41,8 +39,7 @@ Rcpp::DataFrame ssa(bondr::rnet& network, vec y, double T, vec k = vec(), bool r
 
         // if all species consumed, report final state and finish
         if (asum < 1e-15) {
-            sol.times.push_back(T);
-            sol.states.push_back(x);
+            sol.states.push_back({t, x});
             early_exit = true;
             break;
         }
@@ -63,16 +60,13 @@ Rcpp::DataFrame ssa(bondr::rnet& network, vec y, double T, vec k = vec(), bool r
         network.reactions[j].update(x);
         t += tau;
 
-        if (record_all && t < T) {
-            sol.times.push_back(t);
-            sol.states.push_back(x);
-        }
+        if (record_all && t < T)
+            sol.states.push_back({t, x});
     }
 
     if (!early_exit) {
-        sol.times.push_back(T);
         vec x_interp = round(((T - t_last)*x + (t - T)*x_last) / (t - t_last));
-        sol.states.push_back(x_interp);
+        sol.states.push_back({T, x_interp});
     }
 
     return DataFrame(sol);
