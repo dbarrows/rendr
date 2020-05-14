@@ -74,10 +74,10 @@
     },
     "backports": {
       "Package": "backports",
-      "Version": "1.1.6",
+      "Version": "1.1.7",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "3997fd62345a616e59e8161ee0a5816f"
+      "Hash": "e9c8188eb82b137301493492d767a1ac"
     },
     "base64enc": {
       "Package": "base64enc",
@@ -92,8 +92,8 @@
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
-      "RemoteUsername": "dbarrows",
       "RemoteRepo": "bondr",
+      "RemoteUsername": "dbarrows",
       "RemoteRef": "master",
       "RemoteSha": "c089c8e1071a9f9a73008aa7cee315efc74efa7d",
       "Hash": "1bf3dce732342e9ddc086455b51101b1"
@@ -495,11 +495,11 @@
       "Version": "0.0.0.9000",
       "Source": "GitHub",
       "RemoteType": "github",
-      "RemoteHost": "api.github.com",
       "RemoteUsername": "dbarrows",
       "RemoteRepo": "spurcore",
       "RemoteRef": "master",
       "RemoteSha": "7e33778810d15644276ab398b753ec116f495ec3",
+      "RemoteHost": "api.github.com",
       "Hash": "30786f9cf08ac1de9b1b0c69482cce96"
     },
     "stringi": {
