@@ -4,14 +4,16 @@
 \alias{ssa}
 \title{Stochastic simulation algorithm solver}
 \usage{
-ssa(sys, k = NULL, record_all = TRUE, force_compile = FALSE)
+ssa(sys, length.out = 100, all.out = FALSE, k = NULL, force_compile = FALSE)
 }
 \arguments{
 \item{sys}{\code{\link{rsys}} instance}
 
-\item{k}{\code{\link{vector}} of reaction rates corresponding to the reactions in \code{sys}, overrides those contained if \code{sys} if provided}
+\item{length.out}{length of solution output (table rows) (default 100)}
 
-\item{record_all}{if \code{TRUE} (default), record the system state at all time steps}
+\item{all.out}{if \code{TRUE} (default \code{FALSE}), ignore \code{length.out} and return entire solution}
+
+\item{k}{\code{\link{vector}} of reaction rates corresponding to the reactions in \code{sys}, overrides those contained if \code{sys} if provided}
 
 \item{force_compile}{if set to \code{TRUE}, forces the overwriting and recompilation of the network source file}
 }

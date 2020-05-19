@@ -3,13 +3,14 @@
 #' Generates a realization of the solution to the Chemical Master Equation.
 #' 
 #' @param sys [`rsys`] instance
+#' @param length.out length of solution output (table rows) (default 100)
+#' @param all.out if `TRUE` (default `FALSE`), ignore `length.out` and return entire solution
 #' @param k [`vector`] of reaction rates corresponding to the reactions in `sys`, overrides those contained if `sys` if provided
-#' @param record_all if `TRUE` (default), record the system state at all time steps
 #' @param force_compile if set to `TRUE`, forces the overwriting and recompilation of the network source file
 #' 
 #' @return [`rsol`] instance
 #' @export
-ssa <- function(sys, k = NULL, record_all = TRUE, force_compile = FALSE) {
+ssa <- function(sys, length.out = 100, all.out = FALSE, k = NULL, force_compile = FALSE) {
     with(sys, {
         sol <- network %>%
             (function(network) {
@@ -20,7 +21,10 @@ ssa <- function(sys, k = NULL, record_all = TRUE, force_compile = FALSE) {
                 else
                     NULL
             }) %>%
-            ssa_cpp(state, T, k_vec = k, record_all = record_all) %>%
+            ssa_cpp(state, T,
+                    length_out = length.out,
+                    all_out = all.out,
+                    k_vec = k) %>%
             as_tibble()
         rsol(sys, sol)
     })

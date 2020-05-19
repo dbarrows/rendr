@@ -46,11 +46,11 @@ print.rdsol <- function(x, ...) {
 #' @return [`tibble::tibble`] with a column for the solution time points, and a column for each species' quantities
 #' @export
 rdsol_quantities <- function(sol, average = FALSE, index = NULL) {
-    df <- tibble(Time = rdsol$t)
+    df <- tibble(Time = sol$t)
 
-    species_names <- rdsol$u[[1]] %>% names() %>% .[4:length(.)]
+    species_names <- sol$u[[1]] %>% names() %>% .[4:length(.)]
     for (s in species_names) {
-        df[s] <- rdsol$u %>% sapply(function(udf) {
+        df[s] <- sol$u %>% sapply(function(udf) {
             if (!is.null(index))
                 udf <- udf %>% filter(x == index[1], y == index[2], z == index[3])
             q <- udf %>% pull(s)

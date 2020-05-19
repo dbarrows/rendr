@@ -4,10 +4,12 @@
 \alias{rre}
 \title{Reaction rate equation solver}
 \usage{
-rre(sys)
+rre(sys, length.out = 100)
 }
 \arguments{
 \item{sys}{\code{\link{rsys}} instance}
+
+\item{length.out}{length of solution output (table rows) (default 100)}
 }
 \value{
 \code{\link{rsol}} instance

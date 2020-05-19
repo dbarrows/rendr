@@ -107,7 +107,7 @@ Generate a single realisation of the Chemical Master Equation (CME)
 solution via the Stochastic Solution Algorithm (SSA).
 
 ``` r
-ssa(sys) %>% plot()
+ssa(sys, all.out = TRUE) %>% plot()
 ```
 
 <img src="man/figures/README-ssa-1.svg" width="100%" />
@@ -205,10 +205,10 @@ to see which is faster for a given reaction-diffusion system.
 ``` r
 system.time(issa(sys, verbose = FALSE))
 #>    user  system elapsed 
-#>  17.592   0.022  17.627
+#>  18.042   0.013  18.061
 system.time(nsm(sys, verbose = FALSE))
 #>    user  system elapsed 
-#>   9.013   0.005   9.020
+#>   8.885   0.007   8.895
 ```
 
 ``` r
@@ -220,8 +220,8 @@ sys_small$volume <- volume(
     )
 system.time(issa(sys_small, verbose = FALSE))
 #>    user  system elapsed 
-#>   0.100   0.001   0.102
+#>   0.101   0.002   0.103
 system.time(nsm(sys_small, verbose = FALSE))
 #>    user  system elapsed 
-#>   0.125   0.002   0.127
+#>   0.122   0.001   0.123
 ```

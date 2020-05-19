@@ -6,9 +6,10 @@
 Rcpp::DataFrame ssa_cpp(SEXP rnet_xptr,
                         arma::vec y,
                         double T,
-                        Rcpp::Nullable<arma::vec> k_vec = R_NilValue,
-                        bool record_all = true) {
+                        uint length_out = 100,
+                        bool all_out = false,
+                        Rcpp::Nullable<arma::vec> k_vec = R_NilValue) {
     auto net = *Rcpp::XPtr<bondr::rnet>(rnet_xptr);
     auto k = k_vec.isNull() ? arma::vec() : Rcpp::as<arma::vec>(k_vec);
-    return rendr::ssa(net, y, T, k, record_all);
+    return rendr::ssa(net, y, T, length_out, all_out, k);
 }

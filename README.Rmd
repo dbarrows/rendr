@@ -75,7 +75,7 @@ plot(sol)
 Generate a single realisation of the Chemical Master Equation (CME) solution via the Stochastic Solution Algorithm (SSA).
 
 ```{r ssa}
-ssa(sys) %>% plot()
+ssa(sys, all.out = TRUE) %>% plot()
 ```
 
 ## Reaction-diffusion system solvers
