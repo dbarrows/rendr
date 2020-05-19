@@ -104,8 +104,9 @@ Reaction-diffusion systems created via the `rdsys` class, which are constructed 
 Generate a single realisation of the Reaction-diffusion Master Equation (RDME) solution via the Inhomogeneous Stochastic Solution Algorithm (ISSA).
 
 ```{r issa}
-issa(sys) %>%
-    rdsol_plot()
+issa(sys) %T>%
+    print() %>%
+    plot()
 ```
 
 ### NSM
@@ -120,7 +121,7 @@ system.time(nsm(sys, verbose = FALSE))
 ```{r time-small}
 sys_small <- sys
 sys_small$volume <- volume(
-        dims = c(4, 1, 1),
+        dims = c(2, 1, 1),
         h = 1/40,
         seed = c(25, 75)
     )

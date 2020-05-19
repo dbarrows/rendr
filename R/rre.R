@@ -4,7 +4,7 @@
 #' 
 #' @param sys [`rsys`] instance
 #' 
-#' @return Solution to the system as a [`tibble::tibble`]
+#' @return [`rsol`] instance
 #' @export
 rre <- function(sys) {
     with(sys, {

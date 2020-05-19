@@ -14,7 +14,7 @@ nsm(sys, verbose = TRUE, force_compile = FALSE)
 \item{force_compile}{if \code{TRUE} (default \code{FALSE}), force a recompile of the reaction network}
 }
 \value{
-Solution to the system as a \code{\link{list}}
+\code{\link{rdsol}} instance
 }
 \description{
 Next Subvolume Method (NSM) solver

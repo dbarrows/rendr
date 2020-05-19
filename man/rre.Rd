@@ -10,7 +10,7 @@ rre(sys)
 \item{sys}{\code{\link{rsys}} instance}
 }
 \value{
-Solution to the system as a \code{\link[tibble:tibble]{tibble::tibble}}
+\code{\link{rsol}} instance
 }
 \description{
 Deterministic solver for reaction systems.

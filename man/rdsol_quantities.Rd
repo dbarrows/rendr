@@ -4,10 +4,10 @@
 \alias{rdsol_quantities}
 \title{Aggregator for species quantities}
 \usage{
-rdsol_quantities(rdsol, average = FALSE, index = NULL)
+rdsol_quantities(sol, average = FALSE, index = NULL)
 }
 \arguments{
-\item{rdsol}{a solution to a reaction-diffusion system}
+\item{sol}{\code{\link{rdsol}} instance}
 
 \item{average}{if \code{TRUE}, will return quantities averages over the number of voxels at each time}
 

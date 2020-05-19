@@ -4,7 +4,7 @@
 #' @param verbose controls if output is generated during during run (default `TRUE`)
 #' @param force_compile if `TRUE` (default `FALSE`), force a recompile of the reaction network
 #' 
-#' @return Solution to the system as a [`list`]
+#' @return [`rdsol`] instance
 #' @export
 issa <- function(sys, verbose = TRUE, force_compile = FALSE) {
     solve_rdsys(sys, issa_cpp, verbose = verbose, force_compile = force_compile)
@@ -16,7 +16,7 @@ issa <- function(sys, verbose = TRUE, force_compile = FALSE) {
 #' @param verbose controls if output is generated during during run (default `TRUE`)
 #' @param force_compile if `TRUE` (default `FALSE`), force a recompile of the reaction network
 #' 
-#' @return Solution to the system as a [`list`]
+#' @return [`rdsol`] instance
 #' @export
 nsm <- function(sys, verbose = TRUE, force_compile = FALSE) {
     solve_rdsys(sys, nsm_cpp, verbose = verbose, force_compile = force_compile)
@@ -34,7 +34,6 @@ solve_rdsys <- function(sys, algorithm_cpp, verbose = TRUE, force_compile = FALS
                     NULL
             }) %>%
             algorithm_cpp(D, volume$cpp$xptr, T, verbose)
-        sol$u <- lapply(sol$u, as_tibble)
-        sol
+        rdsol(sys, sol$t, lapply(sol$u, as_tibble))
     })
 }

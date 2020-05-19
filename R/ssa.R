@@ -7,7 +7,7 @@
 #' @param record_all if `TRUE` (default), record the system state at all time steps
 #' @param force_compile if set to `TRUE`, forces the overwriting and recompilation of the network source file
 #' 
-#' @return Solution to the system as a [`data.frame`]
+#' @return [`rsol`] instance
 #' @export
 ssa <- function(sys, k = NULL, record_all = TRUE, force_compile = FALSE) {
     with(sys, {

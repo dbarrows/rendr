@@ -1,26 +1,51 @@
-#' Reaction network solution plot
+#' Reaction-diffusion system solution
 #' 
-#' @param rsol a solution to a reaction-diffusion system
+#' @param sys [`rdsys`] instance used to produce the solution
+#' @param t [`vector`] of times in the solution
+#' @param u [`list`] of [`tibble::tibble`]s of solution states corresponding to each of the time points in `t`
 #' 
-#' @return [`ggplot2::ggplot`] plot of the solution
+#' @return [`rdsol`] instance
 #' @export
-rdsol_plot <- function(rsol) {
-    rsol %>%
+rdsol <- function(sys, t, u) {
+    structure(
+        list(
+            sys = sys,
+            t = t,
+            u = u
+        ),
+        class = "rdsol"
+    )
+}
+
+#' @export
+plot.rdsol <- function(x, ...) {
+    x %>%
         rdsol_quantities() %>%
         pivot_longer(-Time, names_to = "Species", values_to = "Quantity") %>%
         ggplot(aes(Time, Quantity, colour = Species)) +
             geom_line()
 }
 
+#' @export
+print.rdsol <- function(x, ...) {
+    cat(paste0(silver("Network"), "\n"))
+    print(x$sys$network)
+    cat("\n")
+
+    cat(paste0(silver("Solution"), "\n"))
+    cat(blurred(paste0("# ", length(x$t), " time points x ", length(species(x$sys$network)), " species")))
+    cat("\n")
+}
+
 #' Aggregator for species quantities
 #' 
-#' @param rdsol a solution to a reaction-diffusion system
+#' @param sol [`rdsol`] instance
 #' @param average if `TRUE`, will return quantities averages over the number of voxels at each time
 #' @param index an optional voxel index to filter quantity extraction
 #' 
 #' @return [`tibble::tibble`] with a column for the solution time points, and a column for each species' quantities
 #' @export
-rdsol_quantities <- function(rdsol, average = FALSE, index = NULL) {
+rdsol_quantities <- function(sol, average = FALSE, index = NULL) {
     df <- tibble(Time = rdsol$t)
 
     species_names <- rdsol$u[[1]] %>% names() %>% .[4:length(.)]

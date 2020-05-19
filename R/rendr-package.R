@@ -20,8 +20,8 @@
 #' @importFrom methods new
 #' @importFrom crayon blurred blue silver
 #' @importFrom parallel detectCores mclapply
-#' @useDynLib rendr, .registration = TRUE
 #' @importFrom Rcpp sourceCpp
+#' @useDynLib rendr, .registration = TRUE
 NULL
 
 ## quiets concerns of R CMD check re:

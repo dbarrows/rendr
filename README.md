@@ -169,8 +169,9 @@ Generate a single realisation of the Reaction-diffusion Master Equation
 (ISSA).
 
 ``` r
-issa(sys) %>%
-    rdsol_plot()
+issa(sys) %T>%
+    print() %>%
+    plot()
 #> Starting ISSA simulation with parameters:
 #>  - Reactions:   4
 #>  - Species:     2
@@ -178,6 +179,16 @@ issa(sys) %>%
 #>  - h:           0.025
 #>  - time:        [0, 3.5]
 #> ....................................................................................................
+#> Network
+#> # Reaction network: 4 reactions x 2 species
+#>     Reactants    Products      Rate
+#> 1           0 -> U             4000
+#> 2           U -> 0                2
+#> 3           0 -> V            12000
+#> 4      2U + V -> 3U        1.25e-07
+#> 
+#> Solution
+#> # 100 time points x 2 species
 ```
 
 <img src="man/figures/README-issa-1.svg" width="100%" />
@@ -194,23 +205,23 @@ to see which is faster for a given reaction-diffusion system.
 ``` r
 system.time(issa(sys, verbose = FALSE))
 #>    user  system elapsed 
-#>  17.023   0.010  17.040
+#>  17.592   0.022  17.627
 system.time(nsm(sys, verbose = FALSE))
 #>    user  system elapsed 
-#>   8.843   0.006   8.851
+#>   9.013   0.005   9.020
 ```
 
 ``` r
 sys_small <- sys
 sys_small$volume <- volume(
-        dims = c(4, 1, 1),
+        dims = c(2, 1, 1),
         h = 1/40,
         seed = c(25, 75)
     )
 system.time(issa(sys_small, verbose = FALSE))
 #>    user  system elapsed 
-#>   0.224   0.002   0.226
+#>   0.100   0.001   0.102
 system.time(nsm(sys_small, verbose = FALSE))
 #>    user  system elapsed 
-#>   0.271   0.001   0.272
+#>   0.125   0.002   0.127
 ```

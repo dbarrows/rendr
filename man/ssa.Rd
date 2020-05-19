@@ -16,7 +16,7 @@ ssa(sys, k = NULL, record_all = TRUE, force_compile = FALSE)
 \item{force_compile}{if set to \code{TRUE}, forces the overwriting and recompilation of the network source file}
 }
 \value{
-Solution to the system as a \code{\link{data.frame}}
+\code{\link{rsol}} instance
 }
 \description{
 Generates a realization of the solution to the Chemical Master Equation.
