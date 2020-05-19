@@ -40,9 +40,13 @@ devtools::install_github("dbarrows/rendr")
 
 Networks are created using the [`bondr`](https://github.com/dbarrows/bondr) package. See [Creating Networks](https://dexter.barrows.io/bondr/#creating-networks) for more details.
 
-```{r}
+```r
 library(rendr)
-
+```
+```{r, include = FALSE}
+devtools::load_all()
+```
+```{r}
 (network <- bondr::network_examples())
 ```
 
@@ -63,8 +67,7 @@ A function is provided for easy visualisation of solutions.
 
 ```{r}
 ggplot2::theme_set(wplot::theme_wc())
-
-rsol_plot(sol)
+plot(sol)
 ```
 
 ### SSA
@@ -72,8 +75,7 @@ rsol_plot(sol)
 Generate a single realisation of the Chemical Master Equation (CME) solution via the Stochastic Solution Algorithm (SSA).
 
 ```{r ssa}
-ssa(sys) %>%
-    rsol_plot()
+ssa(sys) %>% plot()
 ```
 
 ## Reaction-diffusion system solvers
@@ -110,12 +112,12 @@ issa(sys) %>%
 
 Generate a single realisation of the (RDME) solution via the Next Subvolume Method (NSM). Usage of the `nsm` function is the same as with the [ISSA solver](#issa). The NSM algorithm is usually faster for systems with a large number of subvolume (voxels) relative to the reaction network size. You may have to try both the ISSA and NSM solver to see which is faster for a given reaction-diffusion system.
 
-```{r time-small}
+```{r time}
 system.time(issa(sys, verbose = FALSE))
 system.time(nsm(sys, verbose = FALSE))
 ```
 
-```{r time-big}
+```{r time-small}
 sys_small <- sys
 sys_small$volume <- volume(
         dims = c(4, 1, 1),

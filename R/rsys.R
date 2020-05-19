@@ -7,7 +7,8 @@
 #' @return [`rsys`] instance
 #' @export
 rsys <- function(network, state, T) {
-    structure(list(
+    structure(
+        list(
             network = network,
             state = state,
             T = T

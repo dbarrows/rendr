@@ -11,7 +11,7 @@
 #' @export
 ssa <- function(sys, k = NULL, record_all = TRUE, force_compile = FALSE) {
     with(sys, {
-        network %>%
+        sol <- network %>%
             (function(network) {
                 if (!is.null(network) && class(network) == "network")
                     compile(network, force = force_compile, rateless = (0 < length(k)))
@@ -22,5 +22,6 @@ ssa <- function(sys, k = NULL, record_all = TRUE, force_compile = FALSE) {
             }) %>%
             ssa_cpp(state, T, k_vec = k, record_all = record_all) %>%
             as_tibble()
+        rsol(sys, sol)
     })
 }

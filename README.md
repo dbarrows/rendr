@@ -31,12 +31,9 @@ details.
 
 ``` r
 library(rendr)
-#> 
-#> Attaching package: 'bondr'
-#> The following object is masked from 'package:stats':
-#> 
-#>     deriv
+```
 
+``` r
 (network <- bondr::network_examples())
 #> # Reaction network: 3 reactions x 4 species
 #>     Reactants    Products     Rate
@@ -71,6 +68,14 @@ conjunction with an ode solver.
 
 ``` r
 (sol <- rre(sys))
+#> Network
+#> # Reaction network: 3 reactions x 4 species
+#>     Reactants    Products     Rate
+#> 1       S + E -> SE        0.00166
+#> 2          SE -> S + E       1e-04
+#> 3          SE -> E + P         0.1
+#> 
+#> Solution
 #> # A tibble: 100 x 5
 #>     Time     S     E    SE      P
 #>    <dbl> <dbl> <dbl> <dbl>  <dbl>
@@ -91,11 +96,10 @@ A function is provided for easy visualisation of solutions.
 
 ``` r
 ggplot2::theme_set(wplot::theme_wc())
-
-rsol_plot(sol)
+plot(sol)
 ```
 
-<img src="man/figures/README-unnamed-chunk-5-1.svg" width="100%" />
+<img src="man/figures/README-unnamed-chunk-6-1.svg" width="100%" />
 
 ### SSA
 
@@ -103,8 +107,7 @@ Generate a single realisation of the Chemical Master Equation (CME)
 solution via the Stochastic Solution Algorithm (SSA).
 
 ``` r
-ssa(sys) %>%
-    rsol_plot()
+ssa(sys) %>% plot()
 ```
 
 <img src="man/figures/README-ssa-1.svg" width="100%" />
@@ -191,10 +194,10 @@ to see which is faster for a given reaction-diffusion system.
 ``` r
 system.time(issa(sys, verbose = FALSE))
 #>    user  system elapsed 
-#>  18.530   0.062  18.650
+#>  17.023   0.010  17.040
 system.time(nsm(sys, verbose = FALSE))
 #>    user  system elapsed 
-#>   9.380   0.034   9.444
+#>   8.843   0.006   8.851
 ```
 
 ``` r
@@ -206,8 +209,8 @@ sys_small$volume <- volume(
     )
 system.time(issa(sys_small, verbose = FALSE))
 #>    user  system elapsed 
-#>   0.248   0.003   0.253
+#>   0.224   0.002   0.226
 system.time(nsm(sys_small, verbose = FALSE))
 #>    user  system elapsed 
-#>   0.290   0.002   0.292
+#>   0.271   0.001   0.272
 ```

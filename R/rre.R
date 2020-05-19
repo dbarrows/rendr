@@ -14,6 +14,6 @@ rre <- function(sys) {
             data.frame() %>%
             as_tibble()
         names(sol) <- c("Time", species(network))
-        sol
+        rsol(sys, sol)
     })
 }
