@@ -1,5 +1,6 @@
 #include <RcppArmadillo.h>
 #include <array3.h>
+#include <utils.h>
 
 namespace rendr {
 
@@ -9,22 +10,34 @@ using namespace core;
 
 // Definitions ------------------------------------------------------------------------------------
 
-template <typename T>
+template <typename S>
 struct sol {
     vector<string> species;
     vector<double> t;
-    vector<T> u;
+    vector<S> u;
 };
 
 // Functions --------------------------------------------------------------------------------------
 
-template <typename T>
-Rcpp::NumericVector t_R(sol<T>& sol) {
+template <typename S>
+Rcpp::NumericVector t_R(sol<S>& sol) {
     return Rcpp::wrap(sol.t);
 }
 
-template <typename T>
-void push(sol<T>& sol, double t, T x, T y, bool all_out, uint& next_out){
+template <typename S>
+sol<S> provision(vector<string>& species, double T, uint length_out, bool all_out) {
+    auto s = sol<S> { species };
+    if (!all_out) {
+        s.t = 1 < length_out ?
+            vector_cast<vector<double>>(seq(0, T, length_out)) :
+            vector<double> { T };
+        s.u = vector<S>(length_out);
+    }
+    return s;
+}
+
+template <typename S>
+void push(sol<S>& sol, double t, S x, S y, bool all_out, uint& next_out){
     // save everything
     if (all_out) {
         sol.t.push_back(t);

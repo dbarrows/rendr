@@ -4,7 +4,6 @@
 #include <rnet.h>
 #include <random.h>
 #include <utils.h>
-#include <arma_helpers.h>
 #include "ssa.h"
 #include "rsol.h"
 
@@ -25,16 +24,9 @@ Rcpp::DataFrame ssa(bondr::rnet network,
 
     auto t_last = t;
     auto x_last = x;
-    
-    auto sol = rsol();
-    sol.species = network.species;
-    if (!all_out) {
-        sol.t = 1 < length_out ?
-            vector_cast<vector<double>>(seq(0, T, length_out)) :
-            vector<double> { T };
-        sol.u = vector<vec>(length_out);
-    }
-
+        
+    // data saving
+    auto sol = provision<vec>(network.species, T, length_out, all_out);
     uint next_out = 0;
     auto sol_push = [&sol, &next_out, y, all_out](double t, vec x) {
         push(sol, t, x, y, all_out, next_out);

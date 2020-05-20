@@ -4,7 +4,7 @@
 #include <map>
 #include <functional>
 #include <array3.h>
-#include <arma_helpers.h>
+#include <arma_utils.h>
 
 namespace rendr {
 

@@ -3,6 +3,7 @@
 #include <RcppArmadillo.h>
 #include <volume.h>
 #include <random.h>
+#include <utils.h>
 #include "event_queue.h"
 #include "rdnet.h"
 #include "rdsol.h"
@@ -41,7 +42,8 @@ rdsol nsm(rdnet& network,
           uint length_out = 100,
           bool all_out = false,
           bool verbose = true) {
-    auto x = vol.state;
+    auto y = vol.state;
+    auto x = y;
     uvec3 dims = x.dims;
     double h = vol.h;
     double t = 0;
@@ -74,16 +76,13 @@ rdsol nsm(rdnet& network,
     auto eq = event_queue(event_times);
 
     // state saving
-    auto sol = rdsol();
-    sol.species = network.species;
-    double save_time_step;
-    double next_save_time;
-    if (all_out) {
-        sol.t.push_back(t);
-        sol.u.push_back(x);
-        save_time_step = T / (length_out - 1);
-        next_save_time = save_time_step;
-    }
+    auto sol = provision<array3<vec>>(network.species, T, length_out, all_out);
+    uint next_out = 0;
+    auto sol_push = [&sol, &next_out, y, all_out](double t, array3<vec>& x) {
+        push(sol, t, x, y, all_out, next_out);
+    };
+    
+    sol_push(t, x);
 
     // progress printing
     double next_report_fraction;
@@ -144,11 +143,7 @@ rdsol nsm(rdnet& network,
             }
         }
 
-        if (all_out && next_save_time <= t) {
-            sol.t.push_back(t);
-            sol.u.push_back(x);
-            next_save_time = sol.t.size() == length_out - 1 ? T : (next_save_time + save_time_step);
-        }
+        sol_push(t, x);
 
         if (verbose && next_report_fraction < t / T) {
             Rcpp::Rcout << ".";
@@ -158,13 +153,11 @@ rdsol nsm(rdnet& network,
         if (iter++ % 1000 == 0)
             Rcpp::checkUserInterrupt();
     }
+
     if (verbose)
         Rcpp::Rcout << endl;
 
-    if (!all_out) {
-        sol.t.push_back(t);
-        sol.u.push_back(x);
-    }
+    sol_push(t, x);
 
     return sol;
 }

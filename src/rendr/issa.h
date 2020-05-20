@@ -4,7 +4,6 @@
 #include <volume.h>
 #include <random.h>
 #include <utils.h>
-#include <arma_helpers.h>
 #include "rdnet.h"
 #include "rdsol.h"
 
@@ -53,20 +52,12 @@ rdsol issa(rdnet& network,
     auto csum = vector<double>(propensities.size(), 0);
 
     // state saving
-    auto sol = rdsol();
-    sol.species = network.species;
-    if (!all_out) {
-        sol.t = 1 < length_out ?
-            vector_cast<vector<double>>(seq(0, T, length_out)) :
-            vector<double> { T };
-        sol.u = vector<array3<vec>>(length_out);
-    }
-
+    auto sol = provision<array3<vec>>(network.species, T, length_out, all_out);
     uint next_out = 0;
     auto sol_push = [&sol, &next_out, y, all_out](double t, array3<vec>& x) {
         push(sol, t, x, y, all_out, next_out);
     };
-
+    
     sol_push(t, x);
 
     // progress printing
