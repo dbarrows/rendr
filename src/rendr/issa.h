@@ -18,7 +18,7 @@ rdsol issa(rdnet& network,
            bool record_all = true,
            uint save_grid_size = 100,
            bool verbose = true) {
-    auto x = volume.state.copy();
+    auto x = volume.state;
     uvec3 dims = x.dims;
     double h = volume.h;
     double t = 0;
@@ -56,7 +56,7 @@ rdsol issa(rdnet& network,
     double next_save_time;
     if (record_all) {
         sol.t.push_back(t);
-        sol.u.push_back(x.copy());
+        sol.u.push_back(x);
         save_time_step = T / (save_grid_size - 1);
         next_save_time = save_time_step;
     }
@@ -92,7 +92,7 @@ rdsol issa(rdnet& network,
 
         if (record_all && next_save_time <= t) {
             sol.t.push_back(t);
-            sol.u.push_back(x.copy());
+            sol.u.push_back(x);
             next_save_time = sol.t.size() == save_grid_size - 1 ? T : (next_save_time + save_time_step);
         }
 
@@ -109,7 +109,7 @@ rdsol issa(rdnet& network,
 
     if (!record_all) {
         sol.t.push_back(t);
-        sol.u.push_back(x.copy());
+        sol.u.push_back(x);
     }
 
     return sol;
