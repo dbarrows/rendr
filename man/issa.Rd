@@ -4,10 +4,20 @@
 \alias{issa}
 \title{Inhomogeneous Stochastic Simulation Algorithm (ISSA) solver}
 \usage{
-issa(sys, verbose = TRUE, force_compile = FALSE)
+issa(
+  sys,
+  length.out = 100,
+  all.out = FALSE,
+  verbose = TRUE,
+  force_compile = FALSE
+)
 }
 \arguments{
 \item{sys}{an instance of the \code{\link{rdsys}} class}
+
+\item{length.out}{length of solution output (table rows) (default 100)}
+
+\item{all.out}{if \code{TRUE} (default \code{FALSE}), ignore \code{length.out} and return entire solution}
 
 \item{verbose}{controls if output is generated during during run (default \code{TRUE})}
 

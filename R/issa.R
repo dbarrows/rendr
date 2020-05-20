@@ -1,6 +1,8 @@
 #' Inhomogeneous Stochastic Simulation Algorithm (ISSA) solver
 #' 
 #' @param sys an instance of the [`rdsys`] class
+#' @param length.out length of solution output (table rows) (default 100)
+#' @param all.out if `TRUE` (default `FALSE`), ignore `length.out` and return entire solution
 #' @param verbose controls if output is generated during during run (default `TRUE`)
 #' @param force_compile if `TRUE` (default `FALSE`), force a recompile of the reaction network
 #' 
@@ -13,6 +15,8 @@ issa <- function(sys, length.out = 100, all.out = FALSE, verbose = TRUE, force_c
 #' Next Subvolume Method (NSM) solver
 #' 
 #' @param sys an instance of the [`rdsys`] class
+#' @param length.out length of solution output (table rows) (default 100)
+#' @param all.out if `TRUE` (default `FALSE`), ignore `length.out` and return entire solution
 #' @param verbose controls if output is generated during during run (default `TRUE`)
 #' @param force_compile if `TRUE` (default `FALSE`), force a recompile of the reaction network
 #' 
