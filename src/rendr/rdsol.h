@@ -2,7 +2,7 @@
 
 #include <RcppArmadillo.h>
 #include <array3.h>
-#include "rdsol.h"
+#include "sol.h"
 
 namespace rendr {
 
@@ -10,22 +10,13 @@ using namespace arma;
 using namespace std;
 using namespace core;
 
-// Definitions ------------------------------------------------------------------------------
+// Definition -------------------------------------------------------------------------------------
 
-struct rdsol {
-    vector<string> species;
-    vector<double> t;
-    vector<array3<vec>> u;
-};
+using rdsol = sol<array3<vec>>;
 
-// Functions --------------------------------------------------------------------------------
+// Functions --------------------------------------------------------------------------------------
 
-inline Rcpp::NumericVector t(rdsol& sol) {
-    return Rcpp::wrap(sol.t);
-}
-
-inline Rcpp::List DataFrame(array3<vec>& u,
-                            vector<string>& species) {
+inline Rcpp::DataFrame DataFrame(array3<vec>& u, vector<string>& species) {
     Rcpp::List list = Rcpp::List(3 + species.size());
     auto names = Rcpp::CharacterVector { "x", "y", "z" };
     for (auto& s : species)
@@ -48,7 +39,7 @@ inline Rcpp::List DataFrame(array3<vec>& u,
     return Rcpp::DataFrame(list);
 }
 
-inline Rcpp::List u(rdsol& sol) {
+inline Rcpp::List u_R(rdsol& sol) {
     auto list = Rcpp::List(sol.u.size());
     for (uint i = 0; i < sol.u.size(); i++)
         list[i] = DataFrame(sol.u[i], sol.species);

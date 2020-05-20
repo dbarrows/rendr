@@ -3,6 +3,8 @@
 #include <RcppArmadillo.h>
 #include <volume.h>
 #include <random.h>
+#include <utils.h>
+#include <arma_helpers.h>
 #include "rdnet.h"
 #include "rdsol.h"
 
@@ -13,14 +15,15 @@ using namespace std;
 using namespace core;
 
 rdsol issa(rdnet& network,
-           core::volume& volume,
+           core::volume& vol,
            double T,
-           bool record_all = true,
-           uint save_grid_size = 100,
+           uint length_out = 100,
+           bool all_out = false,
            bool verbose = true) {
-    auto x = volume.state;
+    auto y = vol.state;
+    auto x = y;
     uvec3 dims = x.dims;
-    double h = volume.h;
+    double h = vol.h;
     double t = 0;
 
     if (verbose) {
@@ -52,14 +55,19 @@ rdsol issa(rdnet& network,
     // state saving
     auto sol = rdsol();
     sol.species = network.species;
-    double save_time_step;
-    double next_save_time;
-    if (record_all) {
-        sol.t.push_back(t);
-        sol.u.push_back(x);
-        save_time_step = T / (save_grid_size - 1);
-        next_save_time = save_time_step;
+    if (!all_out) {
+        sol.t = 1 < length_out ?
+            vector_cast<vector<double>>(seq(0, T, length_out)) :
+            vector<double> { T };
+        sol.u = vector<array3<vec>>(length_out);
     }
+
+    uint next_out = 0;
+    auto sol_push = [&sol, &next_out, y, all_out](double t, array3<vec>& x) {
+        push(sol, t, x, y, all_out, next_out);
+    };
+
+    sol_push(t, x);
 
     // progress printing
     double next_report_fraction;
@@ -90,11 +98,7 @@ rdsol issa(rdnet& network,
         updates[j](x);
         t += tau;
 
-        if (record_all && next_save_time <= t) {
-            sol.t.push_back(t);
-            sol.u.push_back(x);
-            next_save_time = sol.t.size() == save_grid_size - 1 ? T : (next_save_time + save_time_step);
-        }
+        sol_push(t, x);
 
         if (verbose && next_report_fraction < t / T) {
             Rcpp::Rcout << ".";
@@ -104,13 +108,11 @@ rdsol issa(rdnet& network,
         if (iter++ % 1000 == 0)
             Rcpp::checkUserInterrupt();
     }
+
     if (verbose)
         Rcpp::Rcout << endl;
 
-    if (!record_all) {
-        sol.t.push_back(t);
-        sol.u.push_back(x);
-    }
+    sol_push(t, x);
 
     return sol;
 }

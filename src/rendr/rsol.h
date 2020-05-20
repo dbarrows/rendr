@@ -1,6 +1,7 @@
 #pragma once
 
 #include <RcppArmadillo.h>
+#include "sol.h"
 
 namespace rendr {
 
@@ -8,17 +9,13 @@ using namespace arma;
 using namespace std;
 using namespace core;
 
-// Definitions ------------------------------------------------------------------------------
+// Definition -------------------------------------------------------------------------------------
 
-struct rsol {
-    vector<string> species;
-    vector<double> t;
-    vector<vec> u;
-};
+using rsol = sol<vec>;
 
-// Functions --------------------------------------------------------------------------------
+// Functions --------------------------------------------------------------------------------------
 
-inline Rcpp::DataFrame DataFrame(rsol& sol) {
+Rcpp::DataFrame DataFrame(rsol& sol) {
     Rcpp::List list = Rcpp::List(1 + sol.species.size());
 
     auto names = Rcpp::CharacterVector { "Time" };

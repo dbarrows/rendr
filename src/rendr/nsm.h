@@ -22,9 +22,9 @@ struct voxel_rates {
 
 // Functions --------------------------------------------------------------------------------
 
-inline double sum(voxel_rates rates) { return sum(rates.reactions) + sum(rates.diffusions); }
-inline double event_time(double rate) { return -log(runif())/rate; };
-inline void update_rates(voxel_rates& rates,
+double sum(voxel_rates rates) { return sum(rates.reactions) + sum(rates.diffusions); }
+double event_time(double rate) { return -log(runif())/rate; };
+void update_rates(voxel_rates& rates,
                          vector<reaction>& reactions,
                          vector<diffusion>& diffusions,
                          array3<vec>& x) {
@@ -35,12 +35,12 @@ inline void update_rates(voxel_rates& rates,
 }
 
 
-inline rdsol nsm(rdnet& network,
-                 core::volume& vol,
-                 double T,
-                 bool record_all = true,
-                 uint save_grid_size = 100,
-                 bool verbose = true) {
+rdsol nsm(rdnet& network,
+          core::volume& vol,
+          double T,
+          uint length_out = 100,
+          bool all_out = false,
+          bool verbose = true) {
     auto x = vol.state;
     uvec3 dims = x.dims;
     double h = vol.h;
@@ -78,10 +78,10 @@ inline rdsol nsm(rdnet& network,
     sol.species = network.species;
     double save_time_step;
     double next_save_time;
-    if (record_all) {
+    if (all_out) {
         sol.t.push_back(t);
         sol.u.push_back(x);
-        save_time_step = T / (save_grid_size - 1);
+        save_time_step = T / (length_out - 1);
         next_save_time = save_time_step;
     }
 
@@ -144,10 +144,10 @@ inline rdsol nsm(rdnet& network,
             }
         }
 
-        if (record_all && next_save_time <= t) {
+        if (all_out && next_save_time <= t) {
             sol.t.push_back(t);
             sol.u.push_back(x);
-            next_save_time = sol.t.size() == save_grid_size - 1 ? T : (next_save_time + save_time_step);
+            next_save_time = sol.t.size() == length_out - 1 ? T : (next_save_time + save_time_step);
         }
 
         if (verbose && next_report_fraction < t / T) {
@@ -161,7 +161,7 @@ inline rdsol nsm(rdnet& network,
     if (verbose)
         Rcpp::Rcout << endl;
 
-    if (!record_all) {
+    if (!all_out) {
         sol.t.push_back(t);
         sol.u.push_back(x);
     }

@@ -7,7 +7,6 @@
 #include <arma_helpers.h>
 #include "ssa.h"
 #include "rsol.h"
-#include "ssa_helpers.h"
 
 namespace rendr {
 
@@ -15,12 +14,12 @@ using namespace arma;
 using namespace std;
 using namespace core;
 
-inline Rcpp::DataFrame ssa(bondr::rnet network,
-                           vec y,
-                           double T,
-                           uint length_out = 100,
-                           bool all_out = false,
-                           vec k = vec()) {
+Rcpp::DataFrame ssa(bondr::rnet network,
+                    vec y,
+                    double T,
+                    uint length_out = 100,
+                    bool all_out = false,
+                    vec k = vec()) {
     double t = 0;
     vec x = vec(y);
 
