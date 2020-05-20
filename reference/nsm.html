@@ -120,7 +120,13 @@
     <p>Next Subvolume Method (NSM) solver</p>
     </div>
 
-    <pre class="usage"><span class='fu'>nsm</span>(<span class='no'>sys</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>force_compile</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>nsm</span>(
+  <span class='no'>sys</span>,
+  <span class='kw'>length.out</span> <span class='kw'>=</span> <span class='fl'>100</span>,
+  <span class='kw'>all.out</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>force_compile</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -128,6 +134,14 @@
     <tr>
       <th>sys</th>
       <td><p>an instance of the <code><a href='rdsys.html'>rdsys</a></code> class</p></td>
+    </tr>
+    <tr>
+      <th>length.out</th>
+      <td><p>length of solution output (table rows) (default 100)</p></td>
+    </tr>
+    <tr>
+      <th>all.out</th>
+      <td><p>if <code>TRUE</code> (default <code>FALSE</code>), ignore <code>length.out</code> and return entire solution</p></td>
     </tr>
     <tr>
       <th>verbose</th>

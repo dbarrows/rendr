@@ -120,7 +120,7 @@
     <p>Generates a realization of the solution to the Chemical Master Equation.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ssa</span>(<span class='no'>sys</span>, <span class='kw'>k</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>record_all</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>force_compile</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>ssa</span>(<span class='no'>sys</span>, <span class='kw'>length.out</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>all.out</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>k</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>force_compile</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -130,12 +130,16 @@
       <td><p><code><a href='rsys.html'>rsys</a></code> instance</p></td>
     </tr>
     <tr>
-      <th>k</th>
-      <td><p><code><a href='https://rdrr.io/r/base/vector.html'>vector</a></code> of reaction rates corresponding to the reactions in <code>sys</code>, overrides those contained if <code>sys</code> if provided</p></td>
+      <th>length.out</th>
+      <td><p>length of solution output (table rows) (default 100)</p></td>
     </tr>
     <tr>
-      <th>record_all</th>
-      <td><p>if <code>TRUE</code> (default), record the system state at all time steps</p></td>
+      <th>all.out</th>
+      <td><p>if <code>TRUE</code> (default <code>FALSE</code>), ignore <code>length.out</code> and return entire solution</p></td>
+    </tr>
+    <tr>
+      <th>k</th>
+      <td><p><code><a href='https://rdrr.io/r/base/vector.html'>vector</a></code> of reaction rates corresponding to the reactions in <code>sys</code>, overrides those contained if <code>sys</code> if provided</p></td>
     </tr>
     <tr>
       <th>force_compile</th>

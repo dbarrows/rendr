@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Reaction rate equation solver — rre • rendr</title>
+<title>Aggregator for species quantities — rdsol_summarise • rendr</title>
 
 
 <!-- jquery -->
@@ -41,8 +41,8 @@
   <link href="../extra.css" rel="stylesheet">
   
 
-<meta property="og:title" content="Reaction rate equation solver — rre" />
-<meta property="og:description" content="Deterministic solver for reaction systems." />
+<meta property="og:title" content="Aggregator for species quantities — rdsol_summarise" />
+<meta property="og:description" content="Aggregator for species quantities" />
 
 
 
@@ -111,33 +111,37 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Reaction rate equation solver</h1>
-    <small class="dont-index">Source: <a href='https://github.com/dbarrows/rendr/blob/master/R/rre.R'><code>R/rre.R</code></a></small>
-    <div class="hidden name"><code>rre.Rd</code></div>
+    <h1>Aggregator for species quantities</h1>
+    <small class="dont-index">Source: <a href='https://github.com/dbarrows/rendr/blob/master/R/rdsol.R'><code>R/rdsol.R</code></a></small>
+    <div class="hidden name"><code>rdsol_summarise.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Deterministic solver for reaction systems.</p>
+    <p>Aggregator for species quantities</p>
     </div>
 
-    <pre class="usage"><span class='fu'>rre</span>(<span class='no'>sys</span>, <span class='kw'>length.out</span> <span class='kw'>=</span> <span class='fl'>100</span>)</pre>
+    <pre class="usage"><span class='fu'>rdsol_summarise</span>(<span class='no'>sol</span>, <span class='kw'>func</span> <span class='kw'>=</span> <span class='no'>sum</span>, <span class='kw'>index</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>sys</th>
-      <td><p><code><a href='rsys.html'>rsys</a></code> instance</p></td>
+      <th>sol</th>
+      <td><p><code><a href='rdsol.html'>rdsol</a></code> instance</p></td>
     </tr>
     <tr>
-      <th>length.out</th>
-      <td><p>length of solution output (table rows) (default 100)</p></td>
+      <th>func</th>
+      <td><p>summary <code><a href='https://rdrr.io/r/base/function.html'>function</a></code> to apply across voxels for each species at each time (default <code><a href='https://rdrr.io/r/base/sum.html'>sum</a></code>)</p></td>
+    </tr>
+    <tr>
+      <th>index</th>
+      <td><p>an optional voxel index to filter quantity extraction</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code><a href='rsol.html'>rsol</a></code> instance</p>
+    <p><code><a href='https://tibble.tidyverse.org/reference/tibble.html'>tibble::tibble</a></code> with a column for the solution time points, and a column for each species' quantities</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
