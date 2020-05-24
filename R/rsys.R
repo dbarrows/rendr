@@ -26,13 +26,17 @@ rsys <- function(network, state, T) {
 #' @return [`rsys`] instance
 #' @export
 rsys_examples <- function(name = NULL) {
-    if (is.null(name)) return(mm())
-    switch(name,
-        "mm" = mm(),
-        "schlogl" = schlogl()
-    ) %>%
-    with(rsys(network, state, T)) %>%
-    structure(class = "rsys")
+    sys <- if (is.null(name)) {
+            mm()
+        } else {
+            switch(name,
+                "mm" = mm(),
+                "schlogl" = schlogl()
+            )
+        }
+    sys %>%
+        with(rsys(network, state, T)) %>%
+        structure(class = "rsys")
 }
 
 mm <- function() {

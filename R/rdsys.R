@@ -27,12 +27,16 @@ rdsys <- function(network, volume, D, T) {
 #' @return [`rdsys`] instance
 #' @export
 rdsys_examples <- function(name = NULL) {
-    if (is.null(name)) return(schnakenberg())
-    switch(name,
-        "schnakenberg" = schnakenberg()
-    ) %>%
-    with(rdsys(network, volume, D, T)) %>%
-    structure(class = "rdsys")
+    sys <- if (is.null(name)) {
+            schnakenberg()
+        } else {
+            switch(name,
+                "schnakenberg" = schnakenberg()
+            )
+        }
+    sys %>%
+        with(rdsys(network, volume, D, T)) %>%
+        structure(class = "rdsys")
 }
 
 schnakenberg <- function() {
