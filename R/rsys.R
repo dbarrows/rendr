@@ -26,7 +26,7 @@ rsys <- function(network, state, T) {
 #' @return [`rsys`] instance
 #' @export
 rsys_examples <- function(name = NULL) {
-    sys <- if (is.null(name)) {
+    args <- if (is.null(name)) {
             mm()
         } else {
             switch(name,
@@ -34,9 +34,7 @@ rsys_examples <- function(name = NULL) {
                 "schlogl" = schlogl()
             )
         }
-    sys %>%
-        with(rsys(network, state, T)) %>%
-        structure(class = "rsys")
+    do.call(rsys, args)
 }
 
 mm <- function() {
