@@ -58,6 +58,11 @@ species.rdsys <- function(x) {
 }
 
 #' @export
+rates.rdsys <- function(x) {
+    rates(x$network)
+}
+
+#' @export
 print.rdsys <- function(x, ...) {
     cat(paste0(silver("$network"), "\n"))
     print(x$network)
