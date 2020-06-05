@@ -12,6 +12,7 @@ namespace rendr {
 using namespace arma;
 using namespace std;
 using namespace core;
+using uint = unsigned int;
 
 Rcpp::DataFrame ssa(bondr::rnet network,
                     vec y,

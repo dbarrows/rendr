@@ -5,5 +5,5 @@
 \alias{rendr}
 \title{\code{\link{rendr}} package}
 \description{
-Solvers for chemical networks
+Solvers for Reaction Networks
 }

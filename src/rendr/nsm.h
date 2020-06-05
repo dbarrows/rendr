@@ -13,6 +13,7 @@ namespace rendr {
 using namespace arma;
 using namespace std;
 using namespace core;
+using uint = unsigned int;
 
 // Definitions ------------------------------------------------------------------------------
 
