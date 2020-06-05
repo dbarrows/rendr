@@ -81,14 +81,14 @@
 <div id="reaction-system-solvers" class="section level2">
 <h2 class="hasAnchor">
 <a href="#reaction-system-solvers" class="anchor"></a>Reaction system solvers</h2>
-<p>Networks are created using the <a href="https://github.com/dbarrows/bondr"><code>bondr</code></a> package. See <a href="https://dexter.barrows.io/bondr/#creating-networks">Creating Networks</a> for more details.</p>
+<p>Networks are created using the <a href="https://dexter.barrows.io/bondr"><code>bondr</code></a> package. See <a href="https://dexter.barrows.io/bondr/#creating-networks">Creating Networks</a> for more details.</p>
 <div class="sourceCode" id="cb2"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">rendr</span>)</pre></div>
 <div class="sourceCode" id="cb3"><pre class="r">(<span class="no">network</span> <span class="kw">&lt;-</span> <span class="kw pkg">bondr</span><span class="kw ns">::</span><span class="fu"><a href="https://dexter.barrows.io/bondr/reference/network_examples.html">network_examples</a></span>())
-<span class="co">#&gt; # Reaction network: 3 reactions x 4 species</span>
-<span class="co">#&gt;     Reactants    Products     Rate</span>
-<span class="co">#&gt; 1       S + E -&gt; SE        0.00166</span>
-<span class="co">#&gt; 2          SE -&gt; S + E       1e-04</span>
-<span class="co">#&gt; 3          SE -&gt; E + P         0.1</span></pre></div>
+<span class="co">#&gt; #  Reaction network: 3 reactions x 4 species</span>
+<span class="co">#&gt;      Reactants    Products     Rate</span>
+<span class="co">#&gt; R1       S + E -&gt; SE        0.00166</span>
+<span class="co">#&gt; R2          SE -&gt; S + E       1e-04</span>
+<span class="co">#&gt; R3          SE -&gt; E + P         0.1</span></pre></div>
 <div id="rre" class="section level3">
 <h3 class="hasAnchor">
 <a href="#rre" class="anchor"></a>RRE</h3>
@@ -97,11 +97,11 @@
              <span class="kw">state</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">301</span>, <span class="fl">120</span>, <span class="fl">0</span>, <span class="fl">0</span>),
              <span class="kw">T</span> <span class="kw">=</span> <span class="fl">30</span>))
 <span class="co">#&gt; $network</span>
-<span class="co">#&gt; # Reaction network: 3 reactions x 4 species</span>
-<span class="co">#&gt;     Reactants    Products     Rate</span>
-<span class="co">#&gt; 1       S + E -&gt; SE        0.00166</span>
-<span class="co">#&gt; 2          SE -&gt; S + E       1e-04</span>
-<span class="co">#&gt; 3          SE -&gt; E + P         0.1</span>
+<span class="co">#&gt; #  Reaction network: 3 reactions x 4 species</span>
+<span class="co">#&gt;      Reactants    Products     Rate</span>
+<span class="co">#&gt; R1       S + E -&gt; SE        0.00166</span>
+<span class="co">#&gt; R2          SE -&gt; S + E       1e-04</span>
+<span class="co">#&gt; R3          SE -&gt; E + P         0.1</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $state</span>
 <span class="co">#&gt;   S   E  SE   P </span>
@@ -111,11 +111,11 @@
 <span class="co">#&gt; [1] 30</span></pre></div>
 <div class="sourceCode" id="cb5"><pre class="r">(<span class="no">sol</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/rre.html">rre</a></span>(<span class="no">sys</span>))
 <span class="co">#&gt; Network</span>
-<span class="co">#&gt; # Reaction network: 3 reactions x 4 species</span>
-<span class="co">#&gt;     Reactants    Products     Rate</span>
-<span class="co">#&gt; 1       S + E -&gt; SE        0.00166</span>
-<span class="co">#&gt; 2          SE -&gt; S + E       1e-04</span>
-<span class="co">#&gt; 3          SE -&gt; E + P         0.1</span>
+<span class="co">#&gt; #  Reaction network: 3 reactions x 4 species</span>
+<span class="co">#&gt;      Reactants    Products     Rate</span>
+<span class="co">#&gt; R1       S + E -&gt; SE        0.00166</span>
+<span class="co">#&gt; R2          SE -&gt; S + E       1e-04</span>
+<span class="co">#&gt; R3          SE -&gt; E + P         0.1</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Solution</span>
 <span class="co">#&gt; # A tibble: 100 x 5</span>
@@ -164,12 +164,12 @@
     <span class="kw">T</span> <span class="kw">=</span> <span class="fl">3.5</span>
 ))
 <span class="co">#&gt; $network</span>
-<span class="co">#&gt; # Reaction network: 4 reactions x 2 species</span>
-<span class="co">#&gt;     Reactants    Products      Rate</span>
-<span class="co">#&gt; 1           0 -&gt; U             4000</span>
-<span class="co">#&gt; 2           U -&gt; 0                2</span>
-<span class="co">#&gt; 3           0 -&gt; V            12000</span>
-<span class="co">#&gt; 4      2U + V -&gt; 3U        1.25e-07</span>
+<span class="co">#&gt; #  Reaction network: 4 reactions x 2 species</span>
+<span class="co">#&gt;      Reactants    Products      Rate</span>
+<span class="co">#&gt; R1           0 -&gt; U             4000</span>
+<span class="co">#&gt; R2           U -&gt; 0                2</span>
+<span class="co">#&gt; R3           0 -&gt; V            12000</span>
+<span class="co">#&gt; R4      2U + V -&gt; 3U        1.25e-07</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $volume</span>
 <span class="co">#&gt; # dims: 40 x 1 x 1</span>
@@ -206,12 +206,12 @@
 <span class="co">#&gt;  - time:        [0, 3.5]</span>
 <span class="co">#&gt; ....................................................................................................</span>
 <span class="co">#&gt; Network</span>
-<span class="co">#&gt; # Reaction network: 4 reactions x 2 species</span>
-<span class="co">#&gt;     Reactants    Products      Rate</span>
-<span class="co">#&gt; 1           0 -&gt; U             4000</span>
-<span class="co">#&gt; 2           U -&gt; 0                2</span>
-<span class="co">#&gt; 3           0 -&gt; V            12000</span>
-<span class="co">#&gt; 4      2U + V -&gt; 3U        1.25e-07</span>
+<span class="co">#&gt; #  Reaction network: 4 reactions x 2 species</span>
+<span class="co">#&gt;      Reactants    Products      Rate</span>
+<span class="co">#&gt; R1           0 -&gt; U             4000</span>
+<span class="co">#&gt; R2           U -&gt; 0                2</span>
+<span class="co">#&gt; R3           0 -&gt; V            12000</span>
+<span class="co">#&gt; R4      2U + V -&gt; 3U        1.25e-07</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Solution</span>
 <span class="co">#&gt; # 100 time points x 2 species</span></pre></div>
@@ -223,10 +223,10 @@
 <p>Generate a single realisation of the (RDME) solution via the Next Subvolume Method (NSM). Usage of the <code>nsm</code> function is the same as with the <a href="#issa">ISSA solver</a>. The NSM algorithm is usually faster for systems with a large number of subvolume (voxels) relative to the reaction network size. You may have to try both the ISSA and NSM solver to see which is faster for a given reaction-diffusion system.</p>
 <div class="sourceCode" id="cb10"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(<span class="fu"><a href="reference/issa.html">issa</a></span>(<span class="no">sys</span>, <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">FALSE</span>))
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;  22.146   0.023  22.182</span>
+<span class="co">#&gt;  22.366   0.032  22.425</span>
 <span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(<span class="fu"><a href="reference/nsm.html">nsm</a></span>(<span class="no">sys</span>, <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">FALSE</span>))
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;  13.900   0.008  13.913</span></pre></div>
+<span class="co">#&gt;  14.017   0.010  14.035</span></pre></div>
 <div class="sourceCode" id="cb11"><pre class="r"><span class="no">sys_small</span> <span class="kw">&lt;-</span> <span class="no">sys</span>
 <span class="no">sys_small</span>$<span class="no">volume</span> <span class="kw">&lt;-</span> <span class="fu">volume</span>(
         <span class="kw">dims</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">1</span>),
@@ -235,10 +235,10 @@
     )
 <span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(<span class="fu"><a href="reference/issa.html">issa</a></span>(<span class="no">sys_small</span>, <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">FALSE</span>))
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;   0.140   0.001   0.141</span>
+<span class="co">#&gt;   0.141   0.001   0.142</span>
 <span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(<span class="fu"><a href="reference/nsm.html">nsm</a></span>(<span class="no">sys_small</span>, <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">FALSE</span>))
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;   0.161   0.001   0.163</span></pre></div>
+<span class="co">#&gt;   0.163   0.002   0.164</span></pre></div>
 </div>
 </div>
 </div>
