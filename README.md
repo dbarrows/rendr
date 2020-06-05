@@ -25,7 +25,7 @@ devtools::install_github("dbarrows/rendr")
 ## Reaction system solvers
 
 Networks are created using the
-[`bondr`](https://github.com/dbarrows/bondr) package. See [Creating
+[`bondr`](https://dexter.barrows.io/bondr) package. See [Creating
 Networks](https://dexter.barrows.io/bondr/#creating-networks) for more
 details.
 
@@ -35,11 +35,11 @@ library(rendr)
 
 ``` r
 (network <- bondr::network_examples())
-#> # Reaction network: 3 reactions x 4 species
-#>     Reactants    Products     Rate
-#> 1       S + E -> SE        0.00166
-#> 2          SE -> S + E       1e-04
-#> 3          SE -> E + P         0.1
+#> #  Reaction network: 3 reactions x 4 species
+#>      Reactants    Products     Rate
+#> R1       S + E -> SE        0.00166
+#> R2          SE -> S + E       1e-04
+#> R3          SE -> E + P         0.1
 ```
 
 ### RRE
@@ -52,11 +52,11 @@ conjunction with an ode solver.
              state = c(301, 120, 0, 0),
              T = 30))
 #> $network
-#> # Reaction network: 3 reactions x 4 species
-#>     Reactants    Products     Rate
-#> 1       S + E -> SE        0.00166
-#> 2          SE -> S + E       1e-04
-#> 3          SE -> E + P         0.1
+#> #  Reaction network: 3 reactions x 4 species
+#>      Reactants    Products     Rate
+#> R1       S + E -> SE        0.00166
+#> R2          SE -> S + E       1e-04
+#> R3          SE -> E + P         0.1
 #> 
 #> $state
 #>   S   E  SE   P 
@@ -69,11 +69,11 @@ conjunction with an ode solver.
 ``` r
 (sol <- rre(sys))
 #> Network
-#> # Reaction network: 3 reactions x 4 species
-#>     Reactants    Products     Rate
-#> 1       S + E -> SE        0.00166
-#> 2          SE -> S + E       1e-04
-#> 3          SE -> E + P         0.1
+#> #  Reaction network: 3 reactions x 4 species
+#>      Reactants    Products     Rate
+#> R1       S + E -> SE        0.00166
+#> R2          SE -> S + E       1e-04
+#> R3          SE -> E + P         0.1
 #> 
 #> Solution
 #> # A tibble: 100 x 5
@@ -133,12 +133,12 @@ constructed similarly to `rsys`s.
     T = 3.5
 ))
 #> $network
-#> # Reaction network: 4 reactions x 2 species
-#>     Reactants    Products      Rate
-#> 1           0 -> U             4000
-#> 2           U -> 0                2
-#> 3           0 -> V            12000
-#> 4      2U + V -> 3U        1.25e-07
+#> #  Reaction network: 4 reactions x 2 species
+#>      Reactants    Products      Rate
+#> R1           0 -> U             4000
+#> R2           U -> 0                2
+#> R3           0 -> V            12000
+#> R4      2U + V -> 3U        1.25e-07
 #> 
 #> $volume
 #> # dims: 40 x 1 x 1
@@ -180,12 +180,12 @@ issa(sys) %T>%
 #>  - time:        [0, 3.5]
 #> ....................................................................................................
 #> Network
-#> # Reaction network: 4 reactions x 2 species
-#>     Reactants    Products      Rate
-#> 1           0 -> U             4000
-#> 2           U -> 0                2
-#> 3           0 -> V            12000
-#> 4      2U + V -> 3U        1.25e-07
+#> #  Reaction network: 4 reactions x 2 species
+#>      Reactants    Products      Rate
+#> R1           0 -> U             4000
+#> R2           U -> 0                2
+#> R3           0 -> V            12000
+#> R4      2U + V -> 3U        1.25e-07
 #> 
 #> Solution
 #> # 100 time points x 2 species
@@ -205,10 +205,10 @@ to see which is faster for a given reaction-diffusion system.
 ``` r
 system.time(issa(sys, verbose = FALSE))
 #>    user  system elapsed 
-#>  22.146   0.023  22.182
+#>  22.366   0.032  22.425
 system.time(nsm(sys, verbose = FALSE))
 #>    user  system elapsed 
-#>  13.900   0.008  13.913
+#>  14.017   0.010  14.035
 ```
 
 ``` r
@@ -220,8 +220,8 @@ sys_small$volume <- volume(
     )
 system.time(issa(sys_small, verbose = FALSE))
 #>    user  system elapsed 
-#>   0.140   0.001   0.141
+#>   0.141   0.001   0.142
 system.time(nsm(sys_small, verbose = FALSE))
 #>    user  system elapsed 
-#>   0.161   0.001   0.163
+#>   0.163   0.002   0.164
 ```

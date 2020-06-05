@@ -9,7 +9,11 @@
 #' @return [`rdsol`] instance
 #' @export
 issa <- function(sys, length.out = 100, all.out = FALSE, verbose = TRUE, force_compile = FALSE) {
-    solve_rdsys(sys, issa_cpp, verbose = verbose, force_compile = force_compile)
+    solve_rdsys(sys, issa_cpp,
+                length.out = length.out,
+                all.out = all.out,
+                verbose = verbose,
+                force_compile = force_compile)
 }
 
 #' Next Subvolume Method (NSM) solver
@@ -23,7 +27,11 @@ issa <- function(sys, length.out = 100, all.out = FALSE, verbose = TRUE, force_c
 #' @return [`rdsol`] instance
 #' @export
 nsm <- function(sys, length.out = 100, all.out = FALSE, verbose = TRUE, force_compile = FALSE) {
-    solve_rdsys(sys, nsm_cpp, verbose = verbose, force_compile = force_compile)
+    solve_rdsys(sys, nsm_cpp,
+                length.out = length.out,
+                all.out = all.out,
+                verbose = verbose,
+                force_compile = force_compile)
 }
 
 solve_rdsys <- function(sys, algorithm_cpp, length.out = 100, all.out = FALSE, verbose = TRUE, force_compile = FALSE) {

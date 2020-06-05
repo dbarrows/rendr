@@ -38,7 +38,7 @@ devtools::install_github("dbarrows/rendr")
 
 ## Reaction system solvers
 
-Networks are created using the [`bondr`](https://github.com/dbarrows/bondr) package. See [Creating Networks](https://dexter.barrows.io/bondr/#creating-networks) for more details.
+Networks are created using the [`bondr`](https://dexter.barrows.io/bondr) package. See [Creating Networks](https://dexter.barrows.io/bondr/#creating-networks) for more details.
 
 ```r
 library(rendr)
