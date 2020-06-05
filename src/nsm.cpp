@@ -6,7 +6,7 @@ Rcpp::List nsm_cpp(SEXP rnet_xptr,
                    arma::vec D,
                    SEXP volume_xptr,
                    double T,
-                   uint length_out = 100,
+                   int length_out = 100,
                    bool all_out = false,
                    bool verbose = true) {
     bondr::rnet rnet = *Rcpp::XPtr<bondr::rnet>(rnet_xptr);

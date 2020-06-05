@@ -6,7 +6,7 @@
 Rcpp::DataFrame ssa_cpp(SEXP rnet_xptr,
                         arma::vec y,
                         double T,
-                        uint length_out = 100,
+                        int length_out = 100,
                         bool all_out = false,
                         Rcpp::Nullable<arma::vec> k_vec = R_NilValue) {
     auto net = *Rcpp::XPtr<bondr::rnet>(rnet_xptr);
