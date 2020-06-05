@@ -1,5 +1,5 @@
 Package: rendr
-Title: Solvers for reaction networks
+Title: Solvers for Reaction Networks
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Dexter",
@@ -7,7 +7,7 @@ Authors@R:
            role = c("aut", "cre"),
            email = "dexter@barrows.io",
            comment = c(ORCID = "0000-0001-8169-8938"))
-Description: Provides support for natural, string-based, representation of chemical networks, which can be compiled into cpp objects for use in solvers.
+Description: Provides support for natural, string-based, representation of chemical networks, which can be compiled into C++ objects for use in solvers.
 URL: https://dexter.barrows.io/rendr, https://github.com/dbarrows/rendr
 BugReports: https://github.com/dbarrows/rendr/issues
 License: MIT + file LICENSE
@@ -38,3 +38,5 @@ LinkingTo:
     RcppArmadillo,
     spurcore,
     bondr
+Suggests: 
+    testthat

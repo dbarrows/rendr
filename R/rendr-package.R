@@ -1,6 +1,6 @@
 #' [`rendr`] package
 #'
-#' Solvers for chemical networks
+#' Solvers for Reaction Networks
 #'
 #' @docType package
 #' @name rendr
