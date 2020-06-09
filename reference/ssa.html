@@ -120,7 +120,17 @@
     <p>Generates a realization of the solution to the Chemical Master Equation.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ssa</span>(<span class='no'>sys</span>, <span class='kw'>length.out</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>all.out</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>k</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>force_compile</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>ssa</span>(
+  <span class='no'>sys</span>,
+  <span class='kw'>length.out</span> <span class='kw'>=</span> <span class='fl'>100</span>,
+  <span class='kw'>all.out</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>trajectories</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>cores</span> <span class='kw'>=</span> <span class='fu'>detectCores</span>(),
+  <span class='kw'>average</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>k</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>force_compile</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -136,6 +146,22 @@
     <tr>
       <th>all.out</th>
       <td><p>if <code>TRUE</code> (default <code>FALSE</code>), ignore <code>length.out</code> and return entire solution</p></td>
+    </tr>
+    <tr>
+      <th>trajectories</th>
+      <td><p>number of trajectories to generate</p></td>
+    </tr>
+    <tr>
+      <th>parallel</th>
+      <td><p>if <code>TRUE</code> (default <code>FALSE</code>) generate trajectories using multiple CPU cores</p></td>
+    </tr>
+    <tr>
+      <th>cores</th>
+      <td><p>number of cores to use if <code>parallel</code> is <code>TRUE</code> (default is all system cores)</p></td>
+    </tr>
+    <tr>
+      <th>average</th>
+      <td><p>if <code>TRUE</code> (default <code>FALSE</code>) and generating multiple trajectories, averages trajectories at sample times; incompatible with <code>all.out = TRUE</code></p></td>
     </tr>
     <tr>
       <th>k</th>
