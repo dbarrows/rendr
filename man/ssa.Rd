@@ -4,7 +4,17 @@
 \alias{ssa}
 \title{Stochastic simulation algorithm solver}
 \usage{
-ssa(sys, length.out = 100, all.out = FALSE, k = NULL, force_compile = FALSE)
+ssa(
+  sys,
+  length.out = 100,
+  all.out = FALSE,
+  trajectories = 1,
+  parallel = FALSE,
+  cores = detectCores(),
+  average = FALSE,
+  k = NULL,
+  force_compile = FALSE
+)
 }
 \arguments{
 \item{sys}{\code{\link{rsys}} instance}
@@ -12,6 +22,14 @@ ssa(sys, length.out = 100, all.out = FALSE, k = NULL, force_compile = FALSE)
 \item{length.out}{length of solution output (table rows) (default 100)}
 
 \item{all.out}{if \code{TRUE} (default \code{FALSE}), ignore \code{length.out} and return entire solution}
+
+\item{trajectories}{number of trajectories to generate}
+
+\item{parallel}{if \code{TRUE} (default \code{FALSE}) generate trajectories using multiple CPU cores}
+
+\item{cores}{number of cores to use if \code{parallel} is \code{TRUE} (default is all system cores)}
+
+\item{average}{if \code{TRUE} (default \code{FALSE}) and generating multiple trajectories, averages trajectories at sample times; incompatible with \code{all.out = TRUE}}
 
 \item{k}{\code{\link{vector}} of reaction rates corresponding to the reactions in \code{sys}, overrides those contained if \code{sys} if provided}
 

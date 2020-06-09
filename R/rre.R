@@ -9,11 +9,13 @@
 #' @export
 rre <- function(sys, length.out = 100) {
     with(sys, {
-        times <- seq(0, T, length.out = length.out)
+        times <- seq(0, T, length.out = max(2, length.out))
         deriv <- deriv(network)
         sol <- ode(state, times, deriv) %>%
             data.frame() %>%
             as_tibble()
+        if (length.out == 1)
+            sol %<>% .[-1,]
         names(sol) <- c("Time", species(network))
         rsol(sys, sol)
     })
