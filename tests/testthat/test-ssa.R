@@ -1,4 +1,4 @@
-test_that("SSA works", {
+test_that('SSA works', {
     sol <- rsys_examples('mm') %>%
         ssa(length.out = 100) %>%
         .$sol

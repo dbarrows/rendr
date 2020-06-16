@@ -13,7 +13,7 @@ rsys <- function(network, state, T) {
             state = state,
             T = T
         ),
-        class = "rsys"
+        class = 'rsys'
     )
 }
 
@@ -30,8 +30,8 @@ rsys_examples <- function(name = NULL) {
             mm()
         } else {
             switch(name,
-                "mm" = mm(),
-                "schlogl" = schlogl()
+                'mm' = mm(),
+                'schlogl' = schlogl()
             )
         }
     do.call(rsys, args)
@@ -39,7 +39,7 @@ rsys_examples <- function(name = NULL) {
 
 mm <- function() {
     list(
-        network = network_examples("mm"),
+        network = network_examples('mm'),
         state = c(300, 120, 0, 0),
         T = 30
     )
@@ -47,7 +47,7 @@ mm <- function() {
 
 schlogl <- function() {
     list(
-        network = network_examples("schlogl"),
+        network = network_examples('schlogl'),
         state = c(248),
         T = 15
     )
@@ -65,21 +65,21 @@ rates.rsys <- function(x) {
 
 #' @export
 print.rsys <- function(x, ...) {
-    cat(paste0(silver("$network"), "\n"))
+    cat(paste0(silver('$network'), '\n'))
     print(x$network)
-    cat("\n")
+    cat('\n')
 
-    cat(paste0(silver("$state"), "\n"))
+    cat(paste0(silver('$state'), '\n'))
     state <- x$state
     names(state) <- species(x$network)
     print(state)
-    cat("\n")
+    cat('\n')
 
-    cat(paste0(silver("$T"), "\n"))
+    cat(paste0(silver('$T'), '\n'))
     print(x$T)
-    cat("\n")
+    cat('\n')
 }
 
 ## quiets concerns of R CMD check re:
 ##  - variables that appear in magrittr pipelines
-if(getRversion() >= "2.15.1") utils::globalVariables(c("state"))
+if(getRversion() >= '2.15.1') utils::globalVariables(c('state'))

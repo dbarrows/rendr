@@ -9,18 +9,18 @@
 #' @param ... additional options to be passed to `solver`
 #' 
 #' @export
-benchmark <- function(N = 100, sys = rsys_examples("schlogl"), solver = ssa, progress = FALSE, parallel = FALSE, cores = detectCores(), ...) {
+benchmark <- function(N = 100, sys = rsys_examples('schlogl'), solver = ssa, progress = FALSE, parallel = FALSE, cores = detectCores(), ...) {
     sys$network %<>% compile()
     f <- function(i) {
         if (identical(solver, issa) || identical(solver, nsm))
             solver(sys, verbose = FALSE, ...)
         else
             solver(sys, ...)
-        if (progress) cat(".")
+        if (progress) cat('.')
     }
     t <- system.time(if (parallel) mclapply(1:N, f, mc.cores = cores) else lapply(1:N, f)) %>%
         .['elapsed'] %>%
         as.numeric()
-    if (progress) cat("\n")
+    if (progress) cat('\n')
     t
 }

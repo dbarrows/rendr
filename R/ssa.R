@@ -18,9 +18,9 @@ ssa <- function(sys, length.out = 100, all.out = FALSE, trajectories = 1, parall
     with(sys, {
         net <- network %>%
             (function(network) {
-                if (!is.null(network) && class(network) == "network")
+                if (!is.null(network) && class(network) == 'network')
                     compile(network, force = force_compile, rateless = (0 < length(k)))
-                else if (!is.null(network) && class(network) == "externalptr")
+                else if (!is.null(network) && class(network) == 'externalptr')
                     network
                 else
                     NULL

@@ -11,29 +11,36 @@ rsol <- function(sys, sol) {
             sys = sys,
             sol = sol
         ),
-        class = "rsol"
+        class = 'rsol'
     )
 }
 
 #' @export
-plot.rsol <- function(x, ...) {
+plot.rsol <- function(x, species = NULL, ...) {
+    species <- if (is.null(species)) species(x) else species
     x$sol %>%
-        pivot_longer(-Time, names_to = "Species", values_to = "Quantity") %>%
+        select(c(Time, species)) %>%
+        pivot_longer(-Time, names_to = 'Species', values_to = 'Quantity') %>%
         ggplot(aes(Time, Quantity, colour = Species)) +
             geom_line()
 }
 
 #' @export
-print.rsol <- function(x, ...) {
-    cat(paste0(silver("Network"), "\n"))
-    print(x$sys$network)
-    cat("\n")
+species.rsol <- function(x) {
+    species(x$sys)
+}
 
-    cat(paste0(silver("Solution"), "\n"))
+#' @export
+print.rsol <- function(x, ...) {
+    cat(paste0(silver('Network'), '\n'))
+    print(x$sys$network)
+    cat('\n')
+
+    cat(paste0(silver('Solution'), '\n'))
     print(x$sol)
-    cat("\n")
+    cat('\n')
 }
 
 ## quiets concerns of R CMD check re:
 ##  - variables that appear in magrittr pipelines
-if(getRversion() >= "2.15.1") utils::globalVariables(c("Time", "Quantity", "Species"))
+if(getRversion() >= '2.15.1') utils::globalVariables(c('Time', 'Quantity', 'Species'))

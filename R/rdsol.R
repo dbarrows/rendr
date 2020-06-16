@@ -13,28 +13,35 @@ rdsol <- function(sys, t, u) {
             t = t,
             u = u
         ),
-        class = "rdsol"
+        class = 'rdsol'
     )
 }
 
 #' @export
-plot.rdsol <- function(x, ...) {
+plot.rdsol <- function(x, species = NULL, ...) {
+    species <- if (is.null(species)) species(x) else species
     x %>%
         rdsol_summarise() %>%
-        pivot_longer(-Time, names_to = "Species", values_to = "Quantity") %>%
+        select(c(Time, species)) %>%
+        pivot_longer(-Time, names_to = 'Species', values_to = 'Quantity') %>%
         ggplot(aes(Time, Quantity, colour = Species)) +
             geom_line()
 }
 
 #' @export
-print.rdsol <- function(x, ...) {
-    cat(paste0(silver("Network"), "\n"))
-    print(x$sys$network)
-    cat("\n")
+species.rdsol <- function(x) {
+    species(x$sys)
+}
 
-    cat(paste0(silver("Solution"), "\n"))
-    cat(blurred(paste0("# ", length(x$t), " time points x ", length(species(x$sys$network)), " species")))
-    cat("\n")
+#' @export
+print.rdsol <- function(x, ...) {
+    cat(paste0(silver('Network'), '\n'))
+    print(x$sys$network)
+    cat('\n')
+
+    cat(paste0(silver('Solution'), '\n'))
+    cat(blurred(paste0('# ', length(x$t), ' time points x ', length(species(x$sys$network)), ' species')))
+    cat('\n')
 }
 
 #' Aggregator for species quantities
@@ -62,4 +69,4 @@ rdsol_summarise <- function(sol, func = sum, index = NULL) {
 
 ## quiets concerns of R CMD check re:
 ##  - variables that appear in magrittr pipelines
-if(getRversion() >= "2.15.1") utils::globalVariables(c("Time", "Quantity", "Species", "x", "y", "z"))
+if(getRversion() >= '2.15.1') utils::globalVariables(c('Time', 'Quantity', 'Species', 'x', 'y', 'z'))

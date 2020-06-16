@@ -38,9 +38,9 @@ solve_rdsys <- function(sys, algorithm_cpp, length.out = 100, all.out = FALSE, v
     with(sys, {
         sol <- network %>%
             (function(network) {
-                if (class(network) == "network")
+                if (class(network) == 'network')
                     compile(network, force = force_compile)
-                else if (class(network) == "externalptr")
+                else if (class(network) == 'externalptr')
                     network
                 else
                     NULL

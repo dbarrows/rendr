@@ -1,4 +1,4 @@
-test_that("RRE works", {
+test_that('RRE works', {
     sol <- rsys_examples('mm') %>%
         rre(length.out = 100) %>%
         .$sol

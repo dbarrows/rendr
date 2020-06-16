@@ -16,7 +16,7 @@ rre <- function(sys, length.out = 100) {
             as_tibble()
         if (length.out == 1)
             sol %<>% .[-1,]
-        names(sol) <- c("Time", species(network))
+        names(sol) <- c('Time', species(network))
         rsol(sys, sol)
     })
 }

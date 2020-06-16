@@ -1,4 +1,4 @@
 library(testthat)
 library(rendr)
 
-test_check("rendr")
+test_check('rendr')
