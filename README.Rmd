@@ -44,8 +44,7 @@ Networks are created using the [`bondr`](https://dexter.barrows.io/bondr) packag
 library(rendr)
 ```
 ```{r, include = FALSE}
-devtools::install_deps()
-install_github('dbarrows/wplot')
+devtools::install_github('dbarrows/wplot')
 devtools::load_all()
 ```
 ```{r}
