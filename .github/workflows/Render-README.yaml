@@ -19,7 +19,7 @@ jobs:
         run: |
           install.packages(c('rmarkdown', 'svglite', 'showtext', 'devtools'))
           devtools::install_deps()
-      - shell: Rscript {0}
+        shell: Rscript {0}
       - name: Render README
         run: rmarkdown::render('README.Rmd')
         shell: Rscript {0}
