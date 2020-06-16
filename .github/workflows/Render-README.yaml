@@ -16,10 +16,14 @@ jobs:
       - uses: r-lib/actions/setup-r@master
       - uses: r-lib/actions/setup-pandoc@master
       - name: Install dependencies
-        run: Rscript -e 'install.packages(c("rmarkdown", "svglite", "showtext", "devtools"))'
+        run: |
+          install.packages(c('rmarkdown', 'svglite', 'showtext', 'devtools'))
+          devtools::install_deps()
+      - shell: Rscript {0}
       - name: Render README
-        run: Rscript -e 'rmarkdown::render("README.Rmd")'
+        run: rmarkdown::render('README.Rmd')
+        shell: Rscript {0}
       - name: Commit results
         run: |
-          git commit README.md man/figures -m 'Re-build README.Rmd' || echo "No changes to commit"
-          git push origin || echo "No changes to commit"
+          git commit README.md man/figures -m 'Re-build README.Rmd' || echo 'No changes to commit'
+          git push origin || echo 'No changes to commit'
