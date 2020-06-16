@@ -35,11 +35,11 @@ library(rendr)
 
 ``` r
 (network <- bondr::network_examples())
-#> [2m#  Reaction network: 3 reactions x 4 species[22m
-#> [34m     Reactants    Products     Rate
-#> [39m[2mR1[22m       S + E [90m->[39m SE        0.00166
-#> [2mR2[22m          SE [90m->[39m S + E       1e-04
-#> [2mR3[22m          SE [90m->[39m E + P         0.1
+#> #  Reaction network: 3 reactions x 4 species
+#>      Reactants    Products     Rate
+#> R1       S + E -> SE        0.00166
+#> R2          SE -> S + E       1e-04
+#> R3          SE -> E + P         0.1
 ```
 
 ### RRE
@@ -51,45 +51,45 @@ conjunction with an ode solver.
 (sys <- rsys(network = network,
              state = c(301, 120, 0, 0),
              T = 30))
-#> [90m$network[39m
-#> [2m#  Reaction network: 3 reactions x 4 species[22m
-#> [34m     Reactants    Products     Rate
-#> [39m[2mR1[22m       S + E [90m->[39m SE        0.00166
-#> [2mR2[22m          SE [90m->[39m S + E       1e-04
-#> [2mR3[22m          SE [90m->[39m E + P         0.1
+#> $network
+#> #  Reaction network: 3 reactions x 4 species
+#>      Reactants    Products     Rate
+#> R1       S + E -> SE        0.00166
+#> R2          SE -> S + E       1e-04
+#> R3          SE -> E + P         0.1
 #> 
-#> [90m$state[39m
+#> $state
 #>   S   E  SE   P 
 #> 301 120   0   0 
 #> 
-#> [90m$T[39m
+#> $T
 #> [1] 30
 ```
 
 ``` r
 (sol <- rre(sys))
-#> [90mNetwork[39m
-#> [2m#  Reaction network: 3 reactions x 4 species[22m
-#> [34m     Reactants    Products     Rate
-#> [39m[2mR1[22m       S + E [90m->[39m SE        0.00166
-#> [2mR2[22m          SE [90m->[39m S + E       1e-04
-#> [2mR3[22m          SE [90m->[39m E + P         0.1
+#> Network
+#> #  Reaction network: 3 reactions x 4 species
+#>      Reactants    Products     Rate
+#> R1       S + E -> SE        0.00166
+#> R2          SE -> S + E       1e-04
+#> R3          SE -> E + P         0.1
 #> 
-#> [90mSolution[39m
-#> [90m# A tibble: 100 x 5[39m
+#> Solution
+#> # A tibble: 100 x 5
 #>     Time     S     E    SE      P
-#>    [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m  [3m[90m<dbl>[39m[23m
-#> [90m 1[39m 0      301  120     0    0    
-#> [90m 2[39m 0.303  285. 104.   16.2  0.255
-#> [90m 3[39m 0.606  271.  90.9  29.1  0.947
-#> [90m 4[39m 0.909  260.  80.6  39.4  1.99 
-#> [90m 5[39m 1.21   250.  72.1  47.9  3.32 
-#> [90m 6[39m 1.52   241.  65.2  54.8  4.88 
-#> [90m 7[39m 1.82   234.  59.5  60.5  6.62 
-#> [90m 8[39m 2.12   227.  54.8  65.2  8.53 
-#> [90m 9[39m 2.42   221.  50.9  69.1 10.6  
-#> [90m10[39m 2.73   216.  47.6  72.4 12.7  
-#> [90m# … with 90 more rows[39m
+#>    <dbl> <dbl> <dbl> <dbl>  <dbl>
+#>  1 0      301  120     0    0    
+#>  2 0.303  285. 104.   16.2  0.255
+#>  3 0.606  271.  90.9  29.1  0.947
+#>  4 0.909  260.  80.6  39.4  1.99 
+#>  5 1.21   250.  72.1  47.9  3.32 
+#>  6 1.52   241.  65.2  54.8  4.88 
+#>  7 1.82   234.  59.5  60.5  6.62 
+#>  8 2.12   227.  54.8  65.2  8.53 
+#>  9 2.42   221.  50.9  69.1 10.6  
+#> 10 2.73   216.  47.6  72.4 12.7  
+#> # … with 90 more rows
 ```
 
 A function is provided for easy visualisation of solutions.
@@ -132,33 +132,33 @@ constructed similarly to `rsys`s.
     D = c(1e-3, 1e-1),
     T = 3.5
 ))
-#> [90m$network[39m
-#> [2m#  Reaction network: 4 reactions x 2 species[22m
-#> [34m     Reactants    Products      Rate
-#> [39m[2mR1[22m           0 [90m->[39m U             4000
-#> [2mR2[22m           U [90m->[39m 0                2
-#> [2mR3[22m           0 [90m->[39m V            12000
-#> [2mR4[22m      2U + V [90m->[39m 3U        1.25e-07
+#> $network
+#> #  Reaction network: 4 reactions x 2 species
+#>      Reactants    Products      Rate
+#> R1           0 -> U             4000
+#> R2           U -> 0                2
+#> R3           0 -> V            12000
+#> R4      2U + V -> 3U        1.25e-07
 #> 
-#> [90m$volume[39m
-#> [2m#[22m[34m dims: [39m40 x 1 x 1
-#> [2m#[22m[34m h: [39m0.025
-#> [2m#[22m[34m states: [39m[2m
-#> # [22m[90m# A tibble: 40 x 5[39m
+#> $volume
+#> # dims: 40 x 1 x 1
+#> # h: 0.025
+#> # states: 
+#> # # A tibble: 40 x 5
 #>       x     y     z     U     V
-#>   [3m[90m<int>[39m[23m [3m[90m<int>[39m[23m [3m[90m<int>[39m[23m [3m[90m<dbl>[39m[23m [3m[90m<dbl>[39m[23m
-#> [90m1[39m     1     1     1    25    75
-#> [90m2[39m     2     1     1    25    75
-#> [90m3[39m     3     1     1    25    75
-#> [90m4[39m     4     1     1    25    75
-#> [90m5[39m     5     1     1    25    75
-#> [90m# … with 35 more rows[39m
+#>   <int> <int> <int> <dbl> <dbl>
+#> 1     1     1     1    25    75
+#> 2     2     1     1    25    75
+#> 3     3     1     1    25    75
+#> 4     4     1     1    25    75
+#> 5     5     1     1    25    75
+#> # … with 35 more rows
 #> 
-#> [90m$D[39m
+#> $D
 #>     U     V 
 #> 0.001 0.100 
 #> 
-#> [90m$T[39m
+#> $T
 #> [1] 3.5
 ```
 
@@ -179,16 +179,16 @@ issa(sys) %T>%
 #>  - h:           0.025
 #>  - time:        [0, 3.5]
 #> ....................................................................................................
-#> [90mNetwork[39m
-#> [2m#  Reaction network: 4 reactions x 2 species[22m
-#> [34m     Reactants    Products      Rate
-#> [39m[2mR1[22m           0 [90m->[39m U             4000
-#> [2mR2[22m           U [90m->[39m 0                2
-#> [2mR3[22m           0 [90m->[39m V            12000
-#> [2mR4[22m      2U + V [90m->[39m 3U        1.25e-07
+#> Network
+#> #  Reaction network: 4 reactions x 2 species
+#>      Reactants    Products      Rate
+#> R1           0 -> U             4000
+#> R2           U -> 0                2
+#> R3           0 -> V            12000
+#> R4      2U + V -> 3U        1.25e-07
 #> 
-#> [90mSolution[39m
-#> [2m# 100 time points x 2 species[22m
+#> Solution
+#> # 100 time points x 2 species
 ```
 
 <img src="man/figures/README-issa-1.svg" width="100%" />
@@ -205,10 +205,10 @@ to see which is faster for a given reaction-diffusion system.
 ``` r
 system.time(issa(sys, verbose = FALSE))
 #>    user  system elapsed 
-#> 249.551   0.201 250.134
+#> 244.607   0.172 245.007
 system.time(nsm(sys, verbose = FALSE))
 #>    user  system elapsed 
-#> 139.534   0.124 139.795
+#> 139.457   0.084 139.569
 ```
 
 ``` r
@@ -220,8 +220,8 @@ sys_small$volume <- volume(
     )
 system.time(issa(sys_small, verbose = FALSE))
 #>    user  system elapsed 
-#>   0.629   0.003   0.632
+#>   0.581   0.002   0.584
 system.time(nsm(sys_small, verbose = FALSE))
 #>    user  system elapsed 
-#>   1.042   0.003   1.046
+#>   1.177   0.003   1.180
 ```
