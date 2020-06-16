@@ -9,13 +9,13 @@ require(svglite)
 set.seed(42)
 knitr::opts_chunk$set(
     collapse = TRUE,
-    comment = "#>",
+    comment = '#>',
     dev = 'svglite',
-    fig.path = "man/figures/README-",
+    fig.path = 'man/figures/README-',
     fig.showtext = TRUE,
     fig.width = 6.377953,
     fig.height = 3.93701,
-    out.width = "100%"
+    out.width = '100%'
 )
 ```
 
@@ -33,7 +33,7 @@ An R package for simulating reaction and reaction-diffusion systems.
 You can install the development version from [GitHub](https://github.com/) with:
 
 ```r
-devtools::install_github("dbarrows/rendr")
+devtools::install_github('dbarrows/rendr')
 ```
 
 ## Reaction system solvers
@@ -84,11 +84,11 @@ Reaction-diffusion systems created via the `rdsys` class, which are constructed 
 
 ```{r}
 (sys <- rdsys(
-    network = network("
+    network = network('
              0 <-> U,  4e3, 2
              0  -> V,  1.2e4
         2U + V  -> 3U, 12.5e-8
-    "),
+    '),
     volume = volume(
         dims = c(40, 1, 1),
         h = 1/40,
