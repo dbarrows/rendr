@@ -29,22 +29,20 @@ Rcpp::DataFrame ssa(bondr::rnet network,
     // data saving
     auto sol = provision<vec>(network.species, T, length_out, all_out);
     uint next_out = 0;
-    auto sol_push = [&sol, &next_out, y, all_out](double t, vec x) {
-        push(sol, t, x, y, all_out, next_out);
+    auto sol_push = [&sol, &next_out, y, all_out](double t, vec x, bool interp = true) {
+        push(sol, t, x, y, all_out, next_out, interp);
     };
 
+    // save initial state
     sol_push(t, x);
 
+    // allocate propensities vector
     vec a = vec(network.reactions.size(), fill::zeros);
-
-    // keep track of case of early termination due to app reactants consumed
-    bool early_exit = false;
 
     while (t < T) {
         // if all species consumed, report final state and finish
         if (sum(x) == 0) {
-            sol_push(t, x);
-            early_exit = true;
+            sol_push(T, x, false);
             break;
         }
 
@@ -72,9 +70,6 @@ Rcpp::DataFrame ssa(bondr::rnet network,
 
         sol_push(t, x);
     }
-
-    if (!early_exit)
-        sol_push(t, x);
 
     return DataFrame(sol);
 }

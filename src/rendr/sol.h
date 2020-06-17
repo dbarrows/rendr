@@ -38,7 +38,7 @@ sol<S> provision(vector<string>& species, double T, uint length_out, bool all_ou
 }
 
 template <typename S>
-void push(sol<S>& sol, double t, S x, S y, bool all_out, uint& next_out){
+void push(sol<S>& sol, double t, S x, S y, bool all_out, uint& next_out, bool interp_x = true){
     // save everything
     if (all_out) {
         sol.t.push_back(t);
@@ -52,12 +52,19 @@ void push(sol<S>& sol, double t, S x, S y, bool all_out, uint& next_out){
     // length.out states: save subsequent states
     } else if (sol.t[next_out] <= t) {
         while (next_out < sol.t.size() && sol.t[next_out] < t) {
-            sol.u[next_out] = interp(scale(sol.t[next_out],
-                                           sol.t[next_out - 1],
-                                           t),
-                                     sol.u[next_out - 1],
-                                     x);
+            if (interp_x) {
+                sol.u[next_out] = interp(scale(sol.t[next_out],
+                                               sol.t[next_out - 1],
+                                               t),
+                                         sol.u[next_out - 1],
+                                         x);
+            } else {
+                sol.u[next_out] = x;
+            }
             next_out++;
+        }
+        if (next_out == sol.t.size() - 1 && sol.t[next_out] == t) {
+            sol.u[next_out++] = x;
         }
     }
 };
