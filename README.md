@@ -205,10 +205,10 @@ to see which is faster for a given reaction-diffusion system.
 ``` r
 system.time(issa(sys, verbose = FALSE))
 #>    user  system elapsed 
-#> 244.607   0.172 245.007
+#> 241.665   0.184 242.198
 system.time(nsm(sys, verbose = FALSE))
 #>    user  system elapsed 
-#> 139.457   0.084 139.569
+#> 141.788   0.098 141.944
 ```
 
 ``` r
@@ -220,8 +220,8 @@ sys_small$volume <- volume(
     )
 system.time(issa(sys_small, verbose = FALSE))
 #>    user  system elapsed 
-#>   0.581   0.002   0.584
+#>   0.582   0.002   0.585
 system.time(nsm(sys_small, verbose = FALSE))
 #>    user  system elapsed 
-#>   1.177   0.003   1.180
+#>   1.141   0.002   1.143
 ```
