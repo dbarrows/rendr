@@ -50,20 +50,7 @@ conjunction with an ode solver.
 state <- c(301, 120, 0, 0)
 # simulation time
 T <- 30
-(sys <- rsys(net, state, T))
-#> $network
-#> #  Reaction network: 3 reactions x 4 species
-#>      Reactants    Products     Rate
-#> R1       S + E -> SE        0.00166
-#> R2          SE -> S + E       1e-04
-#> R3          SE -> E + P         0.1
-#> 
-#> $state
-#>   S   E  SE   P 
-#> 301 120   0   0 
-#> 
-#> $T
-#> [1] 30
+sys <- rsys(net, state, T)
 (sol <- rre(sys))
 #> Network
 #> #  Reaction network: 3 reactions x 4 species
@@ -121,11 +108,11 @@ constructed similarly to `rsys`s.
 
 ``` r
 # reaction network
-net <- network('
+net <- network("
         0 <-> U,  4e3, 2
         0  -> V,  1.2e4
         2U + V  -> 3U, 12.5e-8
-    ')
+    ")
 # simulation domain and initial conditions
 vol <- volume(
         dims = c(40, 1, 1),
@@ -210,8 +197,8 @@ to see which is faster for a given reaction-diffusion system.
 ``` r
 system.time(issa(sys, verbose = FALSE))
 #>    user  system elapsed 
-#> 251.663   0.335 252.442
+#> 247.316   0.242 247.916
 system.time(nsm(sys, verbose = FALSE))
 #>    user  system elapsed 
-#> 144.077   0.186 144.391
+#> 141.435   0.196 141.766
 ```
