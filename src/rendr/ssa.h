@@ -40,17 +40,17 @@ Rcpp::DataFrame ssa(bondr::rnet network,
     vec a = vec(network.reactions.size(), fill::zeros);
 
     while (t < T) {
-        // if all species consumed, report final state and finish
-        if (sum(x) == 0) {
-            sol_push(T, x, false);
-            break;
-        }
-
         // setup
         for (uint i = 0; i < a.size(); i++)
             a[i] = (k.size() != 0 ? k[i] : 1.0)*network.reactions[i].propensity(x);
         vec csum = cumsum(a);
         double asum = csum[csum.size() - 1];
+
+        // if all reactants consumed, report final state and finish
+        if (asum == 0) {
+            sol_push(T, x, false);
+            break;
+        }
 
         // get reaction index `j`
         uint j = 0;
