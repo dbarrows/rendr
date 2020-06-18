@@ -156,21 +156,15 @@
 <p>Reaction-diffusion systems created via the <code>rdsys</code> class, which are constructed similarly to <code>rsys</code>s.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit">
 <span class="co"># reaction network</span>
-<span class="kw">net</span> <span class="op">&lt;-</span> <span class="fu">network</span>(<span class="st">"
-        0 &lt;-&gt; U,  4e3, 2
-        0  -&gt; V,  1.2e4
-        2U + V  -&gt; 3U, 12.5e-8
-    "</span>- network("
-        0  U,  4e3, 2
-        0  -&gt; V,  1.2e4
-        2U + V  -&gt; 3U, 12.5e-8
-    ")
+<span class="kw">net</span> <span class="op">&lt;-</span> <span class="fu">network</span>(<span class="st">"0 &lt;-&gt; U,  4e3, 2
+                0  -&gt; V,  1.2e4
+                2U + V  -&gt; 3U, 12.5e-8"</span>
+                0  -&gt; V,  1.2e4
+                2U + V  -&gt; 3U, 12.5e-8")
 <span class="co"># simulation domain and initial conditions</span>
-<span class="kw">vol</span> <span class="op">&lt;-</span> <span class="fu">volume</span>(
-        dims = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">40</span>, <span class="fl">1</span>, <span class="fl">1</span>),
-        h = <span class="fl">1</span><span class="op">/</span><span class="fl">40</span>,
-        seed = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">25</span>, <span class="fl">75</span>)
-    )
+<span class="kw">vol</span> <span class="op">&lt;-</span> <span class="fu">volume</span>(dims = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">40</span>, <span class="fl">1</span>, <span class="fl">1</span>),
+              h = <span class="fl">1</span><span class="op">/</span><span class="fl">40</span>,
+              seed = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">25</span>, <span class="fl">75</span>))
 <span class="co"># diffusion coefficients</span>
 <span class="kw">D</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1e-3</span>, <span class="fl">1e-1</span>)
 <span class="co"># simulation time</span>
@@ -240,10 +234,10 @@
 <div class="sourceCode" id="cb8"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(<span class="fu"><a href="reference/issa.html">issa</a></span>(<span class="kw">sys</span>, verbose = <span class="fl">FALSE</span>))
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt; 247.316   0.242 247.916</span>
+<span class="co">#&gt; 250.709   0.255 251.339</span>
 <span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(<span class="fu"><a href="reference/nsm.html">nsm</a></span>(<span class="kw">sys</span>, verbose = <span class="fl">FALSE</span>))
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt; 141.435   0.196 141.766</span>
+<span class="co">#&gt; 143.156   0.160 143.487</span>
 </pre></div>
 </div>
 </div>
