@@ -108,17 +108,13 @@ constructed similarly to `rsys`s.
 
 ``` r
 # reaction network
-net <- network("
-        0 <-> U,  4e3, 2
-        0  -> V,  1.2e4
-        2U + V  -> 3U, 12.5e-8
-    ")
+net <- network("0 <-> U,  4e3, 2
+                0  -> V,  1.2e4
+                2U + V  -> 3U, 12.5e-8")
 # simulation domain and initial conditions
-vol <- volume(
-        dims = c(40, 1, 1),
-        h = 1/40,
-        seed = c(25, 75)
-    )
+vol <- volume(dims = c(40, 1, 1),
+              h = 1/40,
+              seed = c(25, 75))
 # diffusion coefficients
 D <- c(1e-3, 1e-1)
 # simulation time
@@ -197,8 +193,8 @@ to see which is faster for a given reaction-diffusion system.
 ``` r
 system.time(issa(sys, verbose = FALSE))
 #>    user  system elapsed 
-#> 247.316   0.242 247.916
+#> 250.709   0.255 251.339
 system.time(nsm(sys, verbose = FALSE))
 #>    user  system elapsed 
-#> 141.435   0.196 141.766
+#> 143.156   0.160 143.487
 ```
