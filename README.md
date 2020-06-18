@@ -33,24 +33,24 @@ details.
 library(rendr)
 ```
 
-``` r
-(network <- bondr::network_examples())
-#> #  Reaction network: 3 reactions x 4 species
-#>      Reactants    Products     Rate
-#> R1       S + E -> SE        0.00166
-#> R2          SE -> S + E       1e-04
-#> R3          SE -> E + P         0.1
-```
-
 ### RRE
 
 A deterministic solver that uses the Reaction Rate Equation (RRE) in
 conjunction with an ode solver.
 
 ``` r
-(sys <- rsys(network = network,
-             state = c(301, 120, 0, 0),
-             T = 30))
+# reaction network
+(net <- network_examples())
+#> #  Reaction network: 3 reactions x 4 species
+#>      Reactants    Products     Rate
+#> R1       S + E -> SE        0.00166
+#> R2          SE -> S + E       1e-04
+#> R3          SE -> E + P         0.1
+# initial state/conditions
+state <- c(301, 120, 0, 0)
+# simulation time
+T <- 30
+(sys <- rsys(net, state, T))
 #> $network
 #> #  Reaction network: 3 reactions x 4 species
 #>      Reactants    Products     Rate
@@ -64,9 +64,6 @@ conjunction with an ode solver.
 #> 
 #> $T
 #> [1] 30
-```
-
-``` r
 (sol <- rre(sys))
 #> Network
 #> #  Reaction network: 3 reactions x 4 species
@@ -95,11 +92,14 @@ conjunction with an ode solver.
 A function is provided for easy visualisation of solutions.
 
 ``` r
-ggplot2::theme_set(wplot::theme_wc())
+library(ggplot2)
+library(wplot)
+theme_set(theme_wc())
+
 plot(sol)
 ```
 
-<img src="man/figures/README-unnamed-chunk-6-1.svg" width="100%" />
+<img src="man/figures/README-unnamed-chunk-4-1.svg" width="100%" />
 
 ### SSA
 
@@ -107,7 +107,9 @@ Generate a single realisation of the Chemical Master Equation (CME)
 solution via the Stochastic Solution Algorithm (SSA).
 
 ``` r
-ssa(sys, all.out = TRUE) %>% plot()
+sys %>%
+    ssa(all.out = TRUE) %>%
+    plot()
 ```
 
 <img src="man/figures/README-ssa-1.svg" width="100%" />
@@ -118,20 +120,23 @@ Reaction-diffusion systems created via the `rdsys` class, which are
 constructed similarly to `rsys`s.
 
 ``` r
-(sys <- rdsys(
-    network = network('
-             0 <-> U,  4e3, 2
-             0  -> V,  1.2e4
+# reaction network
+net <- network('
+        0 <-> U,  4e3, 2
+        0  -> V,  1.2e4
         2U + V  -> 3U, 12.5e-8
-    '),
-    volume = volume(
+    ')
+# simulation domain and initial conditions
+vol <- volume(
         dims = c(40, 1, 1),
         h = 1/40,
         seed = c(25, 75)
-    ),
-    D = c(1e-3, 1e-1),
-    T = 3.5
-))
+    )
+# diffusion coefficients
+D <- c(1e-3, 1e-1)
+# simulation time
+T <- 3.5
+(sys <- rdsys(net, vol, D, T))
 #> $network
 #> #  Reaction network: 4 reactions x 2 species
 #>      Reactants    Products      Rate
@@ -205,23 +210,8 @@ to see which is faster for a given reaction-diffusion system.
 ``` r
 system.time(issa(sys, verbose = FALSE))
 #>    user  system elapsed 
-#> 241.665   0.184 242.198
+#> 251.663   0.335 252.442
 system.time(nsm(sys, verbose = FALSE))
 #>    user  system elapsed 
-#> 141.788   0.098 141.944
-```
-
-``` r
-sys_small <- sys
-sys_small$volume <- volume(
-        dims = c(2, 1, 1),
-        h = 1/40,
-        seed = c(25, 75)
-    )
-system.time(issa(sys_small, verbose = FALSE))
-#>    user  system elapsed 
-#>   0.582   0.002   0.585
-system.time(nsm(sys_small, verbose = FALSE))
-#>    user  system elapsed 
-#>   1.141   0.002   1.143
+#> 144.077   0.186 144.391
 ```
