@@ -102,7 +102,7 @@ vol <- volume(
         seed = c(25, 75)
     )
 # diffusion coefficients
-D <- D = c(1e-3, 1e-1)
+D <- c(1e-3, 1e-1)
 # simulation time
 T <- 3.5
 (sys <- rdsys(net, vol, D, T))
