@@ -48,27 +48,29 @@ library(rendr)
 devtools::install_github('dbarrows/wplot')
 devtools::load_all()
 ```
-```{r}
-(network <- bondr::network_examples())
-```
 
 ### RRE
 
 A deterministic solver that uses the Reaction Rate Equation (RRE) in conjunction with an ode solver.
 
 ```{r}
-(sys <- rsys(network = network,
-             state = c(301, 120, 0, 0),
-             T = 30))
-```
-```{r}
+# reaction network
+(net <- network_examples())
+# initial state/conditions
+state <- c(301, 120, 0, 0)
+# simulation time
+T <- 30
+(sys <- rsys(net, state, T))
 (sol <- rre(sys))
 ```
 
 A function is provided for easy visualisation of solutions.
 
 ```{r}
-ggplot2::theme_set(wplot::theme_wc())
+library(ggplot2)
+library(wplot)
+theme_set(theme_wc())
+
 plot(sol)
 ```
 
@@ -77,7 +79,9 @@ plot(sol)
 Generate a single realisation of the Chemical Master Equation (CME) solution via the Stochastic Solution Algorithm (SSA).
 
 ```{r ssa}
-ssa(sys, all.out = TRUE) %>% plot()
+sys %>%
+    ssa(all.out = TRUE) %>%
+    plot()
 ```
 
 ## Reaction-diffusion system solvers
@@ -85,20 +89,23 @@ ssa(sys, all.out = TRUE) %>% plot()
 Reaction-diffusion systems created via the `rdsys` class, which are constructed similarly to `rsys`s.
 
 ```{r}
-(sys <- rdsys(
-    network = network('
-             0 <-> U,  4e3, 2
-             0  -> V,  1.2e4
+# reaction network
+net <- network('
+        0 <-> U,  4e3, 2
+        0  -> V,  1.2e4
         2U + V  -> 3U, 12.5e-8
-    '),
-    volume = volume(
+    ')
+# simulation domain and initial conditions
+vol <- volume(
         dims = c(40, 1, 1),
         h = 1/40,
         seed = c(25, 75)
-    ),
-    D = c(1e-3, 1e-1),
-    T = 3.5
-))
+    )
+# diffusion coefficients
+D <- D = c(1e-3, 1e-1)
+# simulation time
+T <- 3.5
+(sys <- rdsys(net, vol, D, T))
 ```
 
 ### ISSA
@@ -119,15 +126,4 @@ reaction network size. You may have to try both the ISSA and NSM solver to see w
 ```{r time}
 system.time(issa(sys, verbose = FALSE))
 system.time(nsm(sys, verbose = FALSE))
-```
-
-```{r time-small}
-sys_small <- sys
-sys_small$volume <- volume(
-        dims = c(2, 1, 1),
-        h = 1/40,
-        seed = c(25, 75)
-    )
-system.time(issa(sys_small, verbose = FALSE))
-system.time(nsm(sys_small, verbose = FALSE))
 ```
