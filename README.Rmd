@@ -90,17 +90,13 @@ Reaction-diffusion systems created via the `rdsys` class, which are constructed 
 
 ```{r}
 # reaction network
-net <- network("
-        0 <-> U,  4e3, 2
-        0  -> V,  1.2e4
-        2U + V  -> 3U, 12.5e-8
-    ")
+net <- network("0 <-> U,  4e3, 2
+                0  -> V,  1.2e4
+                2U + V  -> 3U, 12.5e-8")
 # simulation domain and initial conditions
-vol <- volume(
-        dims = c(40, 1, 1),
-        h = 1/40,
-        seed = c(25, 75)
-    )
+vol <- volume(dims = c(40, 1, 1),
+              h = 1/40,
+              seed = c(25, 75))
 # diffusion coefficients
 D <- c(1e-3, 1e-1)
 # simulation time
