@@ -87,22 +87,23 @@
 <div class="sourceCode" id="cb2"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://dexter.barrows.io/rendr">rendr</a></span>)
 </pre></div>
+<div id="rre" class="section level3">
+<h3 class="hasAnchor">
+<a href="#rre" class="anchor"></a>RRE</h3>
+<p>A deterministic solver that uses the Reaction Rate Equation (RRE) in conjunction with an ode solver.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit">
-(<span class="kw">network</span> <span class="op">&lt;-</span> <span class="kw">bondr</span>::<span class="fu"><a href="https://dexter.barrows.io/bondr/reference/network_examples.html">network_examples</a></span>())
+<span class="co"># reaction network</span>
+(<span class="kw">net</span> <span class="op">&lt;-</span> <span class="fu">network_examples</span>())
 <span class="co">#&gt; #  Reaction network: 3 reactions x 4 species</span>
 <span class="co">#&gt;      Reactants    Products     Rate</span>
 <span class="co">#&gt; R1       S + E -&gt; SE        0.00166</span>
 <span class="co">#&gt; R2          SE -&gt; S + E       1e-04</span>
 <span class="co">#&gt; R3          SE -&gt; E + P         0.1</span>
-</pre></div>
-<div id="rre" class="section level3">
-<h3 class="hasAnchor">
-<a href="#rre" class="anchor"></a>RRE</h3>
-<p>A deterministic solver that uses the Reaction Rate Equation (RRE) in conjunction with an ode solver.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-(<span class="kw">sys</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/rsys.html">rsys</a></span>(network = <span class="kw">network</span>,
-             state = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">301</span>, <span class="fl">120</span>, <span class="fl">0</span>, <span class="fl">0</span>),
-             T = <span class="fl">30</span>))
+<span class="co"># initial state/conditions</span>
+<span class="kw">state</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">301</span>, <span class="fl">120</span>, <span class="fl">0</span>, <span class="fl">0</span>)
+<span class="co"># simulation time</span>
+<span class="kw">T</span> <span class="op">&lt;-</span> <span class="fl">30</span>
+(<span class="kw">sys</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/rsys.html">rsys</a></span>(<span class="kw">net</span>, <span class="kw">state</span>, <span class="kw">T</span>))
 <span class="co">#&gt; $network</span>
 <span class="co">#&gt; #  Reaction network: 3 reactions x 4 species</span>
 <span class="co">#&gt;      Reactants    Products     Rate</span>
@@ -116,8 +117,6 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $T</span>
 <span class="co">#&gt; [1] 30</span>
-</pre></div>
-<div class="sourceCode" id="cb5"><pre class="downlit">
 (<span class="kw">sol</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/rre.html">rre</a></span>(<span class="kw">sys</span>))
 <span class="co">#&gt; Network</span>
 <span class="co">#&gt; #  Reaction network: 3 reactions x 4 species</span>
@@ -143,18 +142,23 @@
 <span class="co">#&gt; # … with 90 more rows</span>
 </pre></div>
 <p>A function is provided for easy visualisation of solutions.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="kw">ggplot2</span>::<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span>(<span class="kw">wplot</span>::<span class="fu">theme_wc</span>())
+<div class="sourceCode" id="cb4"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="http://ggplot2.tidyverse.org">ggplot2</a></span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw">wplot</span>)
+<span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">theme_set</a></span>(<span class="fu">theme_wc</span>())
+
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span>(<span class="kw">sol</span>)
 </pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-6-1.svg" width="100%"></p>
+<p><img src="reference/figures/README-unnamed-chunk-4-1.svg" width="100%"></p>
 </div>
 <div id="ssa" class="section level3">
 <h3 class="hasAnchor">
 <a href="#ssa" class="anchor"></a>SSA</h3>
 <p>Generate a single realisation of the Chemical Master Equation (CME) solution via the Stochastic Solution Algorithm (SSA).</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="fu"><a href="reference/ssa.html">ssa</a></span>(<span class="kw">sys</span>, all.out = <span class="fl">TRUE</span>) <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span>()
+<div class="sourceCode" id="cb5"><pre class="downlit">
+<span class="kw">sys</span> <span class="op">%&gt;%</span>
+    <span class="fu"><a href="reference/ssa.html">ssa</a></span>(all.out = <span class="fl">TRUE</span>) <span class="op">%&gt;%</span>
+    <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span>()
 </pre></div>
 <p><img src="reference/figures/README-ssa-1.svg" width="100%"></p>
 </div>
@@ -163,25 +167,28 @@
 <h2 class="hasAnchor">
 <a href="#reaction-diffusion-system-solvers" class="anchor"></a>Reaction-diffusion system solvers</h2>
 <p>Reaction-diffusion systems created via the <code>rdsys</code> class, which are constructed similarly to <code>rsys</code>s.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit">
-(<span class="kw">sys</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/rdsys.html">rdsys</a></span>(
-    network = <span class="fu">network</span>(<span class="st">'
-             0 &lt;-&gt; U,  4e3, 2
-             0  -&gt; V,  1.2e4
+<div class="sourceCode" id="cb6"><pre class="downlit">
+<span class="co"># reaction network</span>
+<span class="kw">net</span> <span class="op">&lt;-</span> <span class="fu">network</span>(<span class="st">'
+        0 &lt;-&gt; U,  4e3, 2
+        0  -&gt; V,  1.2e4
         2U + V  -&gt; 3U, 12.5e-8
-    '</span>etwork = network('
-             0  U,  4e3, 2
-             0  -&gt; V,  1.2e4
+    '</span>- network('
+        0  U,  4e3, 2
+        0  -&gt; V,  1.2e4
         2U + V  -&gt; 3U, 12.5e-8
-    '),
-    volume = <span class="fu">volume</span>(
+    ')
+<span class="co"># simulation domain and initial conditions</span>
+<span class="kw">vol</span> <span class="op">&lt;-</span> <span class="fu">volume</span>(
         dims = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">40</span>, <span class="fl">1</span>, <span class="fl">1</span>),
         h = <span class="fl">1</span><span class="op">/</span><span class="fl">40</span>,
         seed = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">25</span>, <span class="fl">75</span>)
-    ),
-    D = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1e-3</span>, <span class="fl">1e-1</span>),
-    T = <span class="fl">3.5</span>
-))
+    )
+<span class="co"># diffusion coefficients</span>
+<span class="kw">D</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1e-3</span>, <span class="fl">1e-1</span>)
+<span class="co"># simulation time</span>
+<span class="kw">T</span> <span class="op">&lt;-</span> <span class="fl">3.5</span>
+(<span class="kw">sys</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/rdsys.html">rdsys</a></span>(<span class="kw">net</span>, <span class="kw">vol</span>, <span class="kw">D</span>, <span class="kw">T</span>))
 <span class="co">#&gt; $network</span>
 <span class="co">#&gt; #  Reaction network: 4 reactions x 2 species</span>
 <span class="co">#&gt;      Reactants    Products      Rate</span>
@@ -215,7 +222,7 @@
 <h3 class="hasAnchor">
 <a href="#issa" class="anchor"></a>ISSA</h3>
 <p>Generate a single realisation of the Reaction-diffusion Master Equation (RDME) solution via the Inhomogeneous Stochastic Solution Algorithm (ISSA).</p>
-<div class="sourceCode" id="cb9"><pre class="downlit">
+<div class="sourceCode" id="cb7"><pre class="downlit">
 <span class="fu"><a href="reference/issa.html">issa</a></span>(<span class="kw">sys</span>) <span class="op">%T&gt;%</span>
     <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>() <span class="op">%&gt;%</span>
     <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span>()
@@ -243,27 +250,13 @@
 <h3 class="hasAnchor">
 <a href="#nsm" class="anchor"></a>NSM</h3>
 <p>Generate a single realisation of the (RDME) solution via the Next Subvolume Method (NSM). Usage of the <code>nsm</code> function is the same as with the <a href="#issa">ISSA solver</a>. The NSM algorithm is usually faster for systems with a large number of subvolume (voxels) relative to the reaction network size. You may have to try both the ISSA and NSM solver to see which is faster for a given reaction-diffusion system.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit">
+<div class="sourceCode" id="cb8"><pre class="downlit">
 <span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(<span class="fu"><a href="reference/issa.html">issa</a></span>(<span class="kw">sys</span>, verbose = <span class="fl">FALSE</span>))
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt; 241.665   0.184 242.198</span>
+<span class="co">#&gt; 251.663   0.335 252.442</span>
 <span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(<span class="fu"><a href="reference/nsm.html">nsm</a></span>(<span class="kw">sys</span>, verbose = <span class="fl">FALSE</span>))
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt; 141.788   0.098 141.944</span>
-</pre></div>
-<div class="sourceCode" id="cb11"><pre class="downlit">
-<span class="kw">sys_small</span> <span class="op">&lt;-</span> <span class="kw">sys</span>
-<span class="kw">sys_small</span><span class="op">$</span><span class="kw">volume</span> <span class="op">&lt;-</span> <span class="fu">volume</span>(
-        dims = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">2</span>, <span class="fl">1</span>, <span class="fl">1</span>),
-        h = <span class="fl">1</span><span class="op">/</span><span class="fl">40</span>,
-        seed = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">25</span>, <span class="fl">75</span>)
-    )
-<span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(<span class="fu"><a href="reference/issa.html">issa</a></span>(<span class="kw">sys_small</span>, verbose = <span class="fl">FALSE</span>))
-<span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;   0.582   0.002   0.585</span>
-<span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(<span class="fu"><a href="reference/nsm.html">nsm</a></span>(<span class="kw">sys_small</span>, verbose = <span class="fl">FALSE</span>))
-<span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt;   1.141   0.002   1.143</span>
+<span class="co">#&gt; 144.077   0.186 144.391</span>
 </pre></div>
 </div>
 </div>
