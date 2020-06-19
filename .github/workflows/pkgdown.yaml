@@ -6,7 +6,7 @@ name: pkgdown
 
 jobs:
   pkgdown:
-    runs-on: ubuntu-latest
+    runs-on: macOS-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -26,9 +26,8 @@ jobs:
           restore-keys: macOS-r-4.0-1-
       - name: Install dependencies
         run: |
-          install.packages("remotes")
+          install.packages(c('remotes', 'pkgdown'))
           remotes::install_deps(dependencies = TRUE)
-          remotes::install_dev("pkgdown")
         shell: Rscript {0}
       - name: Install package
         run: R CMD INSTALL .
