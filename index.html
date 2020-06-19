@@ -145,9 +145,9 @@
 <a href="#reaction-diffusion-system-solvers" class="anchor"></a>Reaction-diffusion system solvers</h2>
 <p>Reaction-diffusion systems created via the <code>rdsys</code> class, which are constructed similarly to <code>rsys</code>s.</p>
 <div class="sourceCode" id="cb6"><pre class="r"><span class="co"># reaction network</span>
-<span class="no">net</span> <span class="kw">&lt;-</span> <span class="fu">network</span>(<span class="st">"0 &lt;-&gt; U,  4e3, 2
+<span class="no">net</span> <span class="kw">&lt;-</span> <span class="fu">network</span>(<span class="st">'0 &lt;-&gt; U,  4e3, 2
                 0  -&gt; V,  1.2e4
-                2U + V  -&gt; 3U, 12.5e-8"</span>)
+                2U + V  -&gt; 3U, 12.5e-8'</span>)
 <span class="co"># simulation domain and initial conditions</span>
 <span class="no">vol</span> <span class="kw">&lt;-</span> <span class="fu">volume</span>(<span class="kw">dims</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">40</span>, <span class="fl">1</span>, <span class="fl">1</span>),
               <span class="kw">h</span> <span class="kw">=</span> <span class="fl">1</span>/<span class="fl">40</span>,
@@ -217,10 +217,10 @@
 <p>Generate a single realisation of the (RDME) solution via the Next Subvolume Method (NSM). Usage of the <code>nsm</code> function is the same as with the <a href="#issa">ISSA solver</a>. The NSM algorithm is usually faster for systems with a large number of subvolume (voxels) relative to the reaction network size. You may have to try both the ISSA and NSM solver to see which is faster for a given reaction-diffusion system.</p>
 <div class="sourceCode" id="cb8"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(<span class="fu"><a href="reference/issa.html">issa</a></span>(<span class="no">sys</span>, <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">FALSE</span>))
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt; 250.709   0.255 251.339</span>
+<span class="co">#&gt; 257.327   0.370 257.963</span>
 <span class="fu"><a href="https://rdrr.io/r/base/system.time.html">system.time</a></span>(<span class="fu"><a href="reference/nsm.html">nsm</a></span>(<span class="no">sys</span>, <span class="kw">verbose</span> <span class="kw">=</span> <span class="fl">FALSE</span>))
 <span class="co">#&gt;    user  system elapsed </span>
-<span class="co">#&gt; 143.156   0.160 143.487</span></pre></div>
+<span class="co">#&gt; 148.299   0.296 148.814</span></pre></div>
 </div>
 </div>
 </div>
