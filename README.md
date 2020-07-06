@@ -108,9 +108,9 @@ constructed similarly to `rsys`s.
 
 ``` r
 # reaction network
-net <- network("0 <-> U,  4e3, 2
+net <- network('0 <-> U,  4e3, 2
                 0  -> V,  1.2e4
-                2U + V  -> 3U, 12.5e-8")
+                2U + V  -> 3U, 12.5e-8')
 # simulation domain and initial conditions
 vol <- volume(dims = c(40, 1, 1),
               h = 1/40,
@@ -193,8 +193,8 @@ to see which is faster for a given reaction-diffusion system.
 ``` r
 system.time(issa(sys, verbose = FALSE))
 #>    user  system elapsed 
-#> 250.709   0.255 251.339
+#> 257.327   0.370 257.963
 system.time(nsm(sys, verbose = FALSE))
 #>    user  system elapsed 
-#> 143.156   0.160 143.487
+#> 148.299   0.296 148.814
 ```
