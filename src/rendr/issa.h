@@ -26,6 +26,8 @@ rdsol issa(rdnet& network,
     double h = vol.h;
     double t = 0;
 
+    auto x_last = x;
+
     if (verbose) {
         Rcpp::Rcout << "Starting ISSA simulation with parameters:" << endl
                     << " - Reactions:   " << network.reactions[0].size() << endl
@@ -55,11 +57,11 @@ rdsol issa(rdnet& network,
     // state saving
     auto sol = provision<array3<vec>>(network.species, T, length_out, all_out);
     uint next_out = 0;
-    auto sol_push = [&sol, &next_out, y, all_out](double t, array3<vec>& x) {
-        push(sol, t, x, y, all_out, next_out);
+    auto sol_push = [&](bool final = false) {
+        push(sol, final ? T + 1: t, T, x, x_last, all_out, next_out);
     };
     
-    sol_push(t, x);
+    sol_push();
 
     // progress printing
     double next_report_fraction;
@@ -77,6 +79,12 @@ rdsol issa(rdnet& network,
             csum[i] = csum[i - 1] + a[i];
         double asum = csum[csum.size() - 1];
 
+        // if all propensities zero, system halts
+        if (asum == 0) {
+            sol_push(true);
+            break;
+        }
+
         // get reaction index `j`
         uint j = 0;
         double atarget = asum*runif();
@@ -86,11 +94,13 @@ rdsol issa(rdnet& network,
         // get reaction time
         double tau = -log(runif())/asum;
 
+        // stash current system state
+        x_last = x;
         // advance system
         updates[j](x);
         t += tau;
 
-        sol_push(t, x);
+        sol_push();
 
         if (verbose && next_report_fraction < t / T) {
             Rcpp::Rcout << ".";
@@ -103,8 +113,6 @@ rdsol issa(rdnet& network,
 
     if (verbose)
         Rcpp::Rcout << endl;
-
-    sol_push(t, x);
 
     return sol;
 }

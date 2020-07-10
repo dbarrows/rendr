@@ -7,7 +7,7 @@
 rdsys(network, volume, D, T)
 }
 \arguments{
-\item{network}{an instance of the \code{\link[bondr:network]{bondr::network}} class}
+\item{network}{an instance of the \code{\link[bondr:parse_network]{bondr::network}} class}
 
 \item{volume}{an instance of the \code{\link[spurcore:volume]{spurcore::volume}} class}
 

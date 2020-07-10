@@ -49,6 +49,8 @@ rdsol nsm(rdnet& network,
     double h = vol.h;
     double t = 0;
 
+    auto x_last = x;
+
     if (verbose) {
         Rcpp::Rcout << "Starting NSM simulation with parameters:" << endl
                     << " - Reactions:   " << network.reactions[0].size() << endl
@@ -79,11 +81,11 @@ rdsol nsm(rdnet& network,
     // state saving
     auto sol = provision<array3<vec>>(network.species, T, length_out, all_out);
     uint next_out = 0;
-    auto sol_push = [&sol, &next_out, y, all_out](double t, array3<vec>& x) {
-        push(sol, t, x, y, all_out, next_out);
+    auto sol_push = [&](bool final = false) {
+        push(sol, final ? T + 1 : t, T, x, x_last, all_out, next_out);
     };
     
-    sol_push(t, x);
+    sol_push();
 
     // progress printing
     double next_report_fraction;
@@ -92,13 +94,25 @@ rdsol nsm(rdnet& network,
 
     uint iter = 0;
     while (t < T) {
+        // if all propensities zero, system halts
+        double rate_sum = 0;
+        for (uint i = 0; i < rate_sums.size(); i++)
+            rate_sum += rate_sums[i];
+        if (rate_sum == 0) {
+            sol_push(true);
+            break;
+        }
 
+        // setup
         auto time_index = eq.next();
         t = time_index.first;
         uvec3 index = time_index.second;
 
         double r = runif();
         double reaction_cutoff = sum(rates[index].reactions) / rate_sums[index];
+
+        // stash current system state
+        x_last = x;
 
         if (r < reaction_cutoff) {
             // next event is a reaction
@@ -144,7 +158,7 @@ rdsol nsm(rdnet& network,
             }
         }
 
-        sol_push(t, x);
+        sol_push();
 
         if (verbose && next_report_fraction < t / T) {
             Rcpp::Rcout << ".";
@@ -157,8 +171,6 @@ rdsol nsm(rdnet& network,
 
     if (verbose)
         Rcpp::Rcout << endl;
-
-    sol_push(t, x);
 
     return sol;
 }

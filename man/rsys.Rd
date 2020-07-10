@@ -7,7 +7,7 @@
 rsys(network, state, T)
 }
 \arguments{
-\item{network}{an instance of the \code{\link[bondr:network]{bondr::network}}}
+\item{network}{an instance of the \code{\link[bondr:parse_network]{bondr::network}}}
 
 \item{state}{\code{\link{vector}} containing the initial species quantities in the order returned by \code{species(network)}}
 

@@ -38,34 +38,21 @@ sol<S> provision(vector<string>& species, double T, uint length_out, bool all_ou
 }
 
 template <typename S>
-void push(sol<S>& sol, double t, S x, S y, bool all_out, uint& next_out, bool interp_x = true){
+void push(sol<S>& sol, double t, double T, S& x, S& x_last, bool all_out, uint& next_out){
     // save everything
     if (all_out) {
-        sol.t.push_back(t);
+        sol.t.push_back(T < t ? T : t);
         sol.u.push_back(x);
     // length.out == 1: only save last state
     } else if (sol.t.size() == 1 && sol.t[0] < t) {
-        sol.u[0] = interp(scale(sol.t[0], 0, t), y, x);
+        sol.u[0] = x_last;
     // length.out states: save first state
     } else if (next_out == 0) {
-        sol.u[next_out++] = x;
+        sol.u[next_out++] = x_last;
     // length.out states: save subsequent states
     } else if (sol.t[next_out] <= t) {
-        while (next_out < sol.t.size() && sol.t[next_out] < t) {
-            if (interp_x) {
-                sol.u[next_out] = interp(scale(sol.t[next_out],
-                                               sol.t[next_out - 1],
-                                               t),
-                                         sol.u[next_out - 1],
-                                         x);
-            } else {
-                sol.u[next_out] = x;
-            }
-            next_out++;
-        }
-        if (next_out == sol.t.size() - 1 && sol.t[next_out] == t) {
-            sol.u[next_out++] = x;
-        }
+        while (next_out < sol.t.size() && sol.t[next_out] < t)
+            sol.u[next_out++] = x_last;
     }
 };
 

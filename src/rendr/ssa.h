@@ -23,18 +23,17 @@ Rcpp::DataFrame ssa(bondr::rnet network,
     double t = 0;
     vec x = vec(y);
 
-    auto t_last = t;
     auto x_last = x;
         
     // data saving
     auto sol = provision<vec>(network.species, T, length_out, all_out);
     uint next_out = 0;
-    auto sol_push = [&sol, &next_out, y, all_out](double t, vec x, bool interp = true) {
-        push(sol, t, x, y, all_out, next_out, interp);
+    auto sol_push = [&](bool final = false) {
+        push(sol, final ? T + 1 : t, T, x, x_last, all_out, next_out);
     };
 
     // save initial state
-    sol_push(t, x);
+    sol_push();
 
     // allocate propensities vector
     vec a = vec(network.reactions.size(), fill::zeros);
@@ -46,9 +45,9 @@ Rcpp::DataFrame ssa(bondr::rnet network,
         vec csum = cumsum(a);
         double asum = csum[csum.size() - 1];
 
-        // if all reactants consumed, report final state and finish
+        // if all propensities zero, system halts
         if (asum == 0) {
-            sol_push(T, x, false);
+            sol_push(true);
             break;
         }
 
@@ -62,13 +61,12 @@ Rcpp::DataFrame ssa(bondr::rnet network,
         double tau = -log(runif())/asum;
 
         // stash current system state
-        t_last = t;
         x_last = x;
         // advance system
         network.reactions[j].update(x);
         t += tau;
 
-        sol_push(t, x);
+        sol_push();
     }
 
     return DataFrame(sol);
