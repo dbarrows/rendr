@@ -28,12 +28,12 @@ Rcpp::NumericVector ssa_cpp_pest(SEXP rnet_xptr,
     
     // obtain all solutions with final state only
     auto sols = std::vector<rendr::rsol>(trajectories);
-    for (uint i = 0; i < sols.size(); i++)
+    for (int i = 0; i < sols.size(); i++)
         sols[i] = rendr::ssa(net, y, T, 1, false, k);
 
     // average final states
     auto vsum = sols[0].u[0];
-    for (uint i = 1; i < sols.size(); i++)
+    for (int i = 1; i < sols.size(); i++)
         vsum += sols[i].u[0];
     arma::vec vmean = vsum / static_cast<double>(sols.size());
 
