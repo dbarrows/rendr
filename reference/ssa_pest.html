@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Stochastic simulation algorithm solver — ssa • rendr</title>
+<title>Optimised point estimate (average final trajecory point) using SSA — ssa_pest • rendr</title>
 
 
 <!-- jquery -->
@@ -41,8 +41,8 @@
   <link href="../extra.css" rel="stylesheet">
   
 
-<meta property="og:title" content="Stochastic simulation algorithm solver — ssa" />
-<meta property="og:description" content="Generates a realization of the solution to the Chemical Master Equation." />
+<meta property="og:title" content="Optimised point estimate (average final trajecory point) using SSA — ssa_pest" />
+<meta property="og:description" content="Optimised point estimate (average final trajecory point) using SSA" />
 
 
 
@@ -111,26 +111,16 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Stochastic simulation algorithm solver</h1>
+    <h1>Optimised point estimate (average final trajecory point) using SSA</h1>
     <small class="dont-index">Source: <a href='https://github.com/dbarrows/rendr/blob/master/R/ssa.R'><code>R/ssa.R</code></a></small>
-    <div class="hidden name"><code>ssa.Rd</code></div>
+    <div class="hidden name"><code>ssa_pest.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Generates a realization of the solution to the Chemical Master Equation.</p>
+    <p>Optimised point estimate (average final trajecory point) using SSA</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ssa</span>(
-  <span class='no'>sys</span>,
-  <span class='kw'>length.out</span> <span class='kw'>=</span> <span class='fl'>100</span>,
-  <span class='kw'>all.out</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>trajectories</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>cores</span> <span class='kw'>=</span> <span class='fu'>detectCores</span>(),
-  <span class='kw'>average</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>k</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>force_compile</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
-)</pre>
+    <pre class="usage"><span class='fu'>ssa_pest</span>(<span class='no'>sys</span>, <span class='kw'>trajectories</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>k</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>force_compile</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -140,32 +130,12 @@
       <td><p><code><a href='rsys.html'>rsys</a></code> instance</p></td>
     </tr>
     <tr>
-      <th>length.out</th>
-      <td><p>length of solution output (table rows) (default 100)</p></td>
-    </tr>
-    <tr>
-      <th>all.out</th>
-      <td><p>if <code>TRUE</code> (default <code>FALSE</code>), ignore <code>length.out</code> and return entire solution</p></td>
-    </tr>
-    <tr>
       <th>trajectories</th>
       <td><p>number of trajectories to generate</p></td>
     </tr>
     <tr>
-      <th>parallel</th>
-      <td><p>if <code>TRUE</code> (default <code>FALSE</code>) generate trajectories using multiple CPU cores</p></td>
-    </tr>
-    <tr>
-      <th>cores</th>
-      <td><p>number of cores to use if <code>parallel</code> is <code>TRUE</code> (default is all system cores)</p></td>
-    </tr>
-    <tr>
-      <th>average</th>
-      <td><p>if <code>TRUE</code> (default <code>FALSE</code>) and generating multiple trajectories, averages trajectories at sample times; incompatible with <code>all.out = TRUE</code></p></td>
-    </tr>
-    <tr>
       <th>k</th>
-      <td><p><code><a href='https://rdrr.io/r/base/numeric.html'>numeric</a></code> vector of reaction rates corresponding to the reactions in <code>sys</code>, overrides those contained if <code>sys</code> if provided</p></td>
+      <td><p><code><a href='https://rdrr.io/r/base/vector.html'>vector</a></code> of reaction rates corresponding to the reactions in <code>sys</code>, overrides those contained if <code>sys</code> if provided</p></td>
     </tr>
     <tr>
       <th>force_compile</th>
@@ -175,7 +145,7 @@
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code><a href='rsol.html'>rsol</a></code> instance</p>
+    <p>named <code><a href='https://rdrr.io/r/base/numeric.html'>numeric</a></code> vector</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
