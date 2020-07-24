@@ -56,11 +56,27 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// ssa_cpp_pest
+Rcpp::NumericVector ssa_cpp_pest(SEXP rnet_xptr, arma::vec y, double T, int trajectories, Rcpp::Nullable<arma::vec> k_vec);
+RcppExport SEXP _rendr_ssa_cpp_pest(SEXP rnet_xptrSEXP, SEXP ySEXP, SEXP TSEXP, SEXP trajectoriesSEXP, SEXP k_vecSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type rnet_xptr(rnet_xptrSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type y(ySEXP);
+    Rcpp::traits::input_parameter< double >::type T(TSEXP);
+    Rcpp::traits::input_parameter< int >::type trajectories(trajectoriesSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<arma::vec> >::type k_vec(k_vecSEXP);
+    rcpp_result_gen = Rcpp::wrap(ssa_cpp_pest(rnet_xptr, y, T, trajectories, k_vec));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_rendr_issa_cpp", (DL_FUNC) &_rendr_issa_cpp, 7},
     {"_rendr_nsm_cpp", (DL_FUNC) &_rendr_nsm_cpp, 7},
     {"_rendr_ssa_cpp", (DL_FUNC) &_rendr_ssa_cpp, 6},
+    {"_rendr_ssa_cpp_pest", (DL_FUNC) &_rendr_ssa_cpp_pest, 5},
     {NULL, NULL, 0}
 };
 

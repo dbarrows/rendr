@@ -14,12 +14,12 @@ using namespace std;
 using namespace core;
 using uint = unsigned int;
 
-Rcpp::DataFrame ssa(bondr::rnet network,
-                    vec y,
-                    double T,
-                    uint length_out = 100,
-                    bool all_out = false,
-                    vec k = vec()) {
+rsol ssa(bondr::rnet network,
+         vec y,
+         double T,
+         uint length_out = 100,
+         bool all_out = false,
+         vec k = vec()) {
     double t = 0;
     vec x = vec(y);
 
@@ -69,7 +69,7 @@ Rcpp::DataFrame ssa(bondr::rnet network,
         sol_push();
     }
 
-    return DataFrame(sol);
+    return sol;
 }
 
 }

@@ -31,7 +31,7 @@ ssa(
 
 \item{average}{if \code{TRUE} (default \code{FALSE}) and generating multiple trajectories, averages trajectories at sample times; incompatible with \code{all.out = TRUE}}
 
-\item{k}{\code{\link{vector}} of reaction rates corresponding to the reactions in \code{sys}, overrides those contained if \code{sys} if provided}
+\item{k}{\code{\link{numeric}} vector of reaction rates corresponding to the reactions in \code{sys}, overrides those contained if \code{sys} if provided}
 
 \item{force_compile}{if set to \code{TRUE}, forces the overwriting and recompilation of the network source file}
 }
