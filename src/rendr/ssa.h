@@ -4,7 +4,6 @@
 #include <rnet.h>
 #include <random.h>
 #include <utils.h>
-#include "ssa.h"
 #include "rsol.h"
 
 namespace rendr {
