@@ -13,9 +13,19 @@ using namespace std;
 using namespace core;
 using uint = unsigned int;
 
+uint g(uint x, uint hor, uint hot) {
+    double coef = hor/hot;
+    double sumfracs = hot;
+    for (uint i = 1; i < hot; i++)
+        sumfracs += i/(x - i);
+    return coef*sumfracs;
+}
+
 rsol tauleap(bondr::rnet network,
              vec y,
              double T,
+             vec hors,
+             vec hots,
              uint length_out = 100,
              bool all_out = false,
              vec k = vec()) {
@@ -36,6 +46,9 @@ rsol tauleap(bondr::rnet network,
 
     // allocate propensities vector
     vec a = vec(network.reactions.size(), fill::zeros);
+
+    // explicit tau containers
+    auto tau_exs = vec(x.size(), fill::zeros);
 
     // update vector negative magnitudes for critical reaction determination
     auto neg_v = vector<vec>();
@@ -96,6 +109,9 @@ rsol tauleap(bondr::rnet network,
             sol_push(true);
             break;
         }
+
+        // compute explicit tau time step
+        // TODO: get set of reactant species and evaluate tau_exs/tau_ex
 
         // get reaction index `j`
         uint j = 0;
