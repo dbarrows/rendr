@@ -5,6 +5,7 @@
 #include <random.h>
 #include <utils.h>
 #include "rsol.h"
+#include "implicit-tau.h"
 
 namespace rendr {
 
@@ -129,6 +130,48 @@ rsol tauleap(bondr::rnet network,
         t += tau;
 
         sol_push();
+    }
+
+    return sol;
+}
+
+rsol tauleap_implicit(bondr::rnet network,
+                      vec y,
+                      double T,
+                      uint length_out = 100,
+                      bool all_out = false,
+                      vec k = vec()) {
+    double t = 0;
+    double tau = T / length_out;
+    vec x = vec(y);
+
+    auto x_last = x;
+        
+    // data saving
+    auto sol = provision<vec>(network.species, T, length_out, all_out);
+    uint next_out = 0;
+    auto sol_push = [&](bool final = false) {
+        push(sol, final ? T + 1 : t, T, x, x_last, all_out, next_out);
+    };
+
+    // save initial state
+    sol_push();
+
+    // f system function
+    auto f = tau::f_make(network);
+
+    while (t < T) {
+        
+        x_last = x;
+
+        x = tau::step(network, f, x, tau);
+        t += tau;
+
+        Rcpp::Rcout << x << endl;
+
+        sol_push();
+
+        break;
     }
 
     return sol;
