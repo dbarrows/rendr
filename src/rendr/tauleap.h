@@ -158,12 +158,12 @@ rsol tauleap_implicit(bondr::rnet network,
     sol_push();
 
     // f system function
-    auto f = tau::f_make(network);
+    auto f = imtau::f_make(network);
 
     while (t < T) {
         x_last = x;
 
-        x = tau::step(network, f, x, tau);
+        x = imtau::step(network, f, x, tau);
         t += tau;
 
         sol_push();

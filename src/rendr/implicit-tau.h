@@ -7,7 +7,7 @@
 #include <random.h>
 
 namespace rendr {
-namespace tau {
+namespace imtau {
 
 using namespace arma;
 using namespace std;
@@ -20,22 +20,22 @@ using f_t = function<vector<dual>(vector<dual>, vec, vec, double)>;
 // --- partial derivatives ----------------------
 
 f_t f_make(bondr::rnet& network) {
-    // get update dual vectors
-    auto v = vector<vector<dual>>(network.reactions.size());
     auto N = network.species.size();
     auto M = network.reactions.size();
-    transform(network.reactions.begin(), network.reactions.end(), v.begin(),
-              [N](const bondr::reaction& r){ 
-                  vec v = vec(N, fill::zeros);
-                  r.update(v);
-                  return dual_vec(v);
-              });
+
+    // update vectors in dual number format
+    auto v = vector<vector<dual>>(M);
+    for (uint j = 0; j < M; j++) {
+        vec vj = vec(N, fill::zeros);
+        network.reactions[j].update(vj);
+        v[j] = dual_vec(vj);
+    }
     // generate system functions evaulator
     return [&network, v, N, M](vector<dual> xp, vec x, vec b, double tau) -> vector<dual> {
         auto sprod = vector<dual>(N);
         for (uint j = 0; j < M; j++) {
             auto prop = network.reactions[j].dual_propensity(xp);
-            sprod = sprod + v[j]*prop*tau;
+            sprod += v[j]*prop*tau;
         }
         return xp - dual_vec(x) - sprod - dual_vec(b);
     };
@@ -113,8 +113,10 @@ vec step(bondr::rnet& network, f_t& f, vec x, double tau) {
 
     // \hat{K}
     vec k = vec(M);
-    for (uint j = 0; j < k.size(); j++)
-        k[j] = network.reactions[j].propensity(xp)*tau + b_inner[j];
+    for (uint j = 0; j < M; j++) {
+        auto kj = network.reactions[j].propensity(xp)*tau + b_inner[j];
+        k[j] = kj < 0 ? 0 : kj;
+    }
     k = round(k);
 
     vec x_next = x;
