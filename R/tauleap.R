@@ -28,7 +28,10 @@ tauleap <- function(sys, length.out = 100, all.out = FALSE, trajectories = 1, pa
             })
         ## obtain solutions
         tauleapf <- function() {
-                tauleap_implicit_cpp(net, state, T,
+                tauleap_cpp(net, state, T,
+                            hors(network),
+                            hots(network),
+                            find_reversible(network),
                             length_out = length.out,
                             all_out = all.out,
                             k_vec = k)
@@ -63,7 +66,7 @@ hors <- function(network) {
         species() %>%
         sapply(function(s) {
                 orders <- network$reactions %>%
-                    filter(function(reaction) s %in% reactant_names(reaction)) %>%
+                    filter(function(r) s %in% reactant_names(r)) %>%
                     vapply(order, numeric(1))
                 if (0 < length(orders))
                     max(orders)
@@ -74,10 +77,50 @@ hors <- function(network) {
 
 
 
-reactant_names <- function(reaction) {
-    reaction$reactants %>%
-        vapply(function(reactant) reactant$name,
+reactant_names <- function(reaction, order = FALSE) {
+    species_names(reaction, 'reactants', order)
+}
+
+product_names <- function(reaction, order = FALSE) {
+    species_names(reaction, 'products', order)
+}
+
+species_names <- function(reaction, type = NULL, order = FALSE) {
+    species <- if(type == 'reactants')
+            reaction$reactants
+        else if (type == 'products')
+            reaction$products
+    species %>% 
+        vapply(function(s) {
+                    if (order)
+                        str_c(s$order, s$name)
+                    else
+                        s$name
+               },
                character(1))
+}
+
+reversible <- function(reaction1, reaction2) {
+    r1r <- reaction1 %>% reactant_names(order = TRUE) %>% sort()
+    r1p <- reaction1 %>% product_names(order = TRUE) %>% sort()
+    r2r <- reaction2 %>% reactant_names(order = TRUE) %>% sort()
+    r2p <- reaction2 %>% product_names(order = TRUE) %>% sort()
+    all(r1r == r2p) && all(r2r == r1p)
+}
+
+find_reversible <- function(network) {
+    M <- network$reactions %>% length()
+    1:M %>% sapply(function(rj) {
+            revj <- 1:M %>%
+                .[. != rj] %>%
+                sapply(function(rjc) {
+                        r <- network$reactions[[rj]]
+                        rc <- network$reactions[[rjc]]
+                        if (reversible(r, rc)) rjc else 0
+                    }) %>%
+                    .[. != 0]
+            if (length(revj) == 0) 0 else revj
+        })
 }
 
 hots <- function(network) {

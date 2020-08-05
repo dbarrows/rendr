@@ -4,6 +4,8 @@
 #include <rnet.h>
 #include <random.h>
 #include <utils.h>
+#include <algorithm>
+#include <cmath>
 #include "rsol.h"
 #include "implicit-tau.h"
 
@@ -14,7 +16,7 @@ using namespace std;
 using namespace core;
 using uint = unsigned int;
 
-uint g(uint x, uint hor, uint hot) {
+double g(uint x, uint hor, uint hot) {
     double coef = hor/hot;
     double sumfracs = hot;
     for (uint i = 1; i < hot; i++)
@@ -27,9 +29,14 @@ rsol tauleap(bondr::rnet network,
              double T,
              vec hors,
              vec hots,
+             vec reversible,
              uint length_out = 100,
              bool all_out = false,
-             vec k = vec()) {
+             vec k = vec(),
+             double eps = 3e-2) {
+    uint N = network.species.size();
+    uint M = network.reactions.size();
+
     double t = 0;
     vec x = vec(y);
 
@@ -48,35 +55,43 @@ rsol tauleap(bondr::rnet network,
     // allocate propensities vector
     vec a = vec(network.reactions.size(), fill::zeros);
 
-    // explicit tau containers
-    auto tau_exs = vec(x.size(), fill::zeros);
-
     // update vector negative magnitudes for critical reaction determination
-    auto neg_v = vector<vec>();
-    for (auto& reaction : network.reactions) {
-        vec v = vec(x.size(), fill::zeros);
-        reaction.update(v);
-        for (uint i = 0; i < v.size(); i++)
-            v[i] = v[i] < 0 ? -v[i] : 0;
-        neg_v.push_back(v);
+    auto v = vector<vec>(M);
+    auto nv = vector<vec>(M);
+    for (uint j = 0; j < M; j++) {
+        vec vj = vec(x.size(), fill::zeros);
+        network.reactions[j].update(vj);
+        v[j] = vj;
+        // get expenditure vectors
+        vec nvj = vj;
+        for (uint i = 0; i < N; i++)
+            nvj[i] = nvj[i] < 0 ? -nvj[i] : 0;
+        nv[j] = nvj;
+    }
+
+    // set of reactant species
+    auto i_rs = vector<double>();
+    for (uint i = 0; i < N; i++) {
+        if (0 < hors[i])
+            i_rs.push_back(i);
     }
 
     // holder and function for critical reactions
-    auto critical_reactions = vector<uint>();
-    auto noncritical_reactions = vector<uint>();
-    auto update_critical = [&critical_reactions, &noncritical_reactions, neg_v](vec x) {
+    auto j_cr = vector<uint>();
+    auto j_ncr = vector<uint>();
+    auto update_critical = [&j_cr, &j_ncr, nv](vec x) {
         // critical threshold, may need to be an input
         const uint n_crit = 10;
 
         // clear existing lists
-        critical_reactions.clear();
-        noncritical_reactions.clear();
+        j_cr.clear();
+        j_ncr.clear();
 
-        for (uint j = 0; j < neg_v.size(); j++) {
+        for (uint j = 0; j < nv.size(); j++) {
             // get max firings for reactions that consume species
             auto max_firings = vector<uint>();
-            for (uint i = 0; i < neg_v[j].size(); i++) {
-                double vij = neg_v[j][i];
+            for (uint i = 0; i < nv[j].size(); i++) {
+                double vij = nv[j][i];
                 if (0 < vij)
                     max_firings.push_back(x[i]/vij);
             }
@@ -87,13 +102,13 @@ rsol tauleap(bondr::rnet network,
                     L = min(L, max_firings[j]);
                 // if min of max firings below threshold, then it is critical
                 if (L < n_crit)
-                    critical_reactions.push_back(j);
+                    j_cr.push_back(j);
                 // otherwise unrestricted
                 else
-                    noncritical_reactions.push_back(j);
+                    j_ncr.push_back(j);
             // reaction is unrestricted
             } else {
-                noncritical_reactions.push_back(j);
+                j_ncr.push_back(j);
             }
         }
     };
@@ -111,8 +126,60 @@ rsol tauleap(bondr::rnet network,
             break;
         }
 
+        // update critical reactions
+        update_critical(x);
+        Rcpp::Rcout << "Critical reactions: ";
+        if (j_cr.size() == 0) {
+            Rcpp::Rcout << "none";
+        } else {
+            for (uint i = 0; i < j_cr.size(); i++)
+                Rcpp::Rcout << j_cr[i] << ", "; 
+        }
+        Rcpp::Rcout << endl;
+        Rcpp::Rcout << "Noncritical reactions: ";
+        if (j_ncr.size() == 0) {
+            Rcpp::Rcout << "none";
+        } else {
+            for (uint i = 0; i < j_ncr.size(); i++)
+                Rcpp::Rcout << j_ncr[i] << ", "; 
+        }
+        Rcpp::Rcout << endl;
+
         // compute explicit tau time step
-        // TODO: get set of reactant species and evaluate tau_exs/tau_ex
+        auto u_ex = vector<double>(i_rs.size());
+        auto s_ex = vector<double>(i_rs.size());
+        for (uint si = 0; si < i_rs.size(); si++) {
+            auto i = i_rs[si];
+            u_ex[si] = 0;
+            s_ex[si] = 0;
+            for (uint ri = 0; ri < j_ncr.size(); ri++) {
+                auto j = j_ncr[ri];
+                double vij = v[i][j];
+                double p = network.reactions[j].propensity(x);
+                u_ex[si] += vij*p;
+                s_ex[si] += pow(vij, 2.0)*p;
+            }
+        }
+
+        for (uint si = 0; si < i_rs.size(); si++)
+            Rcpp::Rcout << "S" << i_rs[si] << ": u = " << u_ex[si] << ", s^2 = " << s_ex[si] << endl;
+
+        vec tau_exs = vec(i_rs.size()*2);
+        for (uint si = 0; si < i_rs.size(); si++) {
+            auto i = i_rs[si];
+            double xi = x[i];
+            double gi = g(xi, hors[i], hots[i]);
+            tau_exs[si*2] = (max(eps*xi/gi, 1.0)/abs(u_ex[si]));
+            tau_exs[si*2 + 1] = (pow(max(eps*xi/gi, 1.0), 2.0)/s_ex[si]);
+            Rcpp::Rcout << "S" << i_rs[si] << ": gi = " << gi << ", tau_ex1 = " << tau_exs[si*2] << ", tau_ex2 = " << tau_exs[si*2 + 1] << endl;
+        }
+        auto tau_ex = min(tau_exs);
+        Rcpp::Rcout << "tau_ex: " << tau_ex << endl;
+
+        break;
+
+        // compute implicit tau time step
+
 
         // get reaction index `j`
         uint j = 0;
