@@ -32,13 +32,11 @@ f_t f_make(bondr::rnet& network) {
               });
     // generate system functions evaulator
     return [&network, v, N, M](vector<dual>& xp, vec x, vec b, double tau) -> vector<dual> {
-        // propensities
-        auto prop = vector<dual>(M);
-        transform(network.reactions.begin(), network.reactions.end(), prop.begin(),
-                  [&xp](const bondr::reaction& r){ return r.dual_propensity(xp); });
         auto sprod = vector<dual>(N);
-        for (uint j = 0; j < M; j++)
-            sprod = sprod + v[j]*prop[j]*tau;
+        for (uint j = 0; j < M; j++) {
+            auto prop = network.reactions[j].dual_propensity(xp);
+            sprod = sprod + v[j]*prop*tau;
+        }
         return xp - dual_vec(x) - sprod - dual_vec(b);
     };
 }
@@ -94,23 +92,24 @@ vec step(bondr::rnet& network, f_t& f, vec x, double tau) {
     // constant quantities
     vec b_inner = vec(N);
     vec b = vec(N, fill::zeros);
-    auto vs = vector<vec>(M);
+    auto v = vector<vec>(M);
     for (uint j = 0; j < M; j++) {
         // v
-        vec v = vec(N, fill::zeros);
-        network.reactions[j].update(v);
-        vs[j] = v;
+        v[j] = vec(N, fill::zeros);
+        network.reactions[j].update(v[j]);
         // prop
         double a = network.reactions[j].propensity(x);
         // number of jumps
-        uint p = rpois(p*tau);
+        uint p = rpois(a*tau);
         // combine
         b_inner[j] = p - a*tau;
-        b += v*b_inner[j];
+        b += v[j]*b_inner[j];
     }
 
     // X'
     vec xp = solve(f, x, b, tau);
+
+    Rcpp::Rcout << "X'" << xp << endl;
 
     // \hat{K}
     vec k = vec(M);
@@ -118,9 +117,11 @@ vec step(bondr::rnet& network, f_t& f, vec x, double tau) {
         k[j] = network.reactions[j].propensity(xp)*tau + b_inner[j];
     k = round(k);
 
+    Rcpp::Rcout << "K" << k << endl;
+
     vec x_next = x;
     for (uint j = 0; j < M; j++)
-        x_next += vs[j]*k[j];
+        x_next += v[j]*k[j];
 
     return x_next;
 }

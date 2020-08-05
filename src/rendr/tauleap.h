@@ -170,8 +170,6 @@ rsol tauleap_implicit(bondr::rnet network,
         Rcpp::Rcout << x << endl;
 
         sol_push();
-
-        break;
     }
 
     return sol;
