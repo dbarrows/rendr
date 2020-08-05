@@ -13,7 +13,7 @@ using namespace arma;
 using namespace std;
 using namespace core;
 
-using f_t = function<vector<dual>(vector<dual>&, vec, vec, double)>;
+using f_t = function<vector<dual>(vector<dual>, vec, vec, double)>;
 
 // --- Newton's method solver ---------------------------------------------------------------------
 
@@ -31,7 +31,7 @@ f_t f_make(bondr::rnet& network) {
                   return dual_vec(v);
               });
     // generate system functions evaulator
-    return [&network, v, N, M](vector<dual>& xp, vec x, vec b, double tau) -> vector<dual> {
+    return [&network, v, N, M](vector<dual> xp, vec x, vec b, double tau) -> vector<dual> {
         auto sprod = vector<dual>(N);
         for (uint j = 0; j < M; j++) {
             auto prop = network.reactions[j].dual_propensity(xp);
@@ -69,16 +69,18 @@ vec solve(f_t& f, vec x0, vec b, double tau, double tol = 1e-6) {
         // jacobian
         mat jac = jacobian(f, x, x0, b, tau);
         // f(x)
-        auto xd = dual_vec(x);
-        auto fxd = f(xd, x0, b, tau);
-        vec fx = single_vec(fxd);
+        //auto xd = dual_vec(x);
+        auto fx = single_vec(f(dual_vec(x), x0, b, tau));
+        //vec fx = single_vec(fxd);
         // \delta x
         vec dx = solve(jac, -fx);
 
         x_last = x;
         x += dx;
         step++;
-    } while(step < 10 && any(tol < abs(x - x_last)));
+    } while(any(tol < abs(x - x_last)) && step < 100);
+    if (step == 100)
+        Rcpp::Rcout << "Warning: solver not converging" << endl;
 
     return x;
 }
@@ -109,15 +111,11 @@ vec step(bondr::rnet& network, f_t& f, vec x, double tau) {
     // X'
     vec xp = solve(f, x, b, tau);
 
-    Rcpp::Rcout << "X'" << xp << endl;
-
     // \hat{K}
     vec k = vec(M);
     for (uint j = 0; j < k.size(); j++)
         k[j] = network.reactions[j].propensity(xp)*tau + b_inner[j];
     k = round(k);
-
-    Rcpp::Rcout << "K" << k << endl;
 
     vec x_next = x;
     for (uint j = 0; j < M; j++)

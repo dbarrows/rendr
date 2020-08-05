@@ -161,13 +161,10 @@ rsol tauleap_implicit(bondr::rnet network,
     auto f = tau::f_make(network);
 
     while (t < T) {
-        
         x_last = x;
 
         x = tau::step(network, f, x, tau);
         t += tau;
-
-        Rcpp::Rcout << x << endl;
 
         sol_push();
     }
