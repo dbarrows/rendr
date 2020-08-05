@@ -87,7 +87,7 @@ vec solve(f_t& f, vec x0, vec b, double tau, double tol = 1e-6) {
 
 // --- implicit tau step --------------------------------------------------------------------------
 
-vec step(bondr::rnet& network, f_t& f, vec x, double tau) {
+vec k_im(bondr::rnet& network, f_t& f, vec x, double tau) {
     uint N = network.species.size();
     uint M = network.reactions.size();
 
@@ -117,13 +117,7 @@ vec step(bondr::rnet& network, f_t& f, vec x, double tau) {
         auto kj = network.reactions[j].propensity(xp)*tau + b_inner[j];
         k[j] = kj < 0 ? 0 : kj;
     }
-    k = round(k);
-
-    vec x_next = x;
-    for (uint j = 0; j < M; j++)
-        x_next += v[j]*k[j];
-
-    return x_next;
+    return round(k);
 }
 
 

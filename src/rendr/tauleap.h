@@ -24,16 +24,30 @@ double g(uint x, uint hor, uint hot) {
     return coef*sumfracs;
 }
 
+vector<uint> intersect(vector<uint>& a, vector<uint>& b) {
+    auto x = vector<uint>();
+    for (uint i = 0; i < a.size(); i++)
+        for (uint j = 0; j < b.size(); j++)
+            if (a[i] == b[j])
+                x.push_back(a[i]);
+    return x;
+}
+
 rsol tauleap(bondr::rnet network,
              vec y,
              double T,
              vec hors,
              vec hots,
-             vec reversible,
+             vec reverse,
              uint length_out = 100,
              bool all_out = false,
-             vec k = vec(),
-             double eps = 3e-2) {
+             vec k = vec()) {
+    // constants
+    const uint n_crit = 10;
+    const double eps = 3e-2;
+    const double delta = 5e-2;
+    const uint n_stiff = 100;
+
     uint N = network.species.size();
     uint M = network.reactions.size();
 
@@ -54,6 +68,9 @@ rsol tauleap(bondr::rnet network,
 
     // allocate propensities vector
     vec a = vec(network.reactions.size(), fill::zeros);
+
+    // f system function for implicit tau leaping
+    auto f = imtau::f_make(network);
 
     // update vector negative magnitudes for critical reaction determination
     auto v = vector<vec>(M);
@@ -113,6 +130,13 @@ rsol tauleap(bondr::rnet network,
         }
     };
 
+    // flags
+    bool ssa_on = false;
+    bool ssa_last = false;
+    uint ssa_remaining = 0;
+    bool tau_on = false;
+    double tau_1_hold = 0;
+
     while (t < T) {
         // setup
         for (uint i = 0; i < a.size(); i++)
@@ -126,75 +150,165 @@ rsol tauleap(bondr::rnet network,
             break;
         }
 
-        // update critical reactions
-        update_critical(x);
-        Rcpp::Rcout << "Critical reactions: ";
-        if (j_cr.size() == 0) {
-            Rcpp::Rcout << "none";
-        } else {
-            for (uint i = 0; i < j_cr.size(); i++)
-                Rcpp::Rcout << j_cr[i] << ", "; 
-        }
-        Rcpp::Rcout << endl;
-        Rcpp::Rcout << "Noncritical reactions: ";
-        if (j_ncr.size() == 0) {
-            Rcpp::Rcout << "none";
-        } else {
-            for (uint i = 0; i < j_ncr.size(); i++)
-                Rcpp::Rcout << j_ncr[i] << ", "; 
-        }
-        Rcpp::Rcout << endl;
+        if (!ssa_on && !tau_on) {
+            // update critical reactions
+            update_critical(x);
+            /*Rcpp::Rcout << "Critical reactions: ";
+            if (j_cr.size() == 0) {
+                Rcpp::Rcout << "none";
+            } else {
+                for (uint i = 0; i < j_cr.size(); i++)
+                    Rcpp::Rcout << j_cr[i] << ", "; 
+            }
+            Rcpp::Rcout << endl;
+            Rcpp::Rcout << "Noncritical reactions: ";
+            if (j_ncr.size() == 0) {
+                Rcpp::Rcout << "none";
+            } else {
+                for (uint i = 0; i < j_ncr.size(); i++)
+                    Rcpp::Rcout << j_ncr[i] << ", "; 
+            }
+            Rcpp::Rcout << endl;*/
 
-        // compute explicit tau time step
-        auto u_ex = vector<double>(i_rs.size());
-        auto s_ex = vector<double>(i_rs.size());
-        for (uint si = 0; si < i_rs.size(); si++) {
-            auto i = i_rs[si];
-            u_ex[si] = 0;
-            s_ex[si] = 0;
-            for (uint ri = 0; ri < j_ncr.size(); ri++) {
-                auto j = j_ncr[ri];
-                double vij = v[i][j];
-                double p = network.reactions[j].propensity(x);
-                u_ex[si] += vij*p;
-                s_ex[si] += pow(vij, 2.0)*p;
+            // compute explicit tau time step
+            auto u_ex = vector<double>(i_rs.size());
+            auto s_ex = vector<double>(i_rs.size());
+            for (uint si = 0; si < i_rs.size(); si++) {
+                auto i = i_rs[si];
+                u_ex[si] = 0;
+                s_ex[si] = 0;
+                for (uint ri = 0; ri < j_ncr.size(); ri++) {
+                    auto j = j_ncr[ri];
+                    double vij = v[i][j];
+                    u_ex[si] += vij*a[j];
+                    s_ex[si] += pow(vij, 2.0)*a[j];
+                }
+            }
+
+            /*for (uint si = 0; si < i_rs.size(); si++)
+                Rcpp::Rcout << "S" << i_rs[si] << ": u = " << u_ex[si] << ", s^2 = " << s_ex[si] << endl;*/
+
+            vec tau_exs = vec(i_rs.size()*2);
+            for (uint si = 0; si < i_rs.size(); si++) {
+                auto i = i_rs[si];
+                double xi = x[i];
+                double gi = g(xi, hors[i], hots[i]);
+                tau_exs[si*2] = (max(eps*xi/gi, 1.0)/abs(u_ex[si]));
+                tau_exs[si*2 + 1] = (pow(max(eps*xi/gi, 1.0), 2.0)/s_ex[si]);
+                //Rcpp::Rcout << "S" << i_rs[si] << ": gi = " << gi << ", tau_ex1 = " << tau_exs[si*2] << ", tau_ex2 = " << tau_exs[si*2 + 1] << endl;
+            }
+            auto tau_ex = min(tau_exs);
+            //Rcpp::Rcout << "tau_ex: " << tau_ex << endl;
+
+            // compute implicit tau time step
+            auto j_ne = vector<uint>();
+            for (uint j = 0; j < M; j++) {
+                //Rcpp::Rcout << "R" << j << " reversible: " << (0 <= reverse[j] ? "yes" : "no") << endl;
+                if (j < reverse[j]) {
+                    double ap = a[j];
+                    double am = a[reverse[j]];
+                    if (!(abs(ap - am) <= delta*min(ap, am))) {
+                        j_ne.push_back(j);
+                        j_ne.push_back(reverse[j]);
+                    }
+                }
+            }
+            /*for (uint ri = 0; ri < j_ne.size(); ri++)
+                Rcpp::Rcout << "R" << j_ne[ri] << " not at eq" << endl;*/
+
+            auto j_necr = intersect(j_ne, j_ncr);
+            auto u_im = vector<double>(i_rs.size());
+            auto s_im = vector<double>(i_rs.size());
+            for (uint si = 0; si < i_rs.size(); si++) {
+                auto i = i_rs[si];
+                u_im[si] = 0;
+                s_im[si] = 0;
+                for (uint ri = 0; ri < j_necr.size(); ri++) {
+                    auto j = j_necr[ri];
+                    double vij = v[i][j];
+                    u_im[si] += vij*a[j];
+                    s_im[si] += pow(vij, 2.0)*a[j];
+                }
+            }
+            vec tau_ims = vec(i_rs.size()*2);
+            for (uint si = 0; si < i_rs.size(); si++) {
+                auto i = i_rs[si];
+                double xi = x[i];
+                double gi = g(xi, hors[i], hots[i]);
+                tau_ims[si*2] = (max(eps*xi/gi, 1.0)/abs(u_im[si]));
+                tau_ims[si*2 + 1] = (pow(max(eps*xi/gi, 1.0), 2.0)/s_im[si]);
+                //Rcpp::Rcout << "S" << i_rs[si] << ": gi = " << gi << ", tau_im1 = " << tau_ims[si*2] << ", tau_im2 = " << tau_ims[si*2 + 1] << endl;
+            }
+            auto tau_im = min(tau_ims);
+            //Rcpp::Rcout << "tau_im: " << tau_im << endl;
+
+            // determine whether to use explicit or implicit tau (if not using SSA)
+            double tau_1;
+            bool imtau = false;
+            bool extau = false;
+            if (n_stiff*tau_ex < tau_im) {
+                // system is stiff - use implicit tau
+                tau_1 = tau_im;
+                imtau = true;
+            } else {
+                // system is not stiff - use explicit tau
+                tau_1 = tau_ex;
+                extau = true;
             }
         }
 
-        for (uint si = 0; si < i_rs.size(); si++)
-            Rcpp::Rcout << "S" << i_rs[si] << ": u = " << u_ex[si] << ", s^2 = " << s_ex[si] << endl;
+        // use ssa if necessary
+        if (ssa_on || tau_1 < 10.0/asum) {
+            // use ssa
+            if (!ssa_on) {
+                // if entering a new ssa batch
+                ssa_on = true;
+                ssa_remaining = ssa_last ? 100 : 10;
+            }
+            // perform SSA
+            uint j = 0;
+            double atarget = asum*runif();
+            while (csum[j] < atarget)
+                j++;
+            // get reaction time
+            double tau = -log(runif())/asum;
+            // stash current system state
+            x_last = x;
+            // advance system
+            network.reactions[j].update(x);
+            t += tau;
 
-        vec tau_exs = vec(i_rs.size()*2);
-        for (uint si = 0; si < i_rs.size(); si++) {
-            auto i = i_rs[si];
-            double xi = x[i];
-            double gi = g(xi, hors[i], hots[i]);
-            tau_exs[si*2] = (max(eps*xi/gi, 1.0)/abs(u_ex[si]));
-            tau_exs[si*2 + 1] = (pow(max(eps*xi/gi, 1.0), 2.0)/s_ex[si]);
-            Rcpp::Rcout << "S" << i_rs[si] << ": gi = " << gi << ", tau_ex1 = " << tau_exs[si*2] << ", tau_ex2 = " << tau_exs[si*2 + 1] << endl;
+            ssa_remaining--;
+            if (0 < ssa_remaining) {
+                // done ssa batch
+                ssa_on = false;
+            }
+            ssa_last = true;
+        } else {
+            // use tau-leaping
+            double asum_cr = 0;
+            for (uint ri = 0; ri < j_cr.size(); ri++)
+                asum_cr += a[j_cr[ri]];
+            double tau_2 = -log(runif())/asum_cr;
+
+
+            auto k = vec(M);
+            if (tau_1 < tau_2) {
+                double tau = tau_1;
+                // no critical reactions will fire
+                for (uint ri = 0; ri < j_cr.size(); ri++)
+                    k[j_cr[ri]] = 0;
+                if (imtau)
+                    k = k_im(network, f, x, tau);
+                else {
+                    // get explicit tau jumps via poisson rv's
+                }
+            } else {
+                // all reactions fire
+            }
+            
+            ssa_last = false;
         }
-        auto tau_ex = min(tau_exs);
-        Rcpp::Rcout << "tau_ex: " << tau_ex << endl;
-
-        break;
-
-        // compute implicit tau time step
-
-
-        // get reaction index `j`
-        uint j = 0;
-        double atarget = asum*runif();
-        while (csum[j] < atarget)
-            j++;
-
-        // get reaction time
-        double tau = -log(runif())/asum;
-
-        // stash current system state
-        x_last = x;
-        // advance system
-        network.reactions[j].update(x);
-        t += tau;
 
         sol_push();
     }
