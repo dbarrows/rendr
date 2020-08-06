@@ -133,40 +133,25 @@ rsol tauleap(bondr::rnet network,
         }
     };
 
+    // explicit tau preallocation
+    auto u_ex = vector<double>(i_rs.size());
+    auto s_ex = vector<double>(i_rs.size());
+    vec tau_exs = vec(i_rs.size()*2);
+
+    // implicit tau preallocation
+    auto u_im = vector<double>(i_rs.size());
+    auto s_im = vector<double>(i_rs.size());
+    vec tau_ims = vec(i_rs.size()*2);
+
     // flags --------------------------------
     // ssa
-    bool ssa_on_flag = false;
-    auto ssa_on = [&ssa_on_flag, verbose](bool on) {
-        ssa_on_flag = on;
-        if (verbose)
-            Rcpp::Rcout << "SSA " << (on ? "on" : "off") << endl;
-    };
-    bool ssa_extau_last_flag = false;
-    auto ssa_extau_last = [&ssa_extau_last_flag, verbose](bool last) {
-        ssa_extau_last_flag = last;
-        if (verbose)
-            Rcpp::Rcout << "SSA/Ex-tau last " << (last ? "yes" : "no") << endl;
-    };
+    bool ssa_on = false;
+    bool ssa_extau_last = false;
     uint ssa_remaining = 0;
     // tau
-    bool tau_on_flag = false;
-    auto tau_on = [&tau_on_flag, verbose](bool on) {
-        tau_on_flag = on;
-        if (verbose)
-            Rcpp::Rcout << "Tau " << (on ? "on" : "off") << endl;
-    };
-    bool imtau_on_flag = false;
-    auto imtau_on = [&imtau_on_flag, verbose](bool on) {
-        imtau_on_flag = on;
-        if (verbose)
-            Rcpp::Rcout << "Im-tau " << (on ? "on" : "off") << endl;
-    };
-    bool extau_on_flag = false;
-    auto extau_on = [&extau_on_flag, verbose](bool on) {
-        extau_on_flag = on;
-        if (verbose)
-            Rcpp::Rcout << "Ex-tau " << (on ? "on" : "off") << endl;
-    };
+    bool tau_on = false;
+    bool imtau_on = false;
+    bool extau_on = false;
     double tau_1;
 
     // counters ------------------------------
@@ -175,17 +160,13 @@ rsol tauleap(bondr::rnet network,
     uint extau_count = 0;
 
     while (t < T) {
-        //if (!tau_on_flag) {
-        // recompute propensities
         for (uint j = 0; j < M; j++)
             a[j] = (k_override.size() != 0 ? k_override[j] : 1.0)*network.reactions[j].propensity(x);
         csum = cumsum(a);
         asum = csum[M - 1];
-        //}
 
         // Steps 1-3
-        if (!ssa_on_flag && !tau_on_flag) {
-            //Rcpp::Rcout << "Steps 1-3" << endl;
+        if (!ssa_on && !tau_on) {
             // if all propensities zero, system halts
             if (asum == 0) {
                 sol_push(true);
@@ -193,47 +174,10 @@ rsol tauleap(bondr::rnet network,
             }
 
             // update critical reactions
-            //Rcpp::Rcout << "Updating critical" << endl;
             update_critical(x);
 
-            // compute explicit tau time step
-            //Rcpp::Rcout << "Explicit tau stime step: ";
-            auto u_ex = vector<double>(i_rs.size());
-            auto s_ex = vector<double>(i_rs.size());
-            for (uint si = 0; si < i_rs.size(); si++) {
-                auto i = i_rs[si];
-                u_ex[si] = 0;
-                s_ex[si] = 0;
-                for (uint ri = 0; ri < j_ncr.size(); ri++) {
-                    auto j = j_ncr[ri];
-                    double vij = v[j][i];
-                    double aj = a[j];
-                    //Rcpp::Rcout << "v_" << i << "," << j << " = " << vij << ", a_" << j << " = " << aj << endl;
-                    u_ex[si] += vij*aj;
-                    s_ex[si] += pow(vij, 2.0)*aj;
-                }
-                /*for (uint j = 0; j < M; j++)
-                    Rcpp::Rcout << "a_" << j << ": " << a[j] << ", ";
-                for (uint j = 0; j < M; j++)
-                    Rcpp::Rcout << "v_" << j << ": " << v[j] << ", ";*/
-                //Rcpp::Rcout << "u_" << i << " = " << u_ex[si] << ", s_" << i << " = " << s_ex[si] << endl;
-            }
-            vec tau_exs = vec(i_rs.size()*2);
-            for (uint si = 0; si < i_rs.size(); si++) {
-                auto i = i_rs[si];
-                double xi = x[i];
-                //Rcpp::Rcout << "S" << i << ": xi = " << xi;
-                double gi = g(xi, hors[i], hots[i]);
-                //Rcpp::Rcout << ", gi = " << gi << endl;
-                tau_exs[si*2] = max(eps*xi/gi, 1.0)/abs(u_ex[si]);
-                tau_exs[si*2 + 1] = pow(max(eps*xi/gi, 1.0), 2.0)/s_ex[si];
-            }
-            //Rcpp::Rcout << tau_exs << endl;
-            auto tau_ex = min(tau_exs);
-            //Rcpp::Rcout << tau_ex << endl;
-
-            // compute implicit tau time step
-            //Rcpp::Rcout << "Implicit tau stime step: ";
+            // update reaction sets
+            // not at equilibrium
             auto j_ne = vector<uint>();
             for (uint j = 0; j < M; j++) {
                 if (j < reverse[j]) {
@@ -245,9 +189,32 @@ rsol tauleap(bondr::rnet network,
                     }
                 }
             }
+            // not at equilibrium or critical
             auto j_necr = intersect(j_ne, j_ncr);
-            auto u_im = vector<double>(i_rs.size());
-            auto s_im = vector<double>(i_rs.size());
+
+            // compute explicit tau time step
+            for (uint si = 0; si < i_rs.size(); si++) {
+                auto i = i_rs[si];
+                u_ex[si] = 0;
+                s_ex[si] = 0;
+                for (uint ri = 0; ri < j_ncr.size(); ri++) {
+                    auto j = j_ncr[ri];
+                    double vij = v[j][i];
+                    double aj = a[j];
+                    u_ex[si] += vij*aj;
+                    s_ex[si] += pow(vij, 2.0)*aj;
+                }
+            }
+            for (uint si = 0; si < i_rs.size(); si++) {
+                auto i = i_rs[si];
+                double xi = x[i];
+                double gi = g(xi, hors[i], hots[i]);
+                tau_exs[si*2] = max(eps*xi/gi, 1.0)/abs(u_ex[si]);
+                tau_exs[si*2 + 1] = pow(max(eps*xi/gi, 1.0), 2.0)/s_ex[si];
+            }
+            auto tau_ex = min(tau_exs);
+
+            // compute implicit tau time step
             for (uint si = 0; si < i_rs.size(); si++) {
                 auto i = i_rs[si];
                 u_im[si] = 0;
@@ -259,7 +226,6 @@ rsol tauleap(bondr::rnet network,
                     s_im[si] += pow(vij, 2.0)*a[j];
                 }
             }
-            vec tau_ims = vec(i_rs.size()*2);
             for (uint si = 0; si < i_rs.size(); si++) {
                 auto i = i_rs[si];
                 double xi = x[i];
@@ -268,32 +234,29 @@ rsol tauleap(bondr::rnet network,
                 tau_ims[si*2 + 1] = (pow(max(eps*xi/gi, 1.0), 2.0)/s_im[si]);
             }
             auto tau_im = min(tau_ims);
-            //Rcpp::Rcout << tau_im << endl;
 
             // determine whether to use explicit or implicit tau (if not using SSA)
-            imtau_on(false);
-            extau_on(false);
+            imtau_on = false;
+            extau_on = false;
             if (n_stiff*tau_ex < tau_im) {
                 // system is stiff - use implicit tau
                 tau_1 = tau_im;
-                imtau_on(true);
+                imtau_on = true;
             } else {
                 // system is not stiff - use explicit tau
                 tau_1 = tau_ex;
-                extau_on(true);
+                extau_on = true;
             }
         }
 
         // use ssa if necessary
-        if (ssa_on_flag || tau_1 < 10.0/asum) {
+        if (ssa_on || tau_1 < 10.0/asum) {
             // use ssa
-            if (!ssa_on_flag) {
+            if (!ssa_on) {
                 // if entering a new ssa batch
-                if (verbose)
-                    Rcpp::Rcout << "-- tau_1 = " << tau_1 << ", 10/asum = " << 10.0/asum << endl;
-                ssa_on(true);
-                tau_on(false);
-                ssa_remaining = ssa_extau_last_flag ? 100 : 10;
+                ssa_on = true;;
+                tau_on = false;
+                ssa_remaining = ssa_extau_last ? 100 : 10;
             }
             // perform SSA
             uint j = 0;
@@ -307,16 +270,15 @@ rsol tauleap(bondr::rnet network,
             network.reactions[j].update(x);
             t += tau;
             sol_push();
-            ssa_extau_last(true);
+            ssa_extau_last = true;
             ssa_count++;
 
             ssa_remaining--;
             if (ssa_remaining == 0) {
                 // done ssa batch
-                ssa_on(false);
+                ssa_on = false;
             }
         } else {
-            //Rcpp::Rcout << "Starting Tau-leap" << endl;
             // use tau-leaping
             double tau;
             auto k = vec(M);
@@ -331,7 +293,7 @@ rsol tauleap(bondr::rnet network,
                 // no critical reactions will fire
                 tau = tau_1;
                 
-                if (imtau_on_flag) {
+                if (imtau_on) {
                     // implicit tau k's
                     k = imtau::k_im(network, f, x, tau);
                 } else {
@@ -358,7 +320,7 @@ rsol tauleap(bondr::rnet network,
                 }
 
                 // get remaining k's
-                if (extau_on_flag || tau_2 < tau) {
+                if (extau_on || tau_2 < tau) {
                     // use explicit tau
                     for (uint j = 0; j < M; j++)
                         k[j] = rpois(a[j]*tau);
@@ -383,21 +345,20 @@ rsol tauleap(bondr::rnet network,
                 x += dx;
                 t += tau;
                 sol_push();
-                if (imtau_on_flag) {
+                if (imtau_on) {
                     imtau_count++;
-                    ssa_extau_last(false);
+                    ssa_extau_last = false;
                 } else {
                     extau_count++;
-                    ssa_extau_last(true);
+                    ssa_extau_last = true;
                 }
-                tau_on(false);
+                tau_on = false;
             } else {
                 // tau leaping still in progress, reduce tau_1 by half and try stepping again
                 tau_1 /= 2;
-                tau_on(true);
+                tau_on = true;
             }
         }
-        //Rcpp::Rcout << "t: " << t << endl;
     }
 
     if (verbose) {
