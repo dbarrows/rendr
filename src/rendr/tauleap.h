@@ -41,7 +41,8 @@ rsol tauleap(bondr::rnet network,
              vec reverse,
              uint length_out = 100,
              bool all_out = false,
-             vec k_override = vec()) {
+             vec k_override = vec(),
+             bool verbose = false) {
     // constants
     const uint n_crit = 10;
     const double eps = 3e-2;
@@ -135,31 +136,36 @@ rsol tauleap(bondr::rnet network,
     // flags --------------------------------
     // ssa
     bool ssa_on_flag = false;
-    auto ssa_on = [&ssa_on_flag](bool on) {
+    auto ssa_on = [&ssa_on_flag, verbose](bool on) {
         ssa_on_flag = on;
-        Rcpp::Rcout << "SSA " << (on ? "on" : "off") << endl;
+        if (verbose)
+            Rcpp::Rcout << "SSA " << (on ? "on" : "off") << endl;
     };
     bool ssa_extau_last_flag = false;
-    auto ssa_extau_last = [&ssa_extau_last_flag](bool last) {
+    auto ssa_extau_last = [&ssa_extau_last_flag, verbose](bool last) {
         ssa_extau_last_flag = last;
-        Rcpp::Rcout << "SSA/Ex-tau last " << (last ? "yes" : "no") << endl;
+        if (verbose)
+            Rcpp::Rcout << "SSA/Ex-tau last " << (last ? "yes" : "no") << endl;
     };
     uint ssa_remaining = 0;
     // tau
     bool tau_on_flag = false;
-    auto tau_on = [&tau_on_flag](bool on) {
+    auto tau_on = [&tau_on_flag, verbose](bool on) {
         tau_on_flag = on;
-        Rcpp::Rcout << "Tau " << (on ? "on" : "off") << endl;
+        if (verbose)
+            Rcpp::Rcout << "Tau " << (on ? "on" : "off") << endl;
     };
     bool imtau_on_flag = false;
-    auto imtau_on = [&imtau_on_flag](bool on) {
+    auto imtau_on = [&imtau_on_flag, verbose](bool on) {
         imtau_on_flag = on;
-        Rcpp::Rcout << "Im-tau " << (on ? "on" : "off") << endl;
+        if (verbose)
+            Rcpp::Rcout << "Im-tau " << (on ? "on" : "off") << endl;
     };
     bool extau_on_flag = false;
-    auto extau_on = [&extau_on_flag](bool on) {
+    auto extau_on = [&extau_on_flag, verbose](bool on) {
         extau_on_flag = on;
-        Rcpp::Rcout << "Ex-tau " << (on ? "on" : "off") << endl;
+        if (verbose)
+            Rcpp::Rcout << "Ex-tau " << (on ? "on" : "off") << endl;
     };
     double tau_1;
 
@@ -294,7 +300,8 @@ rsol tauleap(bondr::rnet network,
             // use ssa
             if (!ssa_on_flag) {
                 // if entering a new ssa batch
-                Rcpp::Rcout << "-- tau_1 = " << tau_1 << ", 10/asum = " << 10.0/asum << endl;
+                if (verbose)
+                    Rcpp::Rcout << "-- tau_1 = " << tau_1 << ", 10/asum = " << 10.0/asum << endl;
                 ssa_on(true);
                 tau_on(false);
                 ssa_remaining = ssa_extau_last_flag ? 100 : 10;

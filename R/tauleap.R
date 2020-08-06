@@ -14,7 +14,7 @@
 #' 
 #' @return [`rsol`] instance
 #' @export
-tauleap <- function(sys, length.out = 100, all.out = FALSE, trajectories = 1, parallel = FALSE, cores = detectCores(), average = FALSE, k = NULL, force_compile = FALSE) {
+tauleap <- function(sys, length.out = 100, all.out = FALSE, trajectories = 1, parallel = FALSE, cores = detectCores(), average = FALSE, k = NULL, force_compile = FALSE, verbose = FALSE) {
     with(sys, {
         ## compile network if needed / forced
         net <- network %>%
@@ -34,7 +34,8 @@ tauleap <- function(sys, length.out = 100, all.out = FALSE, trajectories = 1, pa
                             find_reversible(network),
                             length_out = length.out,
                             all_out = all.out,
-                            k_vec = k)
+                            k_vec = k,
+                            verbose)
             }
         sols <- if(parallel) {
                 mclapply(1:trajectories, function(i) tauleapf(), mc.cores = cores)
