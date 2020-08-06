@@ -106,7 +106,7 @@ reversible <- function(reaction1, reaction2) {
     r1p <- reaction1 %>% product_names(order = TRUE) %>% sort()
     r2r <- reaction2 %>% reactant_names(order = TRUE) %>% sort()
     r2p <- reaction2 %>% product_names(order = TRUE) %>% sort()
-    all(r1r == r2p) && all(r2r == r1p)
+    identical(r1r, r2p) && identical(r2r, r1p)
 }
 
 find_reversible <- function(network) {
