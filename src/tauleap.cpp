@@ -20,7 +20,7 @@ Rcpp::DataFrame tauleap_cpp(SEXP rnet_xptr,
     return DataFrame(sol);
 }
 
-// [[Rcpp::export]]
+/*// [[Rcpp::export]]
 Rcpp::DataFrame tauleap_implicit_cpp(SEXP rnet_xptr,
                             arma::vec y,
                             double T,
@@ -32,4 +32,4 @@ Rcpp::DataFrame tauleap_implicit_cpp(SEXP rnet_xptr,
     
     auto sol = rendr::tauleap_implicit(net, y, T, length_out, all_out, k);
     return DataFrame(sol);
-}
+}*/
