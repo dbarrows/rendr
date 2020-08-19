@@ -59,7 +59,7 @@ rdsol_summarise <- function(sol, func = sum, index = NULL) {
     for (s in species_names) {
         df[s] <- sol$u %>% sapply(function(udf) {
             if (!is.null(index))
-                udf <- udf %>% dplyr::filter(x == index[1], y == index[2], z == index[3])
+                udf <- udf %>% filter(x == index[1], y == index[2], z == index[3])
             q <- udf %>% pull(s)
             func(q)
         })

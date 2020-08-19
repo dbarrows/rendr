@@ -62,30 +62,6 @@ tauleap <- function(sys, length.out = 100, all.out = FALSE, trajectories = 1, pa
     })
 }
 
-hors <- function(network) {
-    network %>%
-        species() %>%
-        sapply(function(s) {
-                orders <- network$reactions %>%
-                    filter(function(r) s %in% reactant_names(r)) %>%
-                    vapply(order, numeric(1))
-                if (0 < length(orders))
-                    max(orders)
-                else
-                    0
-            })
-}
-
-
-
-reactant_names <- function(reaction, order = FALSE) {
-    species_names(reaction, 'reactants', order)
-}
-
-product_names <- function(reaction, order = FALSE) {
-    species_names(reaction, 'products', order)
-}
-
 species_names <- function(reaction, type = NULL, order = FALSE) {
     species <- if(type == 'reactants')
             reaction$reactants
@@ -100,6 +76,52 @@ species_names <- function(reaction, type = NULL, order = FALSE) {
                },
                character(1))
 }
+
+reactant_names <- function(reaction, order = FALSE) {
+    species_names(reaction, 'reactants', order)
+}
+
+product_names <- function(reaction, order = FALSE) {
+    species_names(reaction, 'products', order)
+}
+
+hors <- function(network) {
+    network %>%
+        species() %>%
+        sapply(function(s) {
+                orders <- network$reactions %>%
+                    keep(function(r) s %in% reactant_names(r)) %>%
+                    vapply(order, numeric(1))
+                if (0 < length(orders))
+                    max(orders)
+                else
+                    0
+            })
+}
+
+hots <- function(network) {
+    hors <- hors(network)
+    network %>%
+        species() %>%
+        sapply(function(s) {
+                orders <- network$reactions %>%
+                    keep(function(reaction) {
+                           s %in% reactant_names(reaction) && order(reaction) == hors[s]
+                       }) %>%
+                    sapply(function(reaction) {
+                            reaction$reactants %>%
+                                keep(function(reactant) reactant$name == s) %>%
+                                sapply(function(reactant) reactant$order) %>%
+                                max()
+                        })
+                if (0 < length(orders))
+                    max(orders)
+                else
+                    0
+            })
+}
+
+
 
 reversible <- function(reaction1, reaction2) {
     r1r <- reaction1 %>% reactant_names(order = TRUE) %>% sort()
@@ -122,32 +144,4 @@ find_reversible <- function(network) {
                     .[. != 0]
             if (length(revj) == 0) 0 else revj
         })
-}
-
-hots <- function(network) {
-    hors <- hors(network)
-    network %>%
-        species() %>%
-        sapply(function(s) {
-                orders <- network$reactions %>%
-                    filter(function(reaction) {
-                           s %in% reactant_names(reaction) && order(reaction) == hors[s]
-                       }) %>%
-                    sapply(function(reaction) {
-                            reaction$reactants %>%
-                                filter(function(reactant) reactant$name == s) %>%
-                                sapply(function(reactant) reactant$order) %>%
-                                max()
-                        })
-                if (0 < length(orders))
-                    max(orders)
-                else
-                    0
-            })
-}
-
-filter <- function(x, selector) {
-    x %>%
-        sapply(selector) %>%
-        { x[.] }
 }

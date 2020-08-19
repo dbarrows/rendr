@@ -17,8 +17,10 @@ Rcpp::DataFrame tauleap_cpp(SEXP rnet_xptr,
     auto net = *Rcpp::XPtr<bondr::rnet>(rnet_xptr);
     auto k = k_vec.isNull() ? arma::vec() : Rcpp::as<arma::vec>(k_vec);
     
-    auto sol = rendr::tauleap(net, y, T, hors, hots, reverse - 1, length_out, all_out, k, verbose);
-    return DataFrame(sol);
+    auto sol_type_pair = rendr::tauleap(net, y, T, hors, hots, reverse - 1, length_out, all_out, k, verbose);
+    auto df = DataFrame(sol_type_pair.first);
+    df.push_back(sol_type_pair.second, "Type");
+    return df;
 }
 
 /*// [[Rcpp::export]]

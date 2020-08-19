@@ -61,24 +61,18 @@ mat jacobian(f_t& f, vec xps, vec x, vec b, double tau) {
 
 vec solve(f_t& f, vec x0, vec b, double tau, double tol = 1e-6) {
     vec x = x0;
-    vec x_last = x;
+    vec dx = vec(x.size(), fill::zeros);
 
     // iterate until all deltas are within tolerance
     uint step = 0;
     do {
-        // jacobian
         mat jac = jacobian(f, x, x0, b, tau);
-        // f(x)
-        //auto xd = dual_vec(x);
-        auto fx = single_vec(f(dual_vec(x), x0, b, tau));
-        //vec fx = single_vec(fxd);
-        // \delta x
+        vec fx = single_vec(f(dual_vec(x), x0, b, tau));
         vec dx = solve(jac, -fx);
 
-        x_last = x;
         x += dx;
         step++;
-    } while(any(tol < abs(x - x_last)) && step < 100);
+    } while(any(tol < abs(dx)) && step < 100);
     if (step == 100)
         Rcpp::Rcout << "Warning: solver not converging" << endl;
 

@@ -13,7 +13,8 @@ tauleap(
   cores = detectCores(),
   average = FALSE,
   k = NULL,
-  force_compile = FALSE
+  force_compile = FALSE,
+  verbose = FALSE
 )
 }
 \arguments{

@@ -14,7 +14,7 @@
 #' @importFrom tibble tibble as_tibble
 #' @importFrom dplyr rename select pull filter
 #' @importFrom tidyr pivot_longer
-#' @importFrom purrr walk
+#' @importFrom purrr walk keep
 #' @importFrom digest digest
 #' @importFrom deSolve ode
 #' @importFrom methods new
