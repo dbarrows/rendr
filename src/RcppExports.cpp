@@ -72,22 +72,21 @@ BEGIN_RCPP
 END_RCPP
 }
 // tauleap_cpp
-Rcpp::DataFrame tauleap_cpp(SEXP rnet_xptr, arma::vec y, double T, arma::vec hors, arma::vec hots, arma::vec reverse, int length_out, bool all_out, Rcpp::Nullable<arma::vec> k_vec, bool verbose);
-RcppExport SEXP _rendr_tauleap_cpp(SEXP rnet_xptrSEXP, SEXP ySEXP, SEXP TSEXP, SEXP horsSEXP, SEXP hotsSEXP, SEXP reverseSEXP, SEXP length_outSEXP, SEXP all_outSEXP, SEXP k_vecSEXP, SEXP verboseSEXP) {
+Rcpp::DataFrame tauleap_cpp(SEXP rnet_xptr, arma::vec y, double T, arma::mat hots, arma::vec reverse, int length_out, bool all_out, Rcpp::Nullable<arma::vec> k_vec, bool verbose);
+RcppExport SEXP _rendr_tauleap_cpp(SEXP rnet_xptrSEXP, SEXP ySEXP, SEXP TSEXP, SEXP hotsSEXP, SEXP reverseSEXP, SEXP length_outSEXP, SEXP all_outSEXP, SEXP k_vecSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< SEXP >::type rnet_xptr(rnet_xptrSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type y(ySEXP);
     Rcpp::traits::input_parameter< double >::type T(TSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type hors(horsSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type hots(hotsSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type hots(hotsSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type reverse(reverseSEXP);
     Rcpp::traits::input_parameter< int >::type length_out(length_outSEXP);
     Rcpp::traits::input_parameter< bool >::type all_out(all_outSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<arma::vec> >::type k_vec(k_vecSEXP);
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
-    rcpp_result_gen = Rcpp::wrap(tauleap_cpp(rnet_xptr, y, T, hors, hots, reverse, length_out, all_out, k_vec, verbose));
+    rcpp_result_gen = Rcpp::wrap(tauleap_cpp(rnet_xptr, y, T, hots, reverse, length_out, all_out, k_vec, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -97,7 +96,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_rendr_nsm_cpp", (DL_FUNC) &_rendr_nsm_cpp, 7},
     {"_rendr_ssa_cpp", (DL_FUNC) &_rendr_ssa_cpp, 6},
     {"_rendr_ssa_cpp_pest", (DL_FUNC) &_rendr_ssa_cpp_pest, 5},
-    {"_rendr_tauleap_cpp", (DL_FUNC) &_rendr_tauleap_cpp, 10},
+    {"_rendr_tauleap_cpp", (DL_FUNC) &_rendr_tauleap_cpp, 9},
     {NULL, NULL, 0}
 };
 

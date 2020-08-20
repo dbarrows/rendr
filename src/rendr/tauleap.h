@@ -16,12 +16,47 @@ using namespace std;
 using namespace core;
 using uint = unsigned int;
 
-double g(int x, uint hor, uint hot) {
+vector<uint> reactant_species(mat& hots, vector<uint> reaction_indices) {
+    auto i_rs = vector<uint>();
+    for (uint i = 0; i < hots.n_rows; i++)
+        for (uint ri = 0; ri < reaction_indices.size(); ri++) {
+            uint j = reaction_indices[ri];
+            if (0 < hots(i, j)) {
+                i_rs.push_back(i);
+                break;
+            }
+        }
+    return i_rs;
+}
+
+pair<uint, uint> highest_orders(bondr::rnet& network, mat& hots, uint species_index, vector<uint> reaction_indices) {
+    uint i = species_index;
+    uint hor = 0;
+    uint hot = 0;
+    for (uint ri = 0; ri < reaction_indices.size(); ri++) {
+        uint j = reaction_indices[ri];
+        uint order = network.reactions[j].order;
+        uint hotj = hots(i, j);
+        if (0 < hotj && hor < order) {
+            hor = order;
+            hot = hotj;
+        }
+    }
+    return { hor, hot }; 
+}
+
+double g(int x, uint species_index, bondr::rnet& network, mat& hots, vector<uint> reaction_indices) {
+    auto orders = highest_orders(network, hots, species_index, reaction_indices);
+    double hor = orders.first;
+    double hot = orders.second;
+    
     double coef = hor/hot;
     double sumfracs = hot;
     for (int i = 1; i < hot; i++)
-        sumfracs += i/(max(x - i, 0));
-    return coef*sumfracs;
+        sumfracs += static_cast<double>(i)/static_cast<double>(max(x - i, 0));
+    double g = coef*sumfracs;
+    Rcpp::Rcout << "|g(" << hor << "," << hot << ") = " << g << "|";
+    return g;
 }
 
 vector<uint> intersect(vector<uint>& a, vector<uint>& b) {
@@ -42,7 +77,8 @@ bool set_eq(vector<uint>& a, vector<uint>& b) {
     return true;
 }
 
-void set_print(string label, vector<uint> set) {
+template<typename T>
+void set_print(string label, vector<T> set) {
     Rcpp::Rcout << " - " << label << ": ";
     if (set.size() == 0) {
         Rcpp::Rcout << "{}";
@@ -59,8 +95,7 @@ void set_print(string label, vector<uint> set) {
 std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
                                         vec y,
                                         double T,
-                                        vec hors,
-                                        vec hots,
+                                        mat hots,
                                         vec reverse,
                                         uint length_out = 100,
                                         bool all_out = false,
@@ -115,13 +150,6 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
         nv[j] = nvj;
     }
 
-    // set of reactant species
-    auto i_rs = vector<double>();
-    for (uint i = 0; i < N; i++) {
-        if (0 < hors[i])
-            i_rs.push_back(i);
-    }
-
     // holder and function for critical reactions
     auto j_cr = vector<uint>();
     auto j_ncr = vector<uint>();
@@ -132,35 +160,31 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
 
         for (uint j = 0; j < M; j++) {
             // get max firings for reactions that consume species
-            auto max_firings = vector<uint>();
-            for (uint i = 0; i < N; i++) {
-                double vij = nv[j][i];
-                if (0 < vij)
-                    max_firings.push_back(floor(x[i]/vij));
-            }
-            // if max firings are restricted, designation based on min of these
-            if (0 < max_firings.size()){
-                uint L = max_firings[0];
-                for (uint j = 1; j < max_firings.size(); j++)
-                    L = min(L, max_firings[j]);
-                // if min of max firings below threshold, then it is critical
-                if (0 < a[j] && L < n_crit)
-                    j_cr.push_back(j);
-                // otherwise unrestricted
-                else
-                    j_ncr.push_back(j);
+            if (0 < a[j]) {
+                auto max_firings = vector<uint>();
+                for (uint i = 0; i < N; i++) {
+                    double vij = nv[j][i];
+                    if (0 < vij)
+                        max_firings.push_back(floor(x[i]/vij));
+                }
+                // if max firings are restricted, designation based on min of these
+                if (0 < max_firings.size()) {
+                    uint L = max_firings[0];
+                    for (uint j = 1; j < max_firings.size(); j++)
+                        L = min(L, max_firings[j]);
+                    // if min of max firings below threshold, then it is critical
+                    if (L < n_crit)
+                        j_cr.push_back(j);
+                    // otherwise unrestricted
+                    else
+                        j_ncr.push_back(j);
+                }
             // reaction is unrestricted
             } else {
                 j_ncr.push_back(j);
             }
         }
     };
-
-    // explicit tau preallocation
-    vec tau_exs = vec(i_rs.size()*2);
-
-    // implicit tau preallocation
-    vec tau_ims = vec(i_rs.size()*2);
 
     // flags --------------------------------
     // ssa
@@ -172,6 +196,8 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
     bool imtau_on = false;
     bool extau_on = false;
     double tau_1;
+    double tau_im;
+    double tau_ex;
     uint tau_1_div_count = 0;
 
     // counters ------------------------------
@@ -217,14 +243,16 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
             // not at equilibrium or critical
             auto j_necr = intersect(j_ne, j_ncr);
             
-            set_print("Crit   ",        j_cr);
-            set_print("Not crit",       j_ncr);
-            set_print("Not at eq",      j_ne);
+            set_print("Crit          ", j_cr);
+            set_print("Not crit      ", j_ncr);
+            set_print("Not at eq     ", j_ne);
             set_print("Not crit or eq", j_necr);
 
             // compute explicit tau time step
-            for (uint si = 0; si < i_rs.size(); si++) {
-                auto i = i_rs[si];
+            auto i_rs_ex = reactant_species(hots, j_ncr);
+            vec tau_exs = vec(i_rs_ex.size()*2);
+            for (uint si = 0; si < i_rs_ex.size(); si++) {
+                auto i = i_rs_ex[si];
                 double u_ex = 0;
                 double s_ex = 0;
                 for (uint ri = 0; ri < j_ncr.size(); ri++) {
@@ -235,15 +263,21 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
                     s_ex += pow(vij, 2.0)*aj;
                 }
                 double xi = x[i];
-                double gi = g(xi, hors[i], hots[i]);
+                double gi = g(xi, i, network, hots, j_ncr);
                 tau_exs[si*2] = max(eps*xi/gi, 1.0)/abs(u_ex);
                 tau_exs[si*2 + 1] = pow(max(eps*xi/gi, 1.0), 2.0)/s_ex;
             }
-            auto tau_ex = min(tau_exs);
+            Rcpp::Rcout << "|";
+            for (uint i = 0; i < tau_exs.size(); i++)
+                Rcpp::Rcout << tau_exs[i] << ",";
+            Rcpp::Rcout << "|" << endl;
+            tau_ex = min(tau_exs);
 
             // compute implicit tau time step
-            for (uint si = 0; si < i_rs.size(); si++) {
-                auto i = i_rs[si];
+            auto i_rs_im = reactant_species(hots, j_ncr);
+            vec tau_ims = vec(i_rs_im.size()*2);
+            for (uint si = 0; si < i_rs_im.size(); si++) {
+                auto i = i_rs_im[si];
                 double u_im = 0;
                 double s_im = 0;
                 for (uint ri = 0; ri < j_necr.size(); ri++) {
@@ -254,11 +288,15 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
                     s_im += pow(vij, 2.0)*aj;
                 }
                 double xi = x[i];
-                double gi = g(xi, hors[i], hots[i]);
+                double gi = g(xi, i, network, hots, j_necr);
                 tau_ims[si*2] = max(eps*xi/gi, 1.0)/abs(u_im);
                 tau_ims[si*2 + 1] = pow(max(eps*xi/gi, 1.0), 2.0)/s_im;
             }
-            auto tau_im = min(tau_ims);
+            Rcpp::Rcout << "|";
+            for (uint i = 0; i < tau_ims.size(); i++)
+                Rcpp::Rcout << tau_ims[i] << ",";
+            Rcpp::Rcout << "|" << endl;
+            tau_im = min(tau_ims);
 
             // determine whether to use explicit or implicit tau (if not using SSA)
             imtau_on = false;
@@ -274,14 +312,8 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
             }
         }
 
-        if (0 < tau_1_div_count) {
-            Rcpp::Rcout << "  " << tau_1_div_count << " - " << "tau_1: " << tau_1 << ", 10/a_0:" << 10.0/asum << endl;
-            break;
-        }
-
         // use ssa if necessary
-        if (ssa_on || tau_1 < 10.0/asum || 10 < tau_1_div_count) {
-            tau_1_div_count = 0;
+        if (ssa_on || tau_1 < 10.0/asum) {
             // use ssa
             if (!ssa_on) {
                 // if entering a new ssa batch
@@ -313,7 +345,7 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
             }
         } else {
             // use tau-leaping
-            Rcpp::Rcout << (imtau_on ? "ImTau" : "ExTau") << "...";
+            Rcpp::Rcout << (imtau_on ? "ImTau" : "ExTau");
 
             double tau;
             auto k = vec(M);
@@ -327,6 +359,7 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
             if (tau_1 < tau_2) {
                 // no critical reactions will fire
                 tau = tau_1;
+                Rcpp::Rcout << ", tau = tau1 = " << tau << "...";
                 
                 if (imtau_on) {
                     // implicit tau k's
@@ -342,6 +375,7 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
             } else {
                 // only one critical reaction will fire
                 tau = tau_2;
+                Rcpp::Rcout << ", tau = tau2 = " << tau << "...";
                 
                 // get index of single critical reaction
                 int jc = -1;
@@ -355,7 +389,7 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
                 }
 
                 // get remaining k's
-                if (extau_on || tau_2 < tau) {
+                if (extau_on || tau_2 < tau_ex) {
                     // use explicit tau
                     for (uint j = 0; j < M; j++)
                         k[j] = rpois(a[j]*tau);

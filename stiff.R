@@ -21,19 +21,26 @@ thin <- function(rsol, n = 1000) {
 #p <- ssa_sol %>% thin() %>% plot()
 
 tau_sol <- sys %>% tauleap(all.out = TRUE, verbose = TRUE)
-p <- tau_sol %>% thin() %>% plot()
+p <- tau_sol %>% plot()
 
-p <-
+df <-
     tau_sol %>%
-    #thin(n = 1e5) %>%
     .[['sol']] %>%
     select(Time, Type) %>%
-    #filter(Type %in% c('ExTau', 'ImTau')) %>%
-    mutate(tau = Time - lag(Time)) %>%
+    filter(Type == 'ExTau', Time < 0.25) %>%
+    mutate(tau = Time - lag(Time))
+p <-
+    df %>%
     ggplot(aes(x = Time, y = tau, colour = Type)) +
         geom_point(size = 0.001)
 
 q()
+
+props <- function(network, x) {
+    sapply(propensities(network), function(p) {
+        p(x)
+    })
+}
 
 N <- 1e2
 system.time(1:N %>% lapply(function(i) sys %>% ssa(length.out = 1)))

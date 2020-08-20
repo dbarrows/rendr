@@ -29,7 +29,6 @@ tauleap <- function(sys, length.out = 100, all.out = FALSE, trajectories = 1, pa
         ## obtain solutions
         tauleapf <- function() {
                 tauleap_cpp(net, state, T,
-                            hors(network),
                             hots(network),
                             find_reversible(network),
                             length_out = length.out,
@@ -85,42 +84,27 @@ product_names <- function(reaction, order = FALSE) {
     species_names(reaction, 'products', order)
 }
 
-hors <- function(network) {
-    network %>%
-        species() %>%
-        sapply(function(s) {
-                orders <- network$reactions %>%
-                    keep(function(r) s %in% reactant_names(r)) %>%
-                    vapply(order, numeric(1))
-                if (0 < length(orders))
-                    max(orders)
-                else
-                    0
-            })
-}
-
 hots <- function(network) {
-    hors <- hors(network)
-    network %>%
+    orders <- 
+        network %>%
         species() %>%
-        sapply(function(s) {
-                orders <- network$reactions %>%
-                    keep(function(reaction) {
-                           s %in% reactant_names(reaction) && order(reaction) == hors[s]
-                       }) %>%
-                    sapply(function(reaction) {
-                            reaction$reactants %>%
-                                keep(function(reactant) reactant$name == s) %>%
-                                sapply(function(reactant) reactant$order) %>%
-                                max()
-                        })
-                if (0 < length(orders))
-                    max(orders)
-                else
+        lapply(function(s) {
+            network$reactions %>%
+            sapply(function(reaction) {
+                reactants <-
+                    reaction$reactants %>%
+                    keep(function(r) r$name == s)
+                if (0 < length(reactants)) {
+                    reactants %>%
+                    sapply(function(r) r$order) %>%
+                    sum()
+                } else {
                     0
+                }
             })
+        })
+    do.call(rbind, orders)
 }
-
 
 
 reversible <- function(reaction1, reaction2) {
