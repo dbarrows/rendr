@@ -16,6 +16,12 @@ using namespace std;
 using namespace core;
 using uint = unsigned int;
 
+// constants
+const uint n_crit = 10;
+const double eps = 5e-2;
+const double delta = 5e-2;
+const uint n_stiff = 100;
+
 vector<uint> reactant_species(mat& hots, vector<uint> reaction_indices) {
     auto i_rs = vector<uint>();
     for (uint i = 0; i < hots.n_rows; i++)
@@ -55,8 +61,31 @@ double g(int x, uint species_index, bondr::rnet& network, mat& hots, vector<uint
     for (int i = 1; i < hot; i++)
         sumfracs += static_cast<double>(i)/static_cast<double>(max(x - i, 0));
     double g = coef*sumfracs;
-    Rcpp::Rcout << "|g(" << hor << "," << hot << ") = " << g << "|";
     return g;
+}
+
+double tau(vec& x, vec& a, bondr::rnet& network, mat& hots, vector<vec>& v,
+           vector<uint>& i_rs,
+           vector<uint>& reaction_indices) {
+    vec taus = vec(i_rs.size()*2);
+    for (uint si = 0; si < i_rs.size(); si++) {
+        auto i = i_rs[si];
+        double u = 0;
+        double s = 0;
+        for (uint ri = 0; ri < reaction_indices.size(); ri++) {
+            auto j = reaction_indices[ri];
+            double vij = v[j][i];
+            double aj = a[j];
+            u += vij*aj;
+            s += vij*vij*aj;
+        }
+        double xi = x[i];
+        double gi = g(xi, i, network, hots, reaction_indices);
+        double dx = max(eps*xi/gi, 1.0);
+        taus[si*2] = dx/fabs(u);
+        taus[si*2 + 1] = dx*dx/s;
+    }
+    return min(taus);
 }
 
 vector<uint> intersect(vector<uint>& a, vector<uint>& b) {
@@ -101,11 +130,6 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
                                         bool all_out = false,
                                         vec k_override = vec(),
                                         bool verbose = false) {
-    // constants
-    const uint n_crit = 10;
-    const double eps = 5e-2;
-    const double delta = 5e-2;
-    const uint n_stiff = 100;
 
     uint N = network.species.size();
     uint M = network.reactions.size();
@@ -153,7 +177,7 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
     // holder and function for critical reactions
     auto j_cr = vector<uint>();
     auto j_ncr = vector<uint>();
-    auto update_critical = [&j_cr, &j_ncr, &a, nv, n_crit, N, M](vec x) {
+    auto update_critical = [&j_cr, &j_ncr, &a, nv, N, M](vec x) {
         // clear existing lists
         j_cr.clear();
         j_ncr.clear();
@@ -232,7 +256,7 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
                 if (j < reverse[j]) {
                     double ap = a[j];
                     double am = a[reverse[j]];
-                    if (!(abs(ap - am) <= delta*min(ap, am))) {
+                    if (!(fabs(ap - am) <= delta*min(ap, am))) {
                         j_ne.push_back(j);
                         j_ne.push_back(reverse[j]);
                     }
@@ -243,60 +267,18 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
             // not at equilibrium or critical
             auto j_necr = intersect(j_ne, j_ncr);
             
-            set_print("Crit          ", j_cr);
+            /*set_print("Crit          ", j_cr);
             set_print("Not crit      ", j_ncr);
             set_print("Not at eq     ", j_ne);
-            set_print("Not crit or eq", j_necr);
+            set_print("Not crit or eq", j_necr);*/
+
+            auto i_rs = reactant_species(hots, j_ncr);
 
             // compute explicit tau time step
-            auto i_rs_ex = reactant_species(hots, j_ncr);
-            vec tau_exs = vec(i_rs_ex.size()*2);
-            for (uint si = 0; si < i_rs_ex.size(); si++) {
-                auto i = i_rs_ex[si];
-                double u_ex = 0;
-                double s_ex = 0;
-                for (uint ri = 0; ri < j_ncr.size(); ri++) {
-                    auto j = j_ncr[ri];
-                    double vij = v[j][i];
-                    double aj = a[j];
-                    u_ex += vij*aj;
-                    s_ex += pow(vij, 2.0)*aj;
-                }
-                double xi = x[i];
-                double gi = g(xi, i, network, hots, j_ncr);
-                tau_exs[si*2] = max(eps*xi/gi, 1.0)/abs(u_ex);
-                tau_exs[si*2 + 1] = pow(max(eps*xi/gi, 1.0), 2.0)/s_ex;
-            }
-            Rcpp::Rcout << "|";
-            for (uint i = 0; i < tau_exs.size(); i++)
-                Rcpp::Rcout << tau_exs[i] << ",";
-            Rcpp::Rcout << "|" << endl;
-            tau_ex = min(tau_exs);
+            tau_ex = tau(x, a, network, hots, v, i_rs, j_ncr);
 
             // compute implicit tau time step
-            auto i_rs_im = reactant_species(hots, j_ncr);
-            vec tau_ims = vec(i_rs_im.size()*2);
-            for (uint si = 0; si < i_rs_im.size(); si++) {
-                auto i = i_rs_im[si];
-                double u_im = 0;
-                double s_im = 0;
-                for (uint ri = 0; ri < j_necr.size(); ri++) {
-                    auto j = j_necr[ri];
-                    double vij = v[j][i];
-                    double aj = a[j];
-                    u_im += vij*aj;
-                    s_im += pow(vij, 2.0)*aj;
-                }
-                double xi = x[i];
-                double gi = g(xi, i, network, hots, j_necr);
-                tau_ims[si*2] = max(eps*xi/gi, 1.0)/abs(u_im);
-                tau_ims[si*2 + 1] = pow(max(eps*xi/gi, 1.0), 2.0)/s_im;
-            }
-            Rcpp::Rcout << "|";
-            for (uint i = 0; i < tau_ims.size(); i++)
-                Rcpp::Rcout << tau_ims[i] << ",";
-            Rcpp::Rcout << "|" << endl;
-            tau_im = min(tau_ims);
+            tau_im = tau(x, a, network, hots, v, i_rs, j_necr);
 
             // determine whether to use explicit or implicit tau (if not using SSA)
             imtau_on = false;
@@ -305,6 +287,8 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
                 // system is stiff - use implicit tau
                 tau_1 = tau_im;
                 imtau_on = true;
+                //Rcpp::Rcout << "x: " << x << endl;
+                //Rcpp::Rcout << "a: " << a << endl;
             } else {
                 // system is not stiff - use explicit tau
                 tau_1 = tau_ex;

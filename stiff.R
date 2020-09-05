@@ -20,6 +20,7 @@ thin <- function(rsol, n = 1000) {
 #ssa_sol <- sys %>% ssa(all.out = TRUE)
 #p <- ssa_sol %>% thin() %>% plot()
 
+load_all()
 tau_sol <- sys %>% tauleap(all.out = TRUE, verbose = TRUE)
 p <- tau_sol %>% plot()
 
@@ -27,12 +28,15 @@ df <-
     tau_sol %>%
     .[['sol']] %>%
     select(Time, Type) %>%
-    filter(Type == 'ExTau', Time < 0.25) %>%
-    mutate(tau = Time - lag(Time))
+    filter(Type == 'ExTau') %>%
+    #filter(Time < 0.125) %>%
+    mutate(tau = Time - lag(Time)) #%>%
+    #filter(tau < 7e-5)
 p <-
     df %>%
     ggplot(aes(x = Time, y = tau, colour = Type)) +
         geom_point(size = 0.001)
+#p
 
 q()
 
