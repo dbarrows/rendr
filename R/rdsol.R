@@ -24,6 +24,7 @@ plot.rdsol <- function(x, species = NULL, ...) {
         rdsol_summarise() %>%
         select(c(Time, species)) %>%
         pivot_longer(-Time, names_to = 'Species', values_to = 'Quantity') %>%
+        mutate(Species = fct_relevel(Species, species)) %>%
         ggplot(aes(Time, Quantity, colour = Species)) +
             geom_line()
 }

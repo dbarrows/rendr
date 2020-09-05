@@ -29,7 +29,8 @@ Imports:
     ggplot2,
     tidyr,
     methods,
-    crayon
+    crayon,
+    forcats
 Remotes:
     dbarrows/spurcore,
     dbarrows/bondr

@@ -31,6 +31,7 @@ plot_rsol_single <- function(rsol, species) {
     rsol$sol %>%
         select(c(Time, species)) %>%
         pivot_longer(-Time, names_to = 'Species', values_to = 'Quantity') %>%
+        mutate(Species = fct_relevel(Species, species)) %>%
         ggplot(aes(Time, Quantity, colour = Species)) +
             geom_line()
 }
@@ -45,6 +46,7 @@ plot_rsol_multi <- function(rsol, species) {
         select(Time, species) %>%
         mutate(trajectory = sapply(1:n_trajectories, function(i) rep(i, n_times)) %>% c()) %>%
         pivot_longer(-c(Time, trajectory), names_to = 'Species', values_to = 'Quantity') %>%
+        mutate(Species = fct_relevel(Species, species)) %>%
         group_by(Time, Species) %>%
         summarise(mean = mean(Quantity),
                   lb = mean - 2*sd(Quantity),
