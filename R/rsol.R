@@ -49,8 +49,8 @@ plot_rsol_multi <- function(rsol, species) {
         mutate(Species = fct_relevel(Species, species)) %>%
         group_by(Time, Species) %>%
         summarise(mean = mean(Quantity),
-                  lb = mean - 2*sd(Quantity),
-                  ub = mean + 2*sd(Quantity))
+                  lb = min(Quantity),
+                  ub = max(Quantity))
     df %>%
         ggplot(aes(Time, mean)) +
             geom_line(aes(colour = Species)) +
