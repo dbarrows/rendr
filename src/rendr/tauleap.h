@@ -427,17 +427,29 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
     return { sol, step_type };
 }
 
-/*rsol tauleap_implicit(bondr::rnet network,
+rsol tauleap_implicit(bondr::rnet network,
                       vec y,
                       double T,
                       uint length_out = 100,
                       bool all_out = false,
                       vec k = vec()) {
+
+    uint N = network.species.size();
+    uint M = network.reactions.size();
+
     double t = 0;
     double tau = T / length_out;
     vec x = vec(y);
 
     auto x_last = x;
+
+    // update vectors
+    auto v = vector<vec>(M);
+    for (uint j = 0; j < M; j++) {
+        vec vj = vec(x.size(), fill::zeros);
+        network.reactions[j].update(vj);
+        v[j] = vj;
+    }
         
     // data saving
     auto sol = provision<vec>(network.species, T, length_out, all_out);
@@ -455,13 +467,20 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
     while (t < T) {
         x_last = x;
 
-        x = imtau::step(network, f, x, tau);
+        // determine state vector increments
+        k = imtau::k_im(network, f, x, tau);
+        vec dx = vec(N, fill::zeros);
+        for (uint j = 0; j < M; j++)
+            dx += k[j]*v[j];
+
+        // evolve system
+        x += dx;
         t += tau;
 
         sol_push();
     }
 
     return sol;
-}*/
+}
 
 }

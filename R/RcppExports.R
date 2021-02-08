@@ -21,3 +21,7 @@ tauleap_cpp <- function(rnet_xptr, y, T, hots, reverse, length_out = 100L, all_o
     .Call(`_rendr_tauleap_cpp`, rnet_xptr, y, T, hots, reverse, length_out, all_out, k_vec, verbose)
 }
 
+tauleap_implicit_cpp <- function(rnet_xptr, y, T, length_out = 100L, all_out = FALSE, k_vec = NULL) {
+    .Call(`_rendr_tauleap_implicit_cpp`, rnet_xptr, y, T, length_out, all_out, k_vec)
+}
+

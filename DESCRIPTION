@@ -32,7 +32,7 @@ Imports:
     crayon
 Remotes:
     dbarrows/spurcore,
-    dbarrows/bondr
+    dbarrows/bondr-dev
 LinkingTo: 
     Rcpp,
     RcppArmadillo,

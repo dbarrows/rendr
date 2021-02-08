@@ -5,3 +5,4 @@ renv/
 docs/
 renv*
 .Rprofile
+.Rprofilerenv
