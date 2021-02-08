@@ -16,7 +16,7 @@ using rsol = sol<vec>;
 
 // Functions --------------------------------------------------------------------------------------
 
-Rcpp::DataFrame DataFrame(rsol& sol) {
+inline Rcpp::DataFrame DataFrame(rsol& sol) {
     Rcpp::List list = Rcpp::List(1 + sol.species.size());
 
     auto names = Rcpp::CharacterVector { "Time" };

@@ -3,3 +3,6 @@ README.html
 renv/
 *_cache/
 docs/
+renv*
+.Rprofile
+.Rprofilerenv

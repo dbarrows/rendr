@@ -4,7 +4,7 @@
 #include <volume.h>
 #include <random.h>
 #include <utils.h>
-#include "event_queue.h"
+#include "event-queue.h"
 #include "rdnet.h"
 #include "rdsol.h"
 
