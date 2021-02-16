@@ -4,12 +4,14 @@
 \alias{rre}
 \title{Reaction rate equation solver}
 \usage{
-rre(sys, length.out = 100)
+rre(sys, length.out = 100, k = NULL)
 }
 \arguments{
 \item{sys}{\code{\link{rsys}} instance}
 
 \item{length.out}{length of solution output (table rows) (default 100)}
+
+\item{k}{\code{\link{numeric}} vector of reaction rates corresponding to the reactions in \code{sys}, overrides those contained if \code{sys} if provided}
 }
 \value{
 \code{\link{rsol}} instance
