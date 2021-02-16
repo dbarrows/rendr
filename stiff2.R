@@ -1,7 +1,16 @@
 library(db)
 load_all()
 
-mm <- rsys_examples('mm')
+sys <- rsys(
+    network = network('
+        S1 -> 0, 1
+        2S1 <-> S2, 1e1, 1e3
+        S2 -> S3, 1e-1
+    '),
+    #state = c(1e4, 0, 0),
+    state = c(10000, 0, 0),
+    T = 4
+)
 
 tag <- function(sol, tag) {
     sol$sol %<>% mutate(method = tag)
@@ -9,17 +18,17 @@ tag <- function(sol, tag) {
 }
 
 # SSA
-sol_ssa <- mm %>%
-    ssa(all.out = TRUE) %>%
+sol_ssa <- sys %>%
+    ssa(length.out = 1000) %>%
     tag('SSA')
 
 # Implicit tau-leaping
-# sol_implicit <- mm %>%
+# sol_implicit <- sys %>%
 #     tauleap(method = 'implicit') %>%
 #     tag('Implicit')
 
-sol_adaptive <- mm %>%
-    tauleap(all.out = TRUE) %>%
+sol_adaptive <- sys %>%
+    tauleap(verbose = TRUE) %>%
     tag('Adaptive')
 
 plot_sols <- function(sol_list) {

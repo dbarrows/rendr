@@ -20,7 +20,7 @@ using uint = unsigned int;
 const uint n_crit = 10;
 const double eps = 5e-2;
 const double delta = 5e-2;
-const uint n_stiff = 100;
+const double n_stiff = 819;
 
 vector<uint> reactant_species(mat& hots, vector<uint> reaction_indices) {
     auto i_rs = vector<uint>();
@@ -71,20 +71,21 @@ double tau(vec& x, vec& a, bondr::rnet& network, mat& hots, vector<vec>& v,
     for (uint si = 0; si < i_rs.size(); si++) {
         auto i = i_rs[si];
         double u = 0;
-        double s = 0;
+        double s2 = 0;
         for (uint ri = 0; ri < reaction_indices.size(); ri++) {
             auto j = reaction_indices[ri];
             double vij = v[j][i];
             double aj = a[j];
             u += vij*aj;
-            s += vij*vij*aj;
+            s2 += vij*vij*aj;
         }
         double xi = x[i];
         double gi = g(xi, i, network, hots, reaction_indices);
         double dx = max(eps*xi/gi, 1.0);
         taus[si*2] = dx/fabs(u);
-        taus[si*2 + 1] = dx*dx/s;
+        taus[si*2 + 1] = dx*dx/s2;
     }
+    //Rcpp::Rcout << taus << endl;
     return min(taus);
 }
 
@@ -275,7 +276,7 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
             auto i_rs = reactant_species(hots, j_ncr);
 
             // compute explicit tau time step
-            tau_ex = tau(x, a, network, hots, v, i_rs, j_ncr);
+            tau_ex = 4*tau(x, a, network, hots, v, i_rs, j_ncr);
 
             // compute implicit tau time step
             tau_im = tau(x, a, network, hots, v, i_rs, j_necr);
@@ -292,6 +293,8 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
             } else {
                 // system is not stiff - use explicit tau
                 tau_1 = tau_ex;
+                if (verbose)
+                    Rcpp::Rcout << "tau_ex: " << tau_ex << endl;
                 extau_on = true;
             }
         }
@@ -304,7 +307,8 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
                 ssa_on = true;
                 tau_on = false;
                 ssa_remaining = ssa_extau_last ? 100 : 10;
-                Rcpp::Rcout << "SSA: " << ssa_remaining << endl;
+                if (verbose)
+                    Rcpp::Rcout << "SSA: " << ssa_remaining << endl;
             }
             // perform SSA
             uint j = 0;
@@ -329,7 +333,8 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
             }
         } else {
             // use tau-leaping
-            Rcpp::Rcout << (imtau_on ? "ImTau" : "ExTau");
+            if (verbose)
+                Rcpp::Rcout << (imtau_on ? "ImTau" : "ExTau");
 
             double tau;
             auto k = vec(M);
@@ -343,7 +348,8 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
             if (tau_1 < tau_2) {
                 // no critical reactions will fire
                 tau = tau_1;
-                Rcpp::Rcout << ", tau = tau1 = " << tau << "...";
+                if (verbose)
+                    Rcpp::Rcout << ", tau = tau1 = " << tau << "...";
                 
                 if (imtau_on) {
                     // implicit tau k's
@@ -359,7 +365,8 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
             } else {
                 // only one critical reaction will fire
                 tau = tau_2;
-                Rcpp::Rcout << ", tau = tau2 = " << tau << "...";
+                if (verbose)
+                    Rcpp::Rcout << ", tau = tau2 = " << tau << "...";
                 
                 // get index of single critical reaction
                 int jc = -1;
@@ -409,7 +416,8 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
                 }
                 tau_on = false;
                 tau_1_div_count = 0;
-                Rcpp::Rcout << "done" << endl;
+                if (verbose)
+                    Rcpp::Rcout << "done" << endl;
             } else {
                 // tau leaping still in progress, reduce tau_1 by half and try stepping again
                 tau_1 /= 2;

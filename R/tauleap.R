@@ -11,6 +11,8 @@
 #' @param average if `TRUE` (default `FALSE`) and generating multiple trajectories, averages trajectories at sample times; incompatible with `all.out = TRUE`
 #' @param k [`numeric`] vector of reaction rates corresponding to the reactions in `sys`, overrides those contained if `sys` if provided
 #' @param force_compile if set to `TRUE`, forces the overwriting and recompilation of the network source file
+#' @param verbose print diagnostic information
+#' @param method one of: 'adaptive' (default), 'implicit', 'explicit'
 #' 
 #' @return [`rsol`] instance
 #' @export

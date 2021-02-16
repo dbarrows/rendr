@@ -14,7 +14,8 @@ tauleap(
   average = FALSE,
   k = NULL,
   force_compile = FALSE,
-  verbose = FALSE
+  verbose = FALSE,
+  method = "adaptive"
 )
 }
 \arguments{
@@ -35,6 +36,10 @@ tauleap(
 \item{k}{\code{\link{numeric}} vector of reaction rates corresponding to the reactions in \code{sys}, overrides those contained if \code{sys} if provided}
 
 \item{force_compile}{if set to \code{TRUE}, forces the overwriting and recompilation of the network source file}
+
+\item{verbose}{print diagnostic information}
+
+\item{method}{one of: 'adaptive' (default), 'implicit', 'explicit'}
 }
 \value{
 \code{\link{rsol}} instance

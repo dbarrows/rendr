@@ -21,15 +21,19 @@ thin <- function(rsol, n = 1000) {
 #p <- ssa_sol %>% thin() %>% plot()
 
 load_all()
-tau_sol <- sys %>% tauleap(all.out = TRUE, verbose = TRUE)
-p <- tau_sol %>% plot()
+tau_sol <- sys %>% tauleap(all.out = TRUE, verbose = FALSE)
+p <- tau_sol %>%
+    { .$sol } %>%
+    pivot_longer(species(tau_sol$sys), names_to = 'Species', values_to = 'Quantity') %>%
+    ggplot(aes(Time, Quantity, group = Species, colour = Type)) +
+        geom_point(size = 0.1)
 
 df <-
     tau_sol %>%
     .[['sol']] %>%
     select(Time, Type) %>%
     filter(Type == 'ExTau') %>%
-    #filter(Time < 0.125) %>%
+    filter(Time < 0.25) %>%
     mutate(tau = Time - lag(Time)) #%>%
     #filter(tau < 7e-5)
 p <-

@@ -15,6 +15,7 @@
 #' @importFrom dplyr rename select pull filter bind_rows group_by mutate summarise
 #' @importFrom tidyr pivot_longer
 #' @importFrom purrr walk keep
+#' @importFrom forcats fct_relevel
 #' @importFrom digest digest
 #' @importFrom deSolve ode
 #' @importFrom methods new
