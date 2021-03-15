@@ -17,6 +17,10 @@ ssa_cpp_pest <- function(rnet_xptr, y, T, trajectories, k_vec = NULL) {
     .Call(`_rendr_ssa_cpp_pest`, rnet_xptr, y, T, trajectories, k_vec)
 }
 
+prop_px <- function(rnet_xptr, x, pi, xi) {
+    .Call(`_rendr_prop_px`, rnet_xptr, x, pi, xi)
+}
+
 tauleap_cpp <- function(rnet_xptr, y, T, hots, reverse, length_out = 100L, all_out = FALSE, k_vec = NULL, verbose = FALSE) {
     .Call(`_rendr_tauleap_cpp`, rnet_xptr, y, T, hots, reverse, length_out, all_out, k_vec, verbose)
 }

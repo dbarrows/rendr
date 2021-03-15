@@ -71,6 +71,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// prop_px
+int prop_px(SEXP rnet_xptr, arma::vec x, int pi, int xi);
+RcppExport SEXP _rendr_prop_px(SEXP rnet_xptrSEXP, SEXP xSEXP, SEXP piSEXP, SEXP xiSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type rnet_xptr(rnet_xptrSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type pi(piSEXP);
+    Rcpp::traits::input_parameter< int >::type xi(xiSEXP);
+    rcpp_result_gen = Rcpp::wrap(prop_px(rnet_xptr, x, pi, xi));
+    return rcpp_result_gen;
+END_RCPP
+}
 // tauleap_cpp
 Rcpp::DataFrame tauleap_cpp(SEXP rnet_xptr, arma::vec y, double T, arma::mat hots, arma::vec reverse, int length_out, bool all_out, Rcpp::Nullable<arma::vec> k_vec, bool verbose);
 RcppExport SEXP _rendr_tauleap_cpp(SEXP rnet_xptrSEXP, SEXP ySEXP, SEXP TSEXP, SEXP hotsSEXP, SEXP reverseSEXP, SEXP length_outSEXP, SEXP all_outSEXP, SEXP k_vecSEXP, SEXP verboseSEXP) {
@@ -112,6 +126,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_rendr_nsm_cpp", (DL_FUNC) &_rendr_nsm_cpp, 7},
     {"_rendr_ssa_cpp", (DL_FUNC) &_rendr_ssa_cpp, 6},
     {"_rendr_ssa_cpp_pest", (DL_FUNC) &_rendr_ssa_cpp_pest, 5},
+    {"_rendr_prop_px", (DL_FUNC) &_rendr_prop_px, 4},
     {"_rendr_tauleap_cpp", (DL_FUNC) &_rendr_tauleap_cpp, 9},
     {"_rendr_tauleap_implicit_cpp", (DL_FUNC) &_rendr_tauleap_implicit_cpp, 6},
     {NULL, NULL, 0}

@@ -1,6 +1,7 @@
 #include <RcppArmadillo.h>
 #include <rnet.h>
 #include <utils.h>
+#include <dual.h>
 #include "rendr/ssa.h"
 
 // [[Rcpp::export]]
@@ -38,4 +39,18 @@ Rcpp::NumericVector ssa_cpp_pest(SEXP rnet_xptr,
     arma::vec vmean = vsum / static_cast<double>(sols.size());
 
     return core::vector_cast<Rcpp::NumericVector>(vmean);
+}
+
+// [[Rcpp::export]]
+double prop_px(SEXP rnet_xptr, arma::vec x, int pi, int xi) {
+    auto net = *Rcpp::XPtr<bondr::rnet>(rnet_xptr);
+
+    // setup dual number vector w.r.t. `xi`
+    auto xd = core::dual_vec(x);
+    xd[xi - 1].e = 1;
+
+    // propensity indicated by `pi`
+    auto ad = net.reactions[pi - 1].dual_propensity;
+
+    return ad(xd).e;
 }
