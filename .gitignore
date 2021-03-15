@@ -6,3 +6,4 @@ docs/
 renv*
 .Rprofile
 .Rprofilerenv
+renv
