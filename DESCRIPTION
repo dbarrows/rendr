@@ -30,7 +30,8 @@ Imports:
     tidyr,
     methods,
     crayon,
-    forcats
+    forcats,
+    rlang
 Remotes:
     dbarrows/spurcore,
     dbarrows/bondr-dev

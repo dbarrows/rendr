@@ -71,8 +71,24 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// ssa_cpp_trajest
+arma::mat ssa_cpp_trajest(SEXP rnet_xptr, arma::vec y, double T, int trajectories, int length_out, Rcpp::Nullable<arma::vec> k_vec);
+RcppExport SEXP _rendr_ssa_cpp_trajest(SEXP rnet_xptrSEXP, SEXP ySEXP, SEXP TSEXP, SEXP trajectoriesSEXP, SEXP length_outSEXP, SEXP k_vecSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type rnet_xptr(rnet_xptrSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type y(ySEXP);
+    Rcpp::traits::input_parameter< double >::type T(TSEXP);
+    Rcpp::traits::input_parameter< int >::type trajectories(trajectoriesSEXP);
+    Rcpp::traits::input_parameter< int >::type length_out(length_outSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<arma::vec> >::type k_vec(k_vecSEXP);
+    rcpp_result_gen = Rcpp::wrap(ssa_cpp_trajest(rnet_xptr, y, T, trajectories, length_out, k_vec));
+    return rcpp_result_gen;
+END_RCPP
+}
 // prop_px
-int prop_px(SEXP rnet_xptr, arma::vec x, int pi, int xi);
+double prop_px(SEXP rnet_xptr, arma::vec x, int pi, int xi);
 RcppExport SEXP _rendr_prop_px(SEXP rnet_xptrSEXP, SEXP xSEXP, SEXP piSEXP, SEXP xiSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -126,6 +142,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_rendr_nsm_cpp", (DL_FUNC) &_rendr_nsm_cpp, 7},
     {"_rendr_ssa_cpp", (DL_FUNC) &_rendr_ssa_cpp, 6},
     {"_rendr_ssa_cpp_pest", (DL_FUNC) &_rendr_ssa_cpp_pest, 5},
+    {"_rendr_ssa_cpp_trajest", (DL_FUNC) &_rendr_ssa_cpp_trajest, 6},
     {"_rendr_prop_px", (DL_FUNC) &_rendr_prop_px, 4},
     {"_rendr_tauleap_cpp", (DL_FUNC) &_rendr_tauleap_cpp, 9},
     {"_rendr_tauleap_implicit_cpp", (DL_FUNC) &_rendr_tauleap_implicit_cpp, 6},

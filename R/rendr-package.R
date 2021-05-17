@@ -23,6 +23,7 @@
 #' @importFrom parallel detectCores mclapply
 #' @importFrom Rcpp sourceCpp
 #' @importFrom stats sd
+#' @importFrom rlang set_names
 #' @useDynLib rendr, .registration = TRUE
 NULL
 

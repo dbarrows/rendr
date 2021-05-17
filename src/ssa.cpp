@@ -22,23 +22,40 @@ Rcpp::DataFrame ssa_cpp(SEXP rnet_xptr,
 Rcpp::NumericVector ssa_cpp_pest(SEXP rnet_xptr,
                                  arma::vec y,
                                  double T,
-                                 int trajectories,
+                                 int trajectories = 1,
                                  Rcpp::Nullable<arma::vec> k_vec = R_NilValue) {
     auto net = *Rcpp::XPtr<bondr::rnet>(rnet_xptr);
     auto k = k_vec.isNull() ? arma::vec() : Rcpp::as<arma::vec>(k_vec);
     
-    // obtain all solutions with final state only
-    auto sols = std::vector<rendr::rsol>(trajectories);
-    for (int i = 0; i < sols.size(); i++)
-        sols[i] = rendr::ssa(net, y, T, 1, false, k);
+    // obtain solution sum and mean
+    auto solmean = arma::vec(net.species.size(), arma::fill::zeros);
+    for (int i = 0; i < trajectories; i++) {
+        auto sol = rendr::ssa(net, y, T, 1, false, k);
+        solmean += sol.u[0]/static_cast<double>(trajectories);
+    }
 
-    // average final states
-    auto vsum = sols[0].u[0];
-    for (int i = 1; i < sols.size(); i++)
-        vsum += sols[i].u[0];
-    arma::vec vmean = vsum / static_cast<double>(sols.size());
+    return core::vector_cast<Rcpp::NumericVector>(solmean);
+}
 
-    return core::vector_cast<Rcpp::NumericVector>(vmean);
+// [[Rcpp::export]]
+arma::mat ssa_cpp_trajest(SEXP rnet_xptr,
+                                    arma::vec y,
+                                    double T,
+                                    int trajectories = 1,
+                                    int length_out = 100,
+                                    Rcpp::Nullable<arma::vec> k_vec = R_NilValue) {
+    auto net = *Rcpp::XPtr<bondr::rnet>(rnet_xptr);
+    auto k = k_vec.isNull() ? arma::vec() : Rcpp::as<arma::vec>(k_vec);
+    
+    // obtain solution sum and mean
+    auto solmean = arma::mat(net.species.size(), length_out, arma::fill::zeros);
+    for (int i = 0; i < trajectories; i++) {
+        auto sol = rendr::ssa(net, y, T, length_out, false, k);
+        for (int ti = 0; ti < length_out; ti++)
+            solmean.col(ti) += sol.u[ti]/static_cast<double>(trajectories);
+    }
+
+    return solmean;
 }
 
 // [[Rcpp::export]]
