@@ -112,12 +112,14 @@ ssa_trajest <- function(sys, trajectories = 1, length.out = 100, k = NULL, force
                     NULL
             })
         ## obtain final solution point estimate
-        pest <- ssa_cpp_trajest(net, state, T,
-                                trajectories = trajectories,
-                                length_out = length.out,
-                                k_vec = k)
-        if (class(network) == 'network')
-            rownames(pest) <- species(network)
-        pest
+        trajest <- ssa_cpp_trajest(net, state, T,
+                                   trajectories = trajectories,
+                                   length_out = length.out,
+                                   k_vec = k)
+        if (class(network) == 'network') {
+            rownames(trajest$mean) <- species(network)
+            rownames(trajest$sd) <- species(network)
+        }
+        trajest
     })
 }

@@ -72,7 +72,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // ssa_cpp_trajest
-arma::mat ssa_cpp_trajest(SEXP rnet_xptr, arma::vec y, double T, int trajectories, int length_out, Rcpp::Nullable<arma::vec> k_vec);
+Rcpp::List ssa_cpp_trajest(SEXP rnet_xptr, arma::vec y, double T, int trajectories, int length_out, Rcpp::Nullable<arma::vec> k_vec);
 RcppExport SEXP _rendr_ssa_cpp_trajest(SEXP rnet_xptrSEXP, SEXP ySEXP, SEXP TSEXP, SEXP trajectoriesSEXP, SEXP length_outSEXP, SEXP k_vecSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
