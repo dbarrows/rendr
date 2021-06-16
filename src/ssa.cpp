@@ -19,22 +19,31 @@ Rcpp::DataFrame ssa_cpp(SEXP rnet_xptr,
 }
 
 // [[Rcpp::export]]
-Rcpp::NumericVector ssa_cpp_pest(SEXP rnet_xptr,
-                                 arma::vec y,
-                                 double T,
-                                 int trajectories = 1,
-                                 Rcpp::Nullable<arma::vec> k_vec = R_NilValue) {
+Rcpp::List ssa_cpp_pest(SEXP rnet_xptr,
+                        arma::vec y,
+                        double T,
+                        int trajectories = 1,
+                        Rcpp::Nullable<arma::vec> k_vec = R_NilValue) {
     auto net = *Rcpp::XPtr<bondr::rnet>(rnet_xptr);
     auto k = k_vec.isNull() ? arma::vec() : Rcpp::as<arma::vec>(k_vec);
     
-    // obtain solution sum and mean
-    auto solmean = arma::vec(net.species.size(), arma::fill::zeros);
-    for (int i = 0; i < trajectories; i++) {
+    // obtain mean/sd using single loop
+    double n = trajectories;
+    auto solsum = arma::vec(net.species.size(), arma::fill::zeros);
+    auto solsumsq = arma::vec(net.species.size(), arma::fill::zeros);
+    for (int i = 0; i < n; i++) {
         auto sol = rendr::ssa(net, y, T, 1, false, k);
-        solmean += sol.u[0]/static_cast<double>(trajectories);
+        auto s = sol.u[0];
+        solsum += s;
+        solsumsq += arma::square(s);
     }
+    arma::vec solmean = solsum/n;
+    arma::vec solsd = solsumsq/n - arma::square(solmean);
 
-    return core::vector_cast<Rcpp::NumericVector>(solmean);
+    return Rcpp::List::create(
+        Rcpp::Named("mean") = core::vector_cast<Rcpp::NumericVector>(solmean),
+        Rcpp::Named("sd") = core::vector_cast<Rcpp::NumericVector>(solsd)
+    );
 }
 
 // [[Rcpp::export]]

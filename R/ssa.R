@@ -83,8 +83,10 @@ ssa_pest <- function(sys, trajectories = 1, k = NULL, force_compile = FALSE) {
         pest <- ssa_cpp_pest(net, state, T,
                              trajectories = trajectories,
                              k_vec = k)
-        if (class(network) == 'network')
-            names(pest) <- species(network)
+        if (class(network) == 'network') {
+            names(pest$mean) <- species(network)
+            names(pest$sd) <- species(network)
+        }
         pest
     })
 }
