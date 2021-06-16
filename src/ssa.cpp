@@ -38,7 +38,7 @@ Rcpp::List ssa_cpp_pest(SEXP rnet_xptr,
         solsumsq += arma::square(s);
     }
     arma::vec solmean = solsum/n;
-    arma::vec solsd = solsumsq/n - arma::square(solmean);
+    arma::vec solsd = arma::sqrt(solsumsq/n - arma::square(solmean));
 
     return Rcpp::List::create(
         Rcpp::Named("mean") = core::vector_cast<Rcpp::NumericVector>(solmean),
