@@ -4,6 +4,8 @@
 #include <dual.h>
 #include "rendr/ssa.h"
 
+// [[Rcpp::interfaces(r, cpp)]]
+
 // [[Rcpp::export]]
 Rcpp::DataFrame ssa_cpp(SEXP rnet_xptr,
                         arma::vec y,

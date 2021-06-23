@@ -33,3 +33,7 @@ tauleap_implicit_cpp <- function(rnet_xptr, y, T, length_out = 100L, all_out = F
     .Call(`_rendr_tauleap_implicit_cpp`, rnet_xptr, y, T, length_out, all_out, k_vec)
 }
 
+# Register entry points for exported C++ functions
+methods::setLoadAction(function(ns) {
+    .Call('_rendr_RcppExport_registerCCallable', PACKAGE = 'rendr')
+})
