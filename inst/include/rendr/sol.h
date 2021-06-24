@@ -1,6 +1,6 @@
 #include <RcppArmadillo.h>
-#include <array3.h>
-#include <utils.h>
+#include <core/array3.h>
+#include <core/utils.h>
 
 namespace rendr {
 

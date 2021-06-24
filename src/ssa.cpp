@@ -1,7 +1,7 @@
 #include <RcppArmadillo.h>
-#include <rnet.h>
-#include <utils.h>
-#include <dual.h>
+#include <bondr/rnet.h>
+#include <core/utils.h>
+#include <core/dual.h>
 #include <ssa.h>
 
 // [[Rcpp::interfaces(r, cpp)]]

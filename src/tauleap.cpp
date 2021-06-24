@@ -1,6 +1,6 @@
 #include <RcppArmadillo.h>
-#include <rnet.h>
-#include <utils.h>
+#include <bondr/rnet.h>
+#include <core/utils.h>
 #include <tauleap.h>
 
 // [[Rcpp::export]]

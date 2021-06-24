@@ -1,9 +1,9 @@
 #pragma once
 
 #include <RcppArmadillo.h>
-#include <rnet.h>
-#include <random.h>
-#include <utils.h>
+#include <bondr/rnet.h>
+#include <core/probability.h>
+#include <core/utils.h>
 #include "rsol.h"
 
 namespace rendr {

@@ -2,9 +2,9 @@
 
 #include <Rcpp.h>
 #include <functional>
-#include <rnet.h>
-#include <dual.h>
-#include <random.h>
+#include <bondr/rnet.h>
+#include <core/dual.h>
+#include <core/probability.h>
 
 namespace rendr {
 namespace imtau {

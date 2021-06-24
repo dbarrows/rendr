@@ -1,7 +1,7 @@
 #pragma once
 
 #include <RcppArmadillo.h>
-#include <array3.h>
+#include <core/array3.h>
 #include "sol.h"
 
 namespace rendr {

@@ -1,9 +1,9 @@
 #pragma once
 
 #include <RcppArmadillo.h>
-#include <volume.h>
-#include <random.h>
-#include <utils.h>
+#include <core/volume.h>
+#include <core/probability.h>
+#include <core/utils.h>
 #include "event-queue.h"
 #include "rdnet.h"
 #include "rdsol.h"

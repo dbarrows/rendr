@@ -1,8 +1,8 @@
 #pragma once
 
 #include <functional>
-#include <rnet.h>
-#include <volume.h>
+#include <bondr/rnet.h>
+#include <core/volume.h>
 
 namespace rendr {
 

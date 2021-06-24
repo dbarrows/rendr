@@ -3,8 +3,8 @@
 #include <RcppArmadillo.h>
 #include <map>
 #include <functional>
-#include <array3.h>
-#include <arma_utils.h>
+#include <core/array3.h>
+#include <core/arma.h>
 
 namespace rendr {
 
