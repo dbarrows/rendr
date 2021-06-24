@@ -1,5 +1,5 @@
 #include <RcppArmadillo.h>
-#include "rendr/nsm.h"
+#include <nsm.h>
 
 // [[Rcpp::export]]
 Rcpp::List nsm_cpp(SEXP rnet_xptr,

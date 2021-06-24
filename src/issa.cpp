@@ -1,5 +1,5 @@
 #include <RcppArmadillo.h>
-#include "rendr/issa.h"
+#include <issa.h>
 
 // [[Rcpp::export]]
 Rcpp::List issa_cpp(SEXP rnet_xptr,

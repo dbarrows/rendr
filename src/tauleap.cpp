@@ -1,7 +1,7 @@
 #include <RcppArmadillo.h>
 #include <rnet.h>
 #include <utils.h>
-#include "rendr/tauleap.h"
+#include <tauleap.h>
 
 // [[Rcpp::export]]
 Rcpp::DataFrame tauleap_cpp(SEXP rnet_xptr,

@@ -2,7 +2,7 @@
 #include <rnet.h>
 #include <utils.h>
 #include <dual.h>
-#include "rendr/ssa.h"
+#include <ssa.h>
 
 // [[Rcpp::interfaces(r, cpp)]]
 
