@@ -29,22 +29,11 @@ Rcpp::List ssa_cpp_pest(SEXP rnet_xptr,
     auto net = *Rcpp::XPtr<bondr::rnet>(rnet_xptr);
     auto k = k_vec.isNull() ? arma::vec() : Rcpp::as<arma::vec>(k_vec);
     
-    // obtain mean/sd using single loop
-    double n = trajectories;
-    auto solsum = arma::vec(net.species.size(), arma::fill::zeros);
-    auto solsumsq = arma::vec(net.species.size(), arma::fill::zeros);
-    for (int i = 0; i < n; i++) {
-        auto sol = rendr::ssa(net, y, T, 1, false, k);
-        auto s = sol.u[0];
-        solsum += s;
-        solsumsq += arma::square(s);
-    }
-    arma::vec solmean = solsum/n;
-    arma::vec solsd = arma::sqrt(solsumsq/n - arma::square(solmean));
+    auto res = rendr::ssa_pest(net, y, T, trajectories, k);
 
     return Rcpp::List::create(
-        Rcpp::Named("mean") = core::vector_cast<Rcpp::NumericVector>(solmean),
-        Rcpp::Named("sd") = core::vector_cast<Rcpp::NumericVector>(solsd)
+        Rcpp::Named("mean") = core::vector_cast<Rcpp::NumericVector>(res.first),
+        Rcpp::Named("sd") = core::vector_cast<Rcpp::NumericVector>(res.second)
     );
 }
 

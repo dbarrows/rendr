@@ -71,4 +71,25 @@ rsol ssa(bondr::rnet network,
     return sol;
 }
 
+pair<vec, vec> ssa_pest(bondr::rnet network,
+                        vec y,
+                        double T,
+                        int trajectories,
+                        vec k = vec()) {
+    // obtain mean/sd using single loop
+    double n = trajectories;
+    auto solsum = vec(y.size(), fill::zeros);
+    auto solsumsq = vec(y.size(), fill::zeros);
+    for (int i = 0; i < n; i++) {
+        auto sol = ssa(network, y, T, 1, false, k);
+        auto s = sol.u[0];
+        solsum += s;
+        solsumsq += square(s);
+    }
+    vec solmean = solsum/n;
+    vec solsd = sqrt(solsumsq/n - square(solmean));
+
+    return { solmean, solsd };
+}
+
 }
