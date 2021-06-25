@@ -18,8 +18,13 @@ rsol ssa(bondr::rnet network,
          double T,
          uint length_out = 100,
          bool all_out = false,
-         vec k = vec()) {
-    auto rng = uniform_rng();
+         vec k = vec(),
+         uniform_rng* rng = nullptr) {
+    bool internal_rng = false;
+    if (rng == nullptr) {
+        rng = new uniform_rng();
+        internal_rng = true;
+    }
 
     double t = 0;
     vec x = vec(y);
@@ -54,12 +59,12 @@ rsol ssa(bondr::rnet network,
 
         // get reaction index `j`
         uint j = 0;
-        double atarget = asum*rng.next();
+        double atarget = asum*rng->next();
         while (csum[j] < atarget)
             j++;
 
         // get reaction time
-        double tau = -log(rng.next())/asum;
+        double tau = -log(rng->next())/asum;
 
         // stash current system state
         x_last = x;
@@ -70,6 +75,9 @@ rsol ssa(bondr::rnet network,
         sol_push();
     }
 
+    if (internal_rng)
+        delete rng;
+
     return sol;
 }
 
@@ -77,19 +85,29 @@ pair<vec, vec> ssa_pest(bondr::rnet network,
                         vec y,
                         double T,
                         int trajectories,
-                        vec k = vec()) {
+                        vec k = vec(),
+                        uniform_rng* rng = nullptr) {
+    bool internal_rng = false;
+    if (rng == nullptr) {
+        rng = new uniform_rng();
+        internal_rng = true;
+    }
+
     // obtain mean/sd using single loop
     double n = trajectories;
     auto solsum = vec(y.size(), fill::zeros);
     auto solsumsq = vec(y.size(), fill::zeros);
     for (int i = 0; i < n; i++) {
-        auto sol = ssa(network, y, T, 1, false, k);
+        auto sol = ssa(network, y, T, 1, false, k, rng);
         auto s = sol.u[0];
         solsum += s;
         solsumsq += square(s);
     }
     vec solmean = solsum/n;
     vec solsd = sqrt(solsumsq/n - square(solmean));
+
+    if (internal_rng)
+        delete rng;
 
     return { solmean, solsd };
 }
