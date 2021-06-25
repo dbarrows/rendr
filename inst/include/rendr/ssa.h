@@ -19,6 +19,8 @@ rsol ssa(bondr::rnet network,
          uint length_out = 100,
          bool all_out = false,
          vec k = vec()) {
+    auto rng = uniform_rng();
+
     double t = 0;
     vec x = vec(y);
 
@@ -52,12 +54,12 @@ rsol ssa(bondr::rnet network,
 
         // get reaction index `j`
         uint j = 0;
-        double atarget = asum*runif();
+        double atarget = asum*rng.next();
         while (csum[j] < atarget)
             j++;
 
         // get reaction time
-        double tau = -log(runif())/asum;
+        double tau = -log(rng.next())/asum;
 
         // stash current system state
         x_last = x;
