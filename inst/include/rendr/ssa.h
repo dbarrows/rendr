@@ -19,10 +19,10 @@ rsol ssa(bondr::rnet network,
          uint length_out = 100,
          bool all_out = false,
          vec k = vec(),
-         uniform_rng* rng = nullptr) {
+         rng* rng = nullptr) {
     bool internal_rng = false;
     if (rng == nullptr) {
-        rng = new uniform_rng();
+        rng = new class rng();
         internal_rng = true;
     }
 
@@ -59,12 +59,12 @@ rsol ssa(bondr::rnet network,
 
         // get reaction index `j`
         uint j = 0;
-        double atarget = asum*rng->next();
+        double atarget = asum*rng->uniform();
         while (csum[j] < atarget)
             j++;
 
         // get reaction time
-        double tau = -log(rng->next())/asum;
+        double tau = -log(rng->uniform())/asum;
 
         // stash current system state
         x_last = x;
@@ -86,10 +86,10 @@ pair<vec, vec> ssa_pest(bondr::rnet network,
                         double T,
                         int trajectories,
                         vec k = vec(),
-                        uniform_rng* rng = nullptr) {
+                        rng* rng = nullptr) {
     bool internal_rng = false;
     if (rng == nullptr) {
-        rng = new uniform_rng();
+        rng = new class rng();
         internal_rng = true;
     }
 
