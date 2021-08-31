@@ -9,6 +9,7 @@ nsm(
   length.out = 100,
   all.out = FALSE,
   verbose = TRUE,
+  k = NULL,
   force_compile = FALSE
 )
 }
@@ -20,6 +21,8 @@ nsm(
 \item{all.out}{if \code{TRUE} (default \code{FALSE}), ignore \code{length.out} and return entire solution}
 
 \item{verbose}{controls if output is generated during during run (default \code{TRUE})}
+
+\item{k}{\code{\link{numeric}} vector of reaction rates corresponding to the reactions in \code{sys}, overrides those contained if \code{sys} if provided}
 
 \item{force_compile}{if \code{TRUE} (default \code{FALSE}), force a recompile of the reaction network}
 }

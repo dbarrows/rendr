@@ -25,13 +25,16 @@ struct voxel_rates {
 // Functions --------------------------------------------------------------------------------
 
 double sum(voxel_rates rates) { return sum(rates.reactions) + sum(rates.diffusions); }
-double event_time(double rate) { return -log(runif())/rate; };
+double event_time(double rate, rng* rng) {
+    return -log(rng->uniform())/rate;
+};
 void update_rates(voxel_rates& rates,
                          vector<reaction>& reactions,
                          vector<diffusion>& diffusions,
-                         array3<vec>& x) {
+                         array3<vec>& x,
+                         vec k) {
     for (uint i = 0; i < reactions.size(); i++)
-        rates.reactions[i] = reactions[i].propensity(x);
+        rates.reactions[i] = (k.size() != 0 ? k[i] : 1.0)*reactions[i].propensity(x);
     for (uint i = 0; i < diffusions.size(); i++)
         rates.diffusions[i] = diffusions[i].propensity(x);
 }
@@ -42,7 +45,15 @@ rdsol nsm(rdnet& network,
           double T,
           uint length_out = 100,
           bool all_out = false,
-          bool verbose = true) {
+          bool verbose = true,
+          vec k = vec(),
+          rng* rng = nullptr) {
+    bool internal_rng = false;
+    if (rng == nullptr) {
+        rng = new class rng();
+        internal_rng = true;
+    }
+
     auto y = vol.state;
     auto x = y;
     uvec3 dims = x.dims;
@@ -70,9 +81,9 @@ rdsol nsm(rdnet& network,
             vec(network.reactions[i].size()),
             vec(network.diffusions[i].size())
         };
-        update_rates(rates[i], network.reactions[i], network.diffusions[i], x);
+        update_rates(rates[i], network.reactions[i], network.diffusions[i], x, k);
         rate_sums[i] = sum(rates[i]);
-        event_times[i] = event_time(rate_sums[i]);
+        event_times[i] = event_time(rate_sums[i], rng);
     }
 
     // create event queue
@@ -108,8 +119,8 @@ rdsol nsm(rdnet& network,
         t = time_index.first;
         uvec3 index = time_index.second;
 
-        double r = runif();
-        double reaction_cutoff = sum(rates[index].reactions) / rate_sums[index];
+        double r = rng->uniform();
+        double reaction_cutoff = sum(rates[index].reactions)/rate_sums[index];
 
         // stash current system state
         x_last = x;
@@ -120,7 +131,7 @@ rdsol nsm(rdnet& network,
             // pick a reaction
             vec rate_cumsum = cumsum(rates[index].reactions);
             uint j = 0;
-            double target = r / reaction_cutoff * rate_cumsum[rate_cumsum.size() - 1];
+            double target = r/reaction_cutoff*rate_cumsum[rate_cumsum.size() - 1];
             while (rate_cumsum[j] < target)
                 j++;
 
@@ -128,11 +139,11 @@ rdsol nsm(rdnet& network,
             network.reactions[index][j].update(x);
 
             // update rates, etc. for affected voxel
-            update_rates(rates[index], network.reactions[index], network.diffusions[index], x);
+            update_rates(rates[index], network.reactions[index], network.diffusions[index], x, k);
             rate_sums[index] = sum(rates[index]);
 
             // update event queue
-            double tau = event_time(rate_sums[index]);
+            double tau = event_time(rate_sums[index], rng);
             eq.push(t + tau, index);
         } else {
             // next event is a diffusion
@@ -140,7 +151,7 @@ rdsol nsm(rdnet& network,
             // pick diffusion
             vec diffusion_cumsum = cumsum(rates[index].diffusions);
             uint j = 0;
-            double target =  (r - reaction_cutoff) / (1.0 - reaction_cutoff) * diffusion_cumsum[diffusion_cumsum.size() - 1];
+            double target =  (r - reaction_cutoff)/(1.0 - reaction_cutoff)*diffusion_cumsum[diffusion_cumsum.size() - 1];
             while (diffusion_cumsum[j] < target)
                 j++;
 
@@ -149,18 +160,21 @@ rdsol nsm(rdnet& network,
 
             // update rates, etc. for affected voxels
             for (auto& v_index : affected_voxels) {
-                update_rates(rates[v_index], network.reactions[v_index], network.diffusions[v_index], x);
+                update_rates(rates[v_index],
+                             network.reactions[v_index],
+                             network.diffusions[v_index],
+                             x, k);
                 rate_sums[v_index] = sum(rates[v_index]);
 
                 // update event queue
-                double tau = event_time(rate_sums[v_index]);
+                double tau = event_time(rate_sums[v_index], rng);
                 eq.push(t + tau, v_index);
             }
         }
 
         sol_push();
 
-        if (verbose && next_report_fraction < t / T) {
+        if (verbose && next_report_fraction < t/T) {
             Rcpp::Rcout << ".";
             next_report_fraction += 0.01;
         }
@@ -171,6 +185,8 @@ rdsol nsm(rdnet& network,
 
     if (verbose)
         Rcpp::Rcout << endl;
+    if (internal_rng)
+        delete rng;
 
     return sol;
 }

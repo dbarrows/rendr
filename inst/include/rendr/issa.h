@@ -19,7 +19,15 @@ rdsol issa(rdnet& network,
            double T,
            uint length_out = 100,
            bool all_out = false,
-           bool verbose = true) {
+           bool verbose = true,
+           vec k = vec(),
+           rng* rng = nullptr) {
+    bool internal_rng = false;
+    if (rng == nullptr) {
+        rng = new class rng();
+        internal_rng = true;
+    }
+
     auto y = vol.state;
     auto x = y;
     uvec3 dims = x.dims;
@@ -72,7 +80,7 @@ rdsol issa(rdnet& network,
     while (t < T) {
         // setup
         for (uint i = 0; i < a.size(); i++)
-            a[i] = propensities[i](x);
+            a[i] = (k.size() != 0 ? k[i] : 1.0)*propensities[i](x);
         // sums
         csum[0] = a[0];
         for (uint i = 1; i < a.size(); i++)
@@ -113,6 +121,8 @@ rdsol issa(rdnet& network,
 
     if (verbose)
         Rcpp::Rcout << endl;
+    if (internal_rng)
+        delete rng;
 
     return sol;
 }
