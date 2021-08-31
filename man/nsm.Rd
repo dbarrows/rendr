@@ -8,6 +8,10 @@ nsm(
   sys,
   length.out = 100,
   all.out = FALSE,
+  trajectories = 1,
+  parallel = FALSE,
+  cores = detectCores,
+  average = FALSE,
   verbose = TRUE,
   k = NULL,
   force_compile = FALSE
