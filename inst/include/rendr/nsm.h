@@ -191,4 +191,39 @@ rdsol nsm(rdnet& network,
     return sol;
 }
 
+pair<array3<vec>, array3<vec>> nsm_pest(rdnet& network,
+                                        array3<vec> y,
+                                        double h,
+                                        double T,
+                                        int trajectories,
+                                        vec k = vec(),
+                                        vec D = vec(),
+                                        rng* rng = nullptr) {
+    bool internal_rng = false;
+    if (rng == nullptr) {
+        rng = new class rng();
+        internal_rng = true;
+    }
+
+    auto vol = volume(y, h);
+
+    // obtain mean/sd using single loop
+    double n = trajectories;
+    auto solsum = array3<vec>(y.dims, vec(y[0].size(), fill::zeros));
+    auto solsumsq = array3<vec>(y.dims, vec(y[0].size(), fill::zeros));
+    for (int i = 0; i < n; i++) {
+        auto sol = nsm(network, vol, T, 1, false, false, k, rng);
+        auto s = sol.u[0];
+        solsum += s;
+        solsumsq += square(s);
+    }
+    auto solmean = solsum/n;
+    auto solsd = sqrt(solsumsq/n - square(solmean));
+
+    if (internal_rng)
+        delete rng;
+
+    return { solmean, solsd };
+}
+
 }

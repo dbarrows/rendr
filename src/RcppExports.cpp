@@ -9,6 +9,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // issa_cpp
 Rcpp::List issa_cpp(SEXP rnet_xptr, arma::vec D, SEXP volume_xptr, double T, int length_out, bool all_out, bool verbose, Rcpp::Nullable<arma::vec> k_vec);
 RcppExport SEXP _rendr_issa_cpp(SEXP rnet_xptrSEXP, SEXP DSEXP, SEXP volume_xptrSEXP, SEXP TSEXP, SEXP length_outSEXP, SEXP all_outSEXP, SEXP verboseSEXP, SEXP k_vecSEXP) {
@@ -42,6 +47,22 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<arma::vec> >::type k_vec(k_vecSEXP);
     rcpp_result_gen = Rcpp::wrap(nsm_cpp(rnet_xptr, D, volume_xptr, T, length_out, all_out, verbose, k_vec));
+    return rcpp_result_gen;
+END_RCPP
+}
+// nsm_cpp_pest
+Rcpp::List nsm_cpp_pest(SEXP rnet_xptr, arma::vec D, SEXP volume_xptr, double T, int trajectories, Rcpp::Nullable<arma::vec> k_vec);
+RcppExport SEXP _rendr_nsm_cpp_pest(SEXP rnet_xptrSEXP, SEXP DSEXP, SEXP volume_xptrSEXP, SEXP TSEXP, SEXP trajectoriesSEXP, SEXP k_vecSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< SEXP >::type rnet_xptr(rnet_xptrSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type D(DSEXP);
+    Rcpp::traits::input_parameter< SEXP >::type volume_xptr(volume_xptrSEXP);
+    Rcpp::traits::input_parameter< double >::type T(TSEXP);
+    Rcpp::traits::input_parameter< int >::type trajectories(trajectoriesSEXP);
+    Rcpp::traits::input_parameter< Rcpp::Nullable<arma::vec> >::type k_vec(k_vecSEXP);
+    rcpp_result_gen = Rcpp::wrap(nsm_cpp_pest(rnet_xptr, D, volume_xptr, T, trajectories, k_vec));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -259,6 +280,7 @@ RcppExport SEXP _rendr_RcppExport_registerCCallable() {
 static const R_CallMethodDef CallEntries[] = {
     {"_rendr_issa_cpp", (DL_FUNC) &_rendr_issa_cpp, 8},
     {"_rendr_nsm_cpp", (DL_FUNC) &_rendr_nsm_cpp, 8},
+    {"_rendr_nsm_cpp_pest", (DL_FUNC) &_rendr_nsm_cpp_pest, 6},
     {"_rendr_ssa_cpp", (DL_FUNC) &_rendr_ssa_cpp, 6},
     {"_rendr_ssa_cpp_pest", (DL_FUNC) &_rendr_ssa_cpp_pest, 5},
     {"_rendr_ssa_cpp_trajest", (DL_FUNC) &_rendr_ssa_cpp_trajest, 6},

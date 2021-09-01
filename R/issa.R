@@ -8,7 +8,7 @@
 #' @param cores number of cores to use if `parallel` is `TRUE` (default is all system cores)
 #' @param average if `TRUE` (default `FALSE`) and generating multiple trajectories, averages trajectories at sample times; incompatible with `all.out = TRUE`
 #' @param verbose controls if output is generated during during run (default `TRUE`)
-#' #' @param k [`numeric`] vector of reaction rates corresponding to the reactions in `sys`, overrides those contained if `sys` if provided
+#' @param k [`numeric`] vector of reaction rates corresponding to the reactions in `sys`, overrides those contained if `sys` if provided
 #' @param force_compile if `TRUE` (default `FALSE`), force a recompile of the reaction network
 #' 
 #' @return [`rdsol`] instance
@@ -31,6 +31,10 @@ issa <- function(sys, length.out = 100, all.out = FALSE, trajectories = 1, paral
 #' @param sys an instance of the [`rdsys`] class
 #' @param length.out length of solution output (table rows) (default 100)
 #' @param all.out if `TRUE` (default `FALSE`), ignore `length.out` and return entire solution
+#' @param trajectories number of trajectories to generate
+#' @param parallel if `TRUE` (default `FALSE`) generate trajectories using multiple CPU cores
+#' @param cores number of cores to use if `parallel` is `TRUE` (default is all system cores)
+#' @param average if `TRUE` (default `FALSE`) and generating multiple trajectories, averages trajectories at sample times; incompatible with `all.out = TRUE`
 #' @param verbose controls if output is generated during during run (default `TRUE`)
 #' @param k [`numeric`] vector of reaction rates corresponding to the reactions in `sys`, overrides those contained if `sys` if provided
 #' @param force_compile if `TRUE` (default `FALSE`), force a recompile of the reaction network

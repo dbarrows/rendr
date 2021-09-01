@@ -10,7 +10,7 @@ issa(
   all.out = FALSE,
   trajectories = 1,
   parallel = FALSE,
-  cores = detectCores,
+  cores = detectCores(),
   average = FALSE,
   verbose = TRUE,
   k = NULL,
@@ -32,8 +32,9 @@ issa(
 
 \item{average}{if \code{TRUE} (default \code{FALSE}) and generating multiple trajectories, averages trajectories at sample times; incompatible with \code{all.out = TRUE}}
 
-\item{verbose}{controls if output is generated during during run (default \code{TRUE})
-#' @param k \code{\link{numeric}} vector of reaction rates corresponding to the reactions in \code{sys}, overrides those contained if \code{sys} if provided}
+\item{verbose}{controls if output is generated during during run (default \code{TRUE})}
+
+\item{k}{\code{\link{numeric}} vector of reaction rates corresponding to the reactions in \code{sys}, overrides those contained if \code{sys} if provided}
 
 \item{force_compile}{if \code{TRUE} (default \code{FALSE}), force a recompile of the reaction network}
 }

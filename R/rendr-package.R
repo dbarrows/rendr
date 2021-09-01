@@ -14,7 +14,7 @@
 #' @importFrom tibble tibble as_tibble
 #' @importFrom dplyr rename select pull filter bind_rows group_by mutate summarise
 #' @importFrom tidyr pivot_longer
-#' @importFrom purrr walk keep
+#' @importFrom purrr walk keep map
 #' @importFrom forcats fct_relevel
 #' @importFrom digest digest
 #' @importFrom deSolve ode
