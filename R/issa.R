@@ -13,7 +13,7 @@
 #' 
 #' @return [`rdsol`] instance
 #' @export
-issa <- function(sys, length.out = 100, all.out = FALSE, trajectories = 1, parallel = FALSE, cores = detectCores, average = FALSE, verbose = TRUE, k = NULL, force_compile = FALSE) {
+issa <- function(sys, length.out = 100, all.out = FALSE, trajectories = 1, parallel = FALSE, cores = detectCores(), average = FALSE, verbose = TRUE, k = NULL, force_compile = FALSE) {
     solve_rdsys(sys, issa_cpp,
                 length.out = length.out,
                 all.out = all.out,

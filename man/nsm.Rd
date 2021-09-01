@@ -10,7 +10,7 @@ nsm(
   all.out = FALSE,
   trajectories = 1,
   parallel = FALSE,
-  cores = detectCores,
+  cores = detectCores(),
   average = FALSE,
   verbose = TRUE,
   k = NULL,
