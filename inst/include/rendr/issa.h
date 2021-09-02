@@ -114,9 +114,6 @@ rdsol issa(rdnet& network,
             Rcpp::Rcout << ".";
             next_report_fraction += 0.01;
         }
-
-        if (iter++ % 1000 == 0)
-            Rcpp::checkUserInterrupt();
     }
 
     if (verbose)
