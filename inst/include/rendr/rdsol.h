@@ -27,7 +27,7 @@ inline Rcpp::DataFrame DataFrame(array3<vec>& u, vector<string>& species) {
     for (uint dim = 0; dim < 3; dim++) {
         auto col = Rcpp::IntegerVector(u.size());
         for (uint i  = 0; i < u.size(); i++)
-            col[i] = u.index3(i)[dim];
+            col[i] = u.index3(i)[dim] + 1;
         list[dim] = col;
     }
     for (uint s = 0; s < species.size(); s++) {
