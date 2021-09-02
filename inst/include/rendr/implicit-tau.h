@@ -82,7 +82,13 @@ vec solve(f_t& f, vec x0, vec b, double tau, double tol = 1e-6) {
 
 // --- implicit tau step --------------------------------------------------------------------------
 
-vec k_im(bondr::rnet& network, f_t& f, vec x, double tau) {
+vec k_im(bondr::rnet& network, f_t& f, vec x, double tau, rng* rng = nullptr) {
+    bool internal_rng = false;
+    if (rng == nullptr) {
+        rng = new class rng();
+        internal_rng = true;
+    }
+
     uint N = network.species.size();
     uint M = network.reactions.size();
 
@@ -97,7 +103,7 @@ vec k_im(bondr::rnet& network, f_t& f, vec x, double tau) {
         // prop
         double a = network.reactions[j].propensity(x);
         // number of jumps
-        uint p = rpois(a*tau);
+        uint p = rng->poisson(a*tau);
         // combine
         b_inner[j] = p - a*tau;
         b += v[j]*b_inner[j];
@@ -117,6 +123,9 @@ vec k_im(bondr::rnet& network, f_t& f, vec x, double tau) {
     for (uint j = 0; j < M; j++)
         Rcpp::Rcout << k[j] << ", ";
     Rcpp::Rcout << endl;*/
+
+    if (internal_rng)
+        delete rng;
 
     return round(k);
 }

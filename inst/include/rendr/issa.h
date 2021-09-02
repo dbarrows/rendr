@@ -95,12 +95,12 @@ rdsol issa(rdnet& network,
 
         // get reaction index `j`
         uint j = 0;
-        double atarget = asum*runif();
+        double atarget = asum*rng->uniform();
         while (csum[j] < atarget)
             j++;
 
         // get reaction time
-        double tau = -log(runif())/asum;
+        double tau = -log(rng->uniform())/asum;
 
         // stash current system state
         x_last = x;

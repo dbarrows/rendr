@@ -130,7 +130,13 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
                                         uint length_out = 100,
                                         bool all_out = false,
                                         vec k_override = vec(),
-                                        bool verbose = false) {
+                                        bool verbose = false,
+                                        rng* rng = nullptr) {
+    bool internal_rng = false;
+    if (rng == nullptr) {
+        rng = new class rng();
+        internal_rng = true;
+    }
 
     uint N = network.species.size();
     uint M = network.reactions.size();
@@ -312,11 +318,11 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
             }
             // perform SSA
             uint j = 0;
-            double atarget = asum*runif();
+            double atarget = asum*rng->uniform();
             while (csum[j] < atarget)
                 j++;
             // get reaction time
-            double tau = -log(runif())/asum;
+            double tau = -log(rng->uniform())/asum;
             // stash current system state + advance
             x_last = x;
             network.reactions[j].update(x);
@@ -343,7 +349,7 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
             double asum_cr = 0;
             for (uint ri = 0; ri < j_cr.size(); ri++)
                 asum_cr += a[j_cr[ri]];
-            double tau_2 = -log(runif())/asum_cr;
+            double tau_2 = -log(rng->uniform())/asum_cr;
 
             if (tau_1 < tau_2) {
                 // no critical reactions will fire
@@ -357,7 +363,7 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
                 } else {
                     // explicit tau k's
                     for (uint j = 0; j < M; j++)
-                        k[j] = rpois(a[j]*tau);
+                        k[j] = rng->poisson(a[j]*tau);
                 }
                 // set firings to zero for critical reactions
                 for (uint ri = 0; ri < j_cr.size(); ri++)
@@ -372,7 +378,7 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
                 int jc = -1;
                 if (0 < j_cr.size()) {
                     uint ric = 0;
-                    double a_cr_target = asum_cr*runif();
+                    double a_cr_target = asum_cr*rng->uniform();
                     double csum_cr = a[j_cr[0]];
                     while (csum_cr < a_cr_target)
                         csum_cr += a[j_cr[++ric]];
@@ -383,7 +389,7 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
                 if (extau_on || tau_2 < tau_ex) {
                     // use explicit tau
                     for (uint j = 0; j < M; j++)
-                        k[j] = rpois(a[j]*tau);
+                        k[j] = rng->poisson(a[j]*tau);
                 } else {
                     // use implicit tau
                     k = imtau::k_im(network, f, x, tau);
@@ -432,6 +438,10 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
         Rcpp::Rcout << "Explicit tau:  " << extau_count << endl;
         Rcpp::Rcout << "Implicit tau:  " << imtau_count << endl;
     }
+
+    if (internal_rng)
+        delete rng;
+
     return { sol, step_type };
 }
 
