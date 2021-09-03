@@ -44,7 +44,7 @@ class event_queue {
 public:
     event_queue() {}
     event_queue(array3<double> times);
-    ~event_queue() { /*if (root != nullptr) delete root;*/ }
+    ~event_queue() { if (root != nullptr) delete root; }
     uint size();
     pair<double, uvec3> next() { return pair<double, uvec3>(root->time, root->index); }
     void push(double time, uvec3 index);
