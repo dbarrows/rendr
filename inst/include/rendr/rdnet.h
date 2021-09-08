@@ -14,10 +14,12 @@ using uint = unsigned int;
 // Definitions ------------------------------------------------------------------------------
 
 struct reaction {
+    uint index;
     function<double(array3<vec>&)> propensity;
     function<void(array3<vec>&)> update;
 };
 struct diffusion {
+    uint index;
     function<double(array3<vec>&)> propensity;
     function<vector<uvec3>(array3<vec>&)> update;
 };
@@ -55,14 +57,15 @@ inline vector<uvec3> neighbours(uvec3 index, uvec3 dims) {
 
 inline array3<vector<diffusion>> generate_diffusions(uvec3 dims, vec D, double h) {
     auto diffusions = array3<vector<diffusion>>(dims);
-    double h2 = pow(h, 2);
+    double h2 = pow(h, 2.0);
 
     for (uint i = 0; i < diffusions.size(); i++) {
         uvec3 index = diffusions.index3(i);
 
         for (auto& neighbour_index : neighbours(index, dims)) {
-            for (uint s = 0; s < D.size(); s++)
+            for (uint s = 0; s < D.size(); s++) {
                 diffusions[i].push_back({
+                    s,
                     [s, D, h2, index](array3<vec>& x) {
                         return x[index][s]*D[s]/h2;
                     },
@@ -72,8 +75,10 @@ inline array3<vector<diffusion>> generate_diffusions(uvec3 dims, vec D, double h
                         return vector<uvec3> { index, neighbour_index };
                     }
                 });
+            }
         }
     }
+
     return diffusions;
 }
 
@@ -81,24 +86,26 @@ inline array3<vector<reaction>> generate_reactions(vector<bondr::reaction>& bond
                                                    uvec3 dims,
                                                    double h) {
     uint ndims = sum(vectorise(1 < dims));
-    double v = pow(h, ndims);
+    double v = pow(h, static_cast<double>(ndims));
 
     auto reactions = array3<vector<reaction>>(dims);
 
     for (uint i = 0; i < reactions.size(); i++) {
         uvec3 index = reactions.index3(i);
 
-        transform(bondr_reactions.begin(), bondr_reactions.end(), back_inserter(reactions[i]), [&](bondr::reaction& r) {
-            double adjustment = pow(v, static_cast<int>(1 - r.order));
-            return reaction {
+        for (uint ri = 0; ri < bondr_reactions.size(); ri++) {
+            auto r = bondr_reactions[ri];
+            double adjustment = pow(v, static_cast<double>(1 - r.order));
+            reactions[i].push_back({
+                ri,
                 [&r, adjustment, index](array3<vec>& x) {
                     return adjustment*r.propensity(x[index]);
                 },
                 [&r, index](array3<vec>& x) {
                     r.update(x[index]);
                 }
-            };
-        });
+            });
+        }
     }
 
     return reactions;
