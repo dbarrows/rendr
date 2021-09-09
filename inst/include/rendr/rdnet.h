@@ -94,15 +94,14 @@ inline array3<vector<reaction>> generate_reactions(vector<bondr::reaction>& bond
         uvec3 index = reactions.index3(i);
 
         for (uint ri = 0; ri < bondr_reactions.size(); ri++) {
-            auto r = bondr_reactions[ri];
-            double adjustment = pow(v, static_cast<double>(1 - r.order));
+            double adjustment = pow(v, static_cast<double>(1 - bondr_reactions[ri].order));
             reactions[i].push_back({
                 ri,
-                [&r, adjustment, index](array3<vec>& x) {
-                    return adjustment*r.propensity(x[index]);
+                [&bondr_reactions, ri, adjustment, index](array3<vec>& x) {
+                    return adjustment*bondr_reactions[ri].propensity(x[index]);
                 },
-                [&r, index](array3<vec>& x) {
-                    r.update(x[index]);
+                [&bondr_reactions, ri, index](array3<vec>& x) {
+                    bondr_reactions[ri].update(x[index]);
                 }
             });
         }

@@ -49,6 +49,7 @@ rdsol issa(rdnet& network,
     auto reactions = flatten(network.reactions);
     auto diffusions = flatten(network.diffusions);
 
+    Rcpp::Rcout << "Extracting readtion data...";
     auto rates = vector<double>();
     auto propensities = vector<function<double(array3<vec>&)>>();
     auto updates = vector<function<void(array3<vec>&)>>();
@@ -62,6 +63,7 @@ rdsol issa(rdnet& network,
         propensities.push_back(diffusion.propensity);
         updates.push_back(diffusion.update);
     }
+    Rcpp::Rcout << "done." << endl;
 
     auto a = vector<double>(propensities.size(), 0);
     auto csum = vector<double>(propensities.size(), 0);
@@ -80,7 +82,7 @@ rdsol issa(rdnet& network,
     if (verbose)
         next_report_fraction = 0.01;
 
-    uint iter = 0;
+    Rcpp::Rcout << "starting loop" << endl;
     while (t < T) {
         // setup
         for (uint i = 0; i < a.size(); i++)
