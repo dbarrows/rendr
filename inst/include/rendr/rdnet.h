@@ -93,18 +93,19 @@ inline array3<vector<reaction>> generate_reactions(vector<bondr::reaction>& bond
     for (uint i = 0; i < reactions.size(); i++) {
         uvec3 index = reactions.index3(i);
 
-        for (uint ri = 0; ri < bondr_reactions.size(); ri++) {
-            double adjustment = pow(v, static_cast<double>(1 - bondr_reactions[ri].order));
-            reactions[i].push_back({
-                ri,
-                [&bondr_reactions, ri, adjustment, index](array3<vec>& x) {
-                    return adjustment*bondr_reactions[ri].propensity(x[index]);
+        uint ri = 0;
+        transform(bondr_reactions.begin(), bondr_reactions.end(), back_inserter(reactions[i]), [&](bondr::reaction& r) {
+            double adjustment = pow(v, static_cast<int>(1 - r.order));
+            return reaction {
+                ri++,
+                [&r, adjustment, index](array3<vec>& x) {
+                    return adjustment*r.propensity(x[index]);
                 },
-                [&bondr_reactions, ri, index](array3<vec>& x) {
-                    bondr_reactions[ri].update(x[index]);
+                [&r, index](array3<vec>& x) {
+                    r.update(x[index]);
                 }
-            });
-        }
+            };
+        });
     }
 
     return reactions;
