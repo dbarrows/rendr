@@ -32,11 +32,14 @@ void update_rates(voxel_rates& rates,
                          vector<reaction>& reactions,
                          vector<diffusion>& diffusions,
                          array3<vec>& x,
-                         vec k) {
+                         vec k,
+                         vec D) {
     for (uint i = 0; i < reactions.size(); i++)
-        rates.reactions[i] = (k.size() != 0 ? k[i] : 1.0)*reactions[i].propensity(x);
+        rates.reactions[i] =
+            (k.size() != 0 ? k[reactions[i].index] : 1.0)*reactions[i].propensity(x);
     for (uint i = 0; i < diffusions.size(); i++)
-        rates.diffusions[i] = diffusions[i].propensity(x);
+        rates.diffusions[i] =
+            (D.size() != 0 ? D[diffusions[i].index] : 1.0)*diffusions[i].propensity(x);
 }
 
 
@@ -47,6 +50,7 @@ rdsol nsm(rdnet& network,
           bool all_out = false,
           bool verbose = true,
           vec k = vec(),
+          vec D = vec(),
           rng* rng = nullptr) {
     bool internal_rng = false;
     if (rng == nullptr) {
@@ -81,7 +85,7 @@ rdsol nsm(rdnet& network,
             vec(network.reactions[i].size()),
             vec(network.diffusions[i].size())
         };
-        update_rates(rates[i], network.reactions[i], network.diffusions[i], x, k);
+        update_rates(rates[i], network.reactions[i], network.diffusions[i], x, k, D);
         rate_sums[i] = sum(rates[i]);
         event_times[i] = event_time(rate_sums[i], rng);
     }
@@ -103,7 +107,6 @@ rdsol nsm(rdnet& network,
     if (verbose)
         next_report_fraction = 0.01;
 
-    uint iter = 0;
     while (t < T) {
         // if all propensities zero, system halts
         double rate_sum = 0;
@@ -139,7 +142,10 @@ rdsol nsm(rdnet& network,
             network.reactions[index][j].update(x);
 
             // update rates, etc. for affected voxel
-            update_rates(rates[index], network.reactions[index], network.diffusions[index], x, k);
+            update_rates(rates[index],
+                         network.reactions[index],
+                         network.diffusions[index],
+                         x, k, D);
             rate_sums[index] = sum(rates[index]);
 
             // update event queue
@@ -163,7 +169,7 @@ rdsol nsm(rdnet& network,
                 update_rates(rates[v_index],
                              network.reactions[v_index],
                              network.diffusions[v_index],
-                             x, k);
+                             x, k, D);
                 rate_sums[v_index] = sum(rates[v_index]);
 
                 // update event queue
@@ -209,7 +215,7 @@ pair<array3<vec>, array3<vec>> nsm_pest(rdnet& network,
     auto solsum = array3<vec>(y.dims, vec(y[0].size(), fill::zeros));
     auto solsumsq = array3<vec>(y.dims, vec(y[0].size(), fill::zeros));
     for (int i = 0; i < n; i++) {
-        auto sol = nsm(network, vol, T, 1, false, false, k, rng);
+        auto sol = nsm(network, vol, T, 1, false, false, k, D, rng);
         auto s = sol.u[0];
         solsum += s;
         solsumsq += square(s);

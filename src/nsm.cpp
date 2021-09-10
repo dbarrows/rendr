@@ -15,7 +15,7 @@ Rcpp::List nsm_cpp(SEXP rnet_xptr,
     auto net = rendr::rdnet(rnet, vol, D);
     auto k = k_vec.isNull() ? arma::vec() : Rcpp::as<arma::vec>(k_vec);
 
-    auto sol = rendr::nsm(net, vol, T, length_out, all_out, verbose, k);
+    auto sol = rendr::nsm(net, vol, T, length_out, all_out, verbose, k, D);
 
     return Rcpp::List::create(
         Rcpp::Named("t") = rendr::t_R(sol),
