@@ -34,7 +34,7 @@ Imports:
     rlang
 Remotes:
     dbarrows/spurcore,
-    dbarrows/bondr-dev
+    dbarrows/bondr
 LinkingTo: 
     Rcpp,
     RcppArmadillo,
