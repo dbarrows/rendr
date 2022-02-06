@@ -33,8 +33,8 @@ Imports:
     forcats,
     rlang
 Remotes:
-    dbarrows/spurcore,
-    dbarrows/bondr
+    github::dbarrows/spurcore,
+    github::dbarrows/bondr
 LinkingTo: 
     Rcpp,
     RcppArmadillo,
