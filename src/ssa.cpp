@@ -12,11 +12,15 @@ Rcpp::DataFrame ssa_cpp(SEXP rnet_xptr,
                         double T,
                         int length_out = 100,
                         bool all_out = false,
-                        Rcpp::Nullable<arma::vec> k_vec = R_NilValue) {
+                        Rcpp::Nullable<arma::vec> k_vec = R_NilValue,
+                        Rcpp::Nullable<int> seed_val = R_NilValue) {
     auto net = *Rcpp::XPtr<bondr::rnet>(rnet_xptr);
     auto k = k_vec.isNull() ? arma::vec() : Rcpp::as<arma::vec>(k_vec);
     
-    auto sol = rendr::ssa(net, y, T, length_out, all_out, k);
+    int seed = seed_val.isNull() ? -1 : Rcpp::as<int>(seed_val);
+    core::rng rng = 0 <= seed ? core::rng(seed) : core::rng();
+
+    auto sol = rendr::ssa(net, y, T, length_out, all_out, k, &rng);
     return DataFrame(sol);
 }
 

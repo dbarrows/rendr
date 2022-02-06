@@ -25,17 +25,17 @@ namespace rendr {
         }
     }
 
-    inline Rcpp::DataFrame ssa_cpp(SEXP rnet_xptr, arma::vec y, double T, int length_out = 100, bool all_out = false, Rcpp::Nullable<arma::vec> k_vec = R_NilValue) {
-        typedef SEXP(*Ptr_ssa_cpp)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
+    inline Rcpp::DataFrame ssa_cpp(SEXP rnet_xptr, arma::vec y, double T, int length_out = 100, bool all_out = false, Rcpp::Nullable<arma::vec> k_vec = R_NilValue, Rcpp::Nullable<int> seed_val = R_NilValue) {
+        typedef SEXP(*Ptr_ssa_cpp)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
         static Ptr_ssa_cpp p_ssa_cpp = NULL;
         if (p_ssa_cpp == NULL) {
-            validateSignature("Rcpp::DataFrame(*ssa_cpp)(SEXP,arma::vec,double,int,bool,Rcpp::Nullable<arma::vec>)");
+            validateSignature("Rcpp::DataFrame(*ssa_cpp)(SEXP,arma::vec,double,int,bool,Rcpp::Nullable<arma::vec>,Rcpp::Nullable<int>)");
             p_ssa_cpp = (Ptr_ssa_cpp)R_GetCCallable("rendr", "_rendr_ssa_cpp");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_ssa_cpp(Shield<SEXP>(Rcpp::wrap(rnet_xptr)), Shield<SEXP>(Rcpp::wrap(y)), Shield<SEXP>(Rcpp::wrap(T)), Shield<SEXP>(Rcpp::wrap(length_out)), Shield<SEXP>(Rcpp::wrap(all_out)), Shield<SEXP>(Rcpp::wrap(k_vec)));
+            rcpp_result_gen = p_ssa_cpp(Shield<SEXP>(Rcpp::wrap(rnet_xptr)), Shield<SEXP>(Rcpp::wrap(y)), Shield<SEXP>(Rcpp::wrap(T)), Shield<SEXP>(Rcpp::wrap(length_out)), Shield<SEXP>(Rcpp::wrap(all_out)), Shield<SEXP>(Rcpp::wrap(k_vec)), Shield<SEXP>(Rcpp::wrap(seed_val)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();

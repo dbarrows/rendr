@@ -14,7 +14,7 @@
 #' 
 #' @return [`rsol`] instance
 #' @export
-ssa <- function(sys, length.out = 100, all.out = FALSE, trajectories = 1, parallel = FALSE, cores = detectCores(), average = FALSE, k = NULL, force_compile = FALSE) {
+ssa <- function(sys, length.out = 100, all.out = FALSE, trajectories = 1, parallel = FALSE, cores = detectCores(), average = FALSE, k = NULL, force_compile = FALSE, rng_seed = NULL) {
     with(sys, {
         ## compile network if needed / forced
         net <- network %>%
@@ -26,12 +26,17 @@ ssa <- function(sys, length.out = 100, all.out = FALSE, trajectories = 1, parall
                 else
                     NULL
             })
+        if (!is.null(rng_seed) && 1 < trajectories) {
+            warning('RNG seed spcified for multiple trajectories, ignoring.')
+            rng_seed <- NULL
+        }
         ## obtain solutions
         ssaf <- function() {
                 ssa_cpp(net, state, T,
                         length_out = length.out,
                         all_out = all.out,
-                        k_vec = k)
+                        k_vec = k,
+                        rng_seed)
             }
         sols <- if(parallel) {
                 mclapply(1:trajectories, function(i) ssaf(), mc.cores = cores)

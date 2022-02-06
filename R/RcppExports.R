@@ -13,8 +13,8 @@ nsm_cpp_pest <- function(rnet_xptr, D, volume_xptr, T, trajectories = 1L, k_vec 
     .Call(`_rendr_nsm_cpp_pest`, rnet_xptr, D, volume_xptr, T, trajectories, k_vec)
 }
 
-ssa_cpp <- function(rnet_xptr, y, T, length_out = 100L, all_out = FALSE, k_vec = NULL) {
-    .Call(`_rendr_ssa_cpp`, rnet_xptr, y, T, length_out, all_out, k_vec)
+ssa_cpp <- function(rnet_xptr, y, T, length_out = 100L, all_out = FALSE, k_vec = NULL, seed_val = NULL) {
+    .Call(`_rendr_ssa_cpp`, rnet_xptr, y, T, length_out, all_out, k_vec, seed_val)
 }
 
 ssa_cpp_pest <- function(rnet_xptr, y, T, trajectories = 1L, k_vec = NULL) {
