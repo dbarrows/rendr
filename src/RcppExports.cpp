@@ -184,23 +184,24 @@ RcppExport SEXP _rendr_ssa_cpp_trajest(SEXP rnet_xptrSEXP, SEXP ySEXP, SEXP TSEX
     return rcpp_result_gen;
 }
 // ssa_cpp_count
-Rcpp::List ssa_cpp_count(SEXP rnet_xptr, arma::vec y, double T, Rcpp::Nullable<arma::vec> k_vec);
-static SEXP _rendr_ssa_cpp_count_try(SEXP rnet_xptrSEXP, SEXP ySEXP, SEXP TSEXP, SEXP k_vecSEXP) {
+Rcpp::List ssa_cpp_count(SEXP rnet_xptr, arma::vec y, double T, Rcpp::Nullable<arma::vec> k_vec, Rcpp::Nullable<int> seed_val);
+static SEXP _rendr_ssa_cpp_count_try(SEXP rnet_xptrSEXP, SEXP ySEXP, SEXP TSEXP, SEXP k_vecSEXP, SEXP seed_valSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type rnet_xptr(rnet_xptrSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type y(ySEXP);
     Rcpp::traits::input_parameter< double >::type T(TSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<arma::vec> >::type k_vec(k_vecSEXP);
-    rcpp_result_gen = Rcpp::wrap(ssa_cpp_count(rnet_xptr, y, T, k_vec));
+    Rcpp::traits::input_parameter< Rcpp::Nullable<int> >::type seed_val(seed_valSEXP);
+    rcpp_result_gen = Rcpp::wrap(ssa_cpp_count(rnet_xptr, y, T, k_vec, seed_val));
     return rcpp_result_gen;
 END_RCPP_RETURN_ERROR
 }
-RcppExport SEXP _rendr_ssa_cpp_count(SEXP rnet_xptrSEXP, SEXP ySEXP, SEXP TSEXP, SEXP k_vecSEXP) {
+RcppExport SEXP _rendr_ssa_cpp_count(SEXP rnet_xptrSEXP, SEXP ySEXP, SEXP TSEXP, SEXP k_vecSEXP, SEXP seed_valSEXP) {
     SEXP rcpp_result_gen;
     {
         Rcpp::RNGScope rcpp_rngScope_gen;
-        rcpp_result_gen = PROTECT(_rendr_ssa_cpp_count_try(rnet_xptrSEXP, ySEXP, TSEXP, k_vecSEXP));
+        rcpp_result_gen = PROTECT(_rendr_ssa_cpp_count_try(rnet_xptrSEXP, ySEXP, TSEXP, k_vecSEXP, seed_valSEXP));
     }
     Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
     if (rcpp_isInterrupt_gen) {
@@ -300,7 +301,7 @@ static int _rendr_RcppExport_validate(const char* sig) {
         signatures.insert("Rcpp::DataFrame(*ssa_cpp)(SEXP,arma::vec,double,int,bool,Rcpp::Nullable<arma::vec>,Rcpp::Nullable<int>)");
         signatures.insert("Rcpp::List(*ssa_cpp_pest)(SEXP,arma::vec,double,int,Rcpp::Nullable<arma::vec>)");
         signatures.insert("Rcpp::List(*ssa_cpp_trajest)(SEXP,arma::vec,double,int,int,Rcpp::Nullable<arma::vec>)");
-        signatures.insert("Rcpp::List(*ssa_cpp_count)(SEXP,arma::vec,double,Rcpp::Nullable<arma::vec>)");
+        signatures.insert("Rcpp::List(*ssa_cpp_count)(SEXP,arma::vec,double,Rcpp::Nullable<arma::vec>,Rcpp::Nullable<int>)");
         signatures.insert("double(*prop_px)(SEXP,arma::vec,int,int)");
     }
     return signatures.find(sig) != signatures.end();
@@ -324,7 +325,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_rendr_ssa_cpp", (DL_FUNC) &_rendr_ssa_cpp, 7},
     {"_rendr_ssa_cpp_pest", (DL_FUNC) &_rendr_ssa_cpp_pest, 5},
     {"_rendr_ssa_cpp_trajest", (DL_FUNC) &_rendr_ssa_cpp_trajest, 6},
-    {"_rendr_ssa_cpp_count", (DL_FUNC) &_rendr_ssa_cpp_count, 4},
+    {"_rendr_ssa_cpp_count", (DL_FUNC) &_rendr_ssa_cpp_count, 5},
     {"_rendr_prop_px", (DL_FUNC) &_rendr_prop_px, 4},
     {"_rendr_tauleap_cpp", (DL_FUNC) &_rendr_tauleap_cpp, 9},
     {"_rendr_tauleap_implicit_cpp", (DL_FUNC) &_rendr_tauleap_implicit_cpp, 6},

@@ -124,8 +124,8 @@ pair<vec, int> ssa_count(bondr::rnet network,
     }
 
     auto sol = ssa(network, y, T, 1, true, k, rng);
-    auto steps = sol.u.size();
-    auto state = sol.u[steps - 1];
+    auto steps = sol.u.size() - 1;
+    auto state = sol.u[steps];
 
     if (internal_rng)
         delete rng;

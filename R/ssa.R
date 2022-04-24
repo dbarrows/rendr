@@ -27,7 +27,7 @@ ssa <- function(sys, length.out = 100, all.out = FALSE, trajectories = 1, parall
                         length_out = length.out,
                         all_out = all.out,
                         k_vec = k,
-                        rng_seed)
+                        seed_val = rng_seed)
             }
         sols <- if(parallel) {
                 mclapply(1:trajectories, function(i) ssaf(), mc.cores = cores)
@@ -112,11 +112,11 @@ ssa_trajest <- function(sys, trajectories = 1, length.out = 100, k = NULL, force
 #' 
 #' @return [`numeric`] vector
 #' @export
-ssa_count <- function(sys, k = NULL, force_compile = FALSE) {
+ssa_count <- function(sys, k = NULL, force_compile = FALSE, rng_seed = NULL) {
     with(sys, {
         net <- network |> ensure_compiled(k, force_compile)
         ## obtain final solution point estimate
-        res <- ssa_cpp_count(net, state, T, k_vec = k)
+        res <- ssa_cpp_count(net, state, T, k_vec = k, seed_val = rng_seed)
         if (class(network) == 'network')
             names(res$state) <- species(network)
         res

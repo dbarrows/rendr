@@ -77,11 +77,15 @@ Rcpp::List ssa_cpp_trajest(SEXP rnet_xptr,
 Rcpp::List ssa_cpp_count(SEXP rnet_xptr,
                          arma::vec y,
                          double T,
-                         Rcpp::Nullable<arma::vec> k_vec = R_NilValue) {
+                         Rcpp::Nullable<arma::vec> k_vec = R_NilValue,
+                         Rcpp::Nullable<int> seed_val = R_NilValue) {
     auto net = *Rcpp::XPtr<bondr::rnet>(rnet_xptr);
     auto k = k_vec.isNull() ? arma::vec() : Rcpp::as<arma::vec>(k_vec);
     
-    auto res = rendr::ssa_count(net, y, T, k);
+    int seed = seed_val.isNull() ? -1 : Rcpp::as<int>(seed_val);
+    core::rng rng = 0 <= seed ? core::rng(seed) : core::rng();
+
+    auto res = rendr::ssa_count(net, y, T, k, &rng);
 
     return Rcpp::List::create(
         Rcpp::Named("state") = core::vector_cast<Rcpp::NumericVector>(res.first),

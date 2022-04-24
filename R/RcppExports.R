@@ -25,8 +25,8 @@ ssa_cpp_trajest <- function(rnet_xptr, y, T, trajectories = 1L, length_out = 100
     .Call(`_rendr_ssa_cpp_trajest`, rnet_xptr, y, T, trajectories, length_out, k_vec)
 }
 
-ssa_cpp_count <- function(rnet_xptr, y, T, k_vec = NULL) {
-    .Call(`_rendr_ssa_cpp_count`, rnet_xptr, y, T, k_vec)
+ssa_cpp_count <- function(rnet_xptr, y, T, k_vec = NULL, seed_val = NULL) {
+    .Call(`_rendr_ssa_cpp_count`, rnet_xptr, y, T, k_vec, seed_val)
 }
 
 prop_px <- function(rnet_xptr, x, pi, xi) {
