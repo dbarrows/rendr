@@ -16,16 +16,7 @@
 #' @export
 ssa <- function(sys, length.out = 100, all.out = FALSE, trajectories = 1, parallel = FALSE, cores = detectCores(), average = FALSE, k = NULL, force_compile = FALSE, rng_seed = NULL) {
     with(sys, {
-        ## compile network if needed / forced
-        net <- network %>%
-            (function(network) {
-                if (!is.null(network) && class(network) == 'network')
-                    compile(network, force = force_compile, rateless = (0 < length(k)))
-                else if (!is.null(network) && class(network) == 'externalptr')
-                    network
-                else
-                    NULL
-            })
+        net <- network |> ensure_compiled(k, force_compile)
         if (!is.null(rng_seed) && 1 < trajectories) {
             warning('RNG seed spcified for multiple trajectories, ignoring.')
             rng_seed <- NULL
@@ -74,16 +65,7 @@ ssa <- function(sys, length.out = 100, all.out = FALSE, trajectories = 1, parall
 #' @export
 ssa_pest <- function(sys, trajectories = 1, k = NULL, force_compile = FALSE) {
     with(sys, {
-        ## compile network if needed / forced
-        net <- network %>%
-            (function(network) {
-                if (!is.null(network) && class(network) == 'network')
-                    compile(network, force = force_compile, rateless = (0 < length(k)))
-                else if (!is.null(network) && class(network) == 'externalptr')
-                    network
-                else
-                    NULL
-            })
+        net <- network |> ensure_compiled(k, force_compile)
         ## obtain final solution point estimate
         pest <- ssa_cpp_pest(net, state, T,
                              trajectories = trajectories,
@@ -108,16 +90,7 @@ ssa_pest <- function(sys, trajectories = 1, k = NULL, force_compile = FALSE) {
 #' @export
 ssa_trajest <- function(sys, trajectories = 1, length.out = 100, k = NULL, force_compile = FALSE) {
     with(sys, {
-        ## compile network if needed / forced
-        net <- network %>%
-            (function(network) {
-                if (!is.null(network) && class(network) == 'network')
-                    compile(network, force = force_compile, rateless = (0 < length(k)))
-                else if (!is.null(network) && class(network) == 'externalptr')
-                    network
-                else
-                    NULL
-            })
+        net <- network |> ensure_compiled(k, force_compile)
         ## obtain final solution point estimate
         trajest <- ssa_cpp_trajest(net, state, T,
                                    trajectories = trajectories,
@@ -128,5 +101,24 @@ ssa_trajest <- function(sys, trajectories = 1, length.out = 100, k = NULL, force
             rownames(trajest$sd) <- species(network)
         }
         trajest
+    })
+}
+
+#' Optimised final state + reaction count for a single SSA trajectory
+#' 
+#' @param sys [`rsys`] instance
+#' @param k [`vector`] of reaction rates corresponding to the reactions in `sys`, overrides those contained if `sys` if provided
+#' @param force_compile if set to `TRUE`, forces the overwriting and recompilation of the network source file
+#' 
+#' @return [`numeric`] vector
+#' @export
+ssa_count <- function(sys, k = NULL, force_compile = FALSE) {
+    with(sys, {
+        net <- network |> ensure_compiled(k, force_compile)
+        ## obtain final solution point estimate
+        res <- ssa_cpp_count(net, state, T, k_vec = k)
+        if (class(network) == 'network')
+            names(res$state) <- species(network)
+        res
     })
 }

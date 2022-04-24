@@ -88,6 +88,27 @@ namespace rendr {
         return Rcpp::as<Rcpp::List >(rcpp_result_gen);
     }
 
+    inline Rcpp::List ssa_cpp_count(SEXP rnet_xptr, arma::vec y, double T, Rcpp::Nullable<arma::vec> k_vec = R_NilValue) {
+        typedef SEXP(*Ptr_ssa_cpp_count)(SEXP,SEXP,SEXP,SEXP);
+        static Ptr_ssa_cpp_count p_ssa_cpp_count = NULL;
+        if (p_ssa_cpp_count == NULL) {
+            validateSignature("Rcpp::List(*ssa_cpp_count)(SEXP,arma::vec,double,Rcpp::Nullable<arma::vec>)");
+            p_ssa_cpp_count = (Ptr_ssa_cpp_count)R_GetCCallable("rendr", "_rendr_ssa_cpp_count");
+        }
+        RObject rcpp_result_gen;
+        {
+            RNGScope RCPP_rngScope_gen;
+            rcpp_result_gen = p_ssa_cpp_count(Shield<SEXP>(Rcpp::wrap(rnet_xptr)), Shield<SEXP>(Rcpp::wrap(y)), Shield<SEXP>(Rcpp::wrap(T)), Shield<SEXP>(Rcpp::wrap(k_vec)));
+        }
+        if (rcpp_result_gen.inherits("interrupted-error"))
+            throw Rcpp::internal::InterruptedException();
+        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
+            throw Rcpp::LongjumpException(rcpp_result_gen);
+        if (rcpp_result_gen.inherits("try-error"))
+            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
+        return Rcpp::as<Rcpp::List >(rcpp_result_gen);
+    }
+
     inline double prop_px(SEXP rnet_xptr, arma::vec x, int pi, int xi) {
         typedef SEXP(*Ptr_prop_px)(SEXP,SEXP,SEXP,SEXP);
         static Ptr_prop_px p_prop_px = NULL;

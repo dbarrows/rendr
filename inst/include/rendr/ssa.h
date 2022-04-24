@@ -98,7 +98,7 @@ pair<vec, vec> ssa_pest(bondr::rnet network,
     auto solsum = vec(y.size(), fill::zeros);
     auto solsumsq = vec(y.size(), fill::zeros);
     for (int i = 0; i < n; i++) {
-        auto sol = ssa(network, y, T, 1, false, k, rng);
+        auto sol = ssa(network, y, T, 1, true, k, rng);
         auto s = sol.u[0];
         solsum += s;
         solsumsq += square(s);
@@ -110,6 +110,27 @@ pair<vec, vec> ssa_pest(bondr::rnet network,
         delete rng;
 
     return { solmean, solsd };
+}
+
+pair<vec, int> ssa_count(bondr::rnet network,
+                         vec y,
+                         double T,
+                         vec k = vec(),
+                         rng* rng = nullptr) {
+    bool internal_rng = false;
+    if (rng == nullptr) {
+        rng = new class rng();
+        internal_rng = true;
+    }
+
+    auto sol = ssa(network, y, T, 1, true, k, rng);
+    auto steps = sol.u.size();
+    auto state = sol.u[steps - 1];
+
+    if (internal_rng)
+        delete rng;
+
+    return { state, steps };
 }
 
 }

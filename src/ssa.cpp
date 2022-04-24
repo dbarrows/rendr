@@ -74,6 +74,22 @@ Rcpp::List ssa_cpp_trajest(SEXP rnet_xptr,
 }
 
 // [[Rcpp::export]]
+Rcpp::List ssa_cpp_count(SEXP rnet_xptr,
+                         arma::vec y,
+                         double T,
+                         Rcpp::Nullable<arma::vec> k_vec = R_NilValue) {
+    auto net = *Rcpp::XPtr<bondr::rnet>(rnet_xptr);
+    auto k = k_vec.isNull() ? arma::vec() : Rcpp::as<arma::vec>(k_vec);
+    
+    auto res = rendr::ssa_count(net, y, T, k);
+
+    return Rcpp::List::create(
+        Rcpp::Named("state") = core::vector_cast<Rcpp::NumericVector>(res.first),
+        Rcpp::Named("count") = res.second
+    );
+}
+
+// [[Rcpp::export]]
 double prop_px(SEXP rnet_xptr, arma::vec x, int pi, int xi) {
     auto net = *Rcpp::XPtr<bondr::rnet>(rnet_xptr);
 

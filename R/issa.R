@@ -56,15 +56,7 @@ nsm <- function(sys, length.out = 100, all.out = FALSE, trajectories = 1, parall
 
 solve_rdsys <- function(sys, algorithm_cpp, length.out = 100, all.out = FALSE, trajectories = 1, parallel = FALSE, cores = detectCores(), average = FALSE, verbose = TRUE, k = NULL, force_compile = FALSE) {
     with(sys, {
-        net <- network %>%
-            (function(network) {
-                if (!is.null(network) && class(network) == 'network')
-                    compile(network, force = force_compile, rateless = (0 < length(k)))
-                else if (!is.null(network) && class(network) == 'externalptr')
-                    network
-                else
-                    NULL
-            })
+        net <- network |> ensure_compiled(k, force_compile)
         ## obtain solutions
         solverf <- function() {
             algorithm_cpp(net, D, volume$cpp$xptr, T,

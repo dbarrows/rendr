@@ -13,7 +13,8 @@ ssa(
   cores = detectCores(),
   average = FALSE,
   k = NULL,
-  force_compile = FALSE
+  force_compile = FALSE,
+  rng_seed = NULL
 )
 }
 \arguments{
