@@ -29,11 +29,15 @@ Rcpp::List ssa_cpp_pest(SEXP rnet_xptr,
                         arma::vec y,
                         double T,
                         int trajectories = 1,
-                        Rcpp::Nullable<arma::vec> k_vec = R_NilValue) {
+                        Rcpp::Nullable<arma::vec> k_vec = R_NilValue,
+                        Rcpp::Nullable<int> seed_val = R_NilValue) {
     auto net = *Rcpp::XPtr<bondr::rnet>(rnet_xptr);
     auto k = k_vec.isNull() ? arma::vec() : Rcpp::as<arma::vec>(k_vec);
     
-    auto res = rendr::ssa_pest(net, y, T, trajectories, k);
+    int seed = seed_val.isNull() ? -1 : Rcpp::as<int>(seed_val);
+    core::rng rng = 0 <= seed ? core::rng(seed) : core::rng();
+
+    auto res = rendr::ssa_pest(net, y, T, trajectories, k, &rng);
 
     return Rcpp::List::create(
         Rcpp::Named("mean") = core::vector_cast<Rcpp::NumericVector>(res.first),
@@ -50,7 +54,7 @@ Rcpp::List ssa_cpp_trajest(SEXP rnet_xptr,
                            Rcpp::Nullable<arma::vec> k_vec = R_NilValue) {
     auto net = *Rcpp::XPtr<bondr::rnet>(rnet_xptr);
     auto k = k_vec.isNull() ? arma::vec() : Rcpp::as<arma::vec>(k_vec);
-    
+
     // solutions
     auto sols = std::vector<rendr::rsol>(trajectories);
     for (int i = 0; i < trajectories; i++)

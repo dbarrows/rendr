@@ -37,6 +37,7 @@ rsol ssa(bondr::rnet network,
     auto sol_push = [&](bool final = false) {
         push(sol, final ? T + 1 : t, T, x, x_last, all_out, next_out);
     };
+    uint reaction_count = 0;
 
     // save initial state
     sol_push();
@@ -72,8 +73,12 @@ rsol ssa(bondr::rnet network,
         network.reactions[j].update(x);
         t += tau;
 
+        reaction_count += t < T ? 1 : 0;
+
         sol_push();
     }
+
+    sol.steps = reaction_count;
 
     if (internal_rng)
         delete rng;
@@ -98,7 +103,7 @@ pair<vec, vec> ssa_pest(bondr::rnet network,
     auto solsum = vec(y.size(), fill::zeros);
     auto solsumsq = vec(y.size(), fill::zeros);
     for (int i = 0; i < n; i++) {
-        auto sol = ssa(network, y, T, 1, true, k, rng);
+        auto sol = ssa(network, y, T, 1, false, k, rng);
         auto s = sol.u[0];
         solsum += s;
         solsumsq += square(s);
@@ -123,14 +128,12 @@ pair<vec, int> ssa_count(bondr::rnet network,
         internal_rng = true;
     }
 
-    auto sol = ssa(network, y, T, 1, true, k, rng);
-    auto steps = sol.u.size() - 1;
-    auto state = sol.u[steps];
+    auto sol = ssa(network, y, T, 1, false, k, rng);
 
     if (internal_rng)
         delete rng;
 
-    return { state, steps };
+    return { sol.u[0], sol.steps };
 }
 
 }

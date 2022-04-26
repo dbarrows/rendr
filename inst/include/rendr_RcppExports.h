@@ -46,17 +46,17 @@ namespace rendr {
         return Rcpp::as<Rcpp::DataFrame >(rcpp_result_gen);
     }
 
-    inline Rcpp::List ssa_cpp_pest(SEXP rnet_xptr, arma::vec y, double T, int trajectories = 1, Rcpp::Nullable<arma::vec> k_vec = R_NilValue) {
-        typedef SEXP(*Ptr_ssa_cpp_pest)(SEXP,SEXP,SEXP,SEXP,SEXP);
+    inline Rcpp::List ssa_cpp_pest(SEXP rnet_xptr, arma::vec y, double T, int trajectories = 1, Rcpp::Nullable<arma::vec> k_vec = R_NilValue, Rcpp::Nullable<int> seed_val = R_NilValue) {
+        typedef SEXP(*Ptr_ssa_cpp_pest)(SEXP,SEXP,SEXP,SEXP,SEXP,SEXP);
         static Ptr_ssa_cpp_pest p_ssa_cpp_pest = NULL;
         if (p_ssa_cpp_pest == NULL) {
-            validateSignature("Rcpp::List(*ssa_cpp_pest)(SEXP,arma::vec,double,int,Rcpp::Nullable<arma::vec>)");
+            validateSignature("Rcpp::List(*ssa_cpp_pest)(SEXP,arma::vec,double,int,Rcpp::Nullable<arma::vec>,Rcpp::Nullable<int>)");
             p_ssa_cpp_pest = (Ptr_ssa_cpp_pest)R_GetCCallable("rendr", "_rendr_ssa_cpp_pest");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_ssa_cpp_pest(Shield<SEXP>(Rcpp::wrap(rnet_xptr)), Shield<SEXP>(Rcpp::wrap(y)), Shield<SEXP>(Rcpp::wrap(T)), Shield<SEXP>(Rcpp::wrap(trajectories)), Shield<SEXP>(Rcpp::wrap(k_vec)));
+            rcpp_result_gen = p_ssa_cpp_pest(Shield<SEXP>(Rcpp::wrap(rnet_xptr)), Shield<SEXP>(Rcpp::wrap(y)), Shield<SEXP>(Rcpp::wrap(T)), Shield<SEXP>(Rcpp::wrap(trajectories)), Shield<SEXP>(Rcpp::wrap(k_vec)), Shield<SEXP>(Rcpp::wrap(seed_val)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();

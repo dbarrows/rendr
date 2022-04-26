@@ -35,6 +35,8 @@ ssa(
 \item{k}{\code{\link{numeric}} vector of reaction rates corresponding to the reactions in \code{sys}, overrides those contained if \code{sys} if provided}
 
 \item{force_compile}{if set to \code{TRUE}, forces the overwriting and recompilation of the network source file}
+
+\item{rng_seed}{random number generator seed to use, if provided (default \code{NULL})}
 }
 \value{
 \code{\link{rsol}} instance

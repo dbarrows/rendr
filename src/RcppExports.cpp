@@ -107,8 +107,8 @@ RcppExport SEXP _rendr_ssa_cpp(SEXP rnet_xptrSEXP, SEXP ySEXP, SEXP TSEXP, SEXP 
     return rcpp_result_gen;
 }
 // ssa_cpp_pest
-Rcpp::List ssa_cpp_pest(SEXP rnet_xptr, arma::vec y, double T, int trajectories, Rcpp::Nullable<arma::vec> k_vec);
-static SEXP _rendr_ssa_cpp_pest_try(SEXP rnet_xptrSEXP, SEXP ySEXP, SEXP TSEXP, SEXP trajectoriesSEXP, SEXP k_vecSEXP) {
+Rcpp::List ssa_cpp_pest(SEXP rnet_xptr, arma::vec y, double T, int trajectories, Rcpp::Nullable<arma::vec> k_vec, Rcpp::Nullable<int> seed_val);
+static SEXP _rendr_ssa_cpp_pest_try(SEXP rnet_xptrSEXP, SEXP ySEXP, SEXP TSEXP, SEXP trajectoriesSEXP, SEXP k_vecSEXP, SEXP seed_valSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< SEXP >::type rnet_xptr(rnet_xptrSEXP);
@@ -116,15 +116,16 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type T(TSEXP);
     Rcpp::traits::input_parameter< int >::type trajectories(trajectoriesSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<arma::vec> >::type k_vec(k_vecSEXP);
-    rcpp_result_gen = Rcpp::wrap(ssa_cpp_pest(rnet_xptr, y, T, trajectories, k_vec));
+    Rcpp::traits::input_parameter< Rcpp::Nullable<int> >::type seed_val(seed_valSEXP);
+    rcpp_result_gen = Rcpp::wrap(ssa_cpp_pest(rnet_xptr, y, T, trajectories, k_vec, seed_val));
     return rcpp_result_gen;
 END_RCPP_RETURN_ERROR
 }
-RcppExport SEXP _rendr_ssa_cpp_pest(SEXP rnet_xptrSEXP, SEXP ySEXP, SEXP TSEXP, SEXP trajectoriesSEXP, SEXP k_vecSEXP) {
+RcppExport SEXP _rendr_ssa_cpp_pest(SEXP rnet_xptrSEXP, SEXP ySEXP, SEXP TSEXP, SEXP trajectoriesSEXP, SEXP k_vecSEXP, SEXP seed_valSEXP) {
     SEXP rcpp_result_gen;
     {
         Rcpp::RNGScope rcpp_rngScope_gen;
-        rcpp_result_gen = PROTECT(_rendr_ssa_cpp_pest_try(rnet_xptrSEXP, ySEXP, TSEXP, trajectoriesSEXP, k_vecSEXP));
+        rcpp_result_gen = PROTECT(_rendr_ssa_cpp_pest_try(rnet_xptrSEXP, ySEXP, TSEXP, trajectoriesSEXP, k_vecSEXP, seed_valSEXP));
     }
     Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
     if (rcpp_isInterrupt_gen) {
@@ -299,7 +300,7 @@ static int _rendr_RcppExport_validate(const char* sig) {
     static std::set<std::string> signatures;
     if (signatures.empty()) {
         signatures.insert("Rcpp::DataFrame(*ssa_cpp)(SEXP,arma::vec,double,int,bool,Rcpp::Nullable<arma::vec>,Rcpp::Nullable<int>)");
-        signatures.insert("Rcpp::List(*ssa_cpp_pest)(SEXP,arma::vec,double,int,Rcpp::Nullable<arma::vec>)");
+        signatures.insert("Rcpp::List(*ssa_cpp_pest)(SEXP,arma::vec,double,int,Rcpp::Nullable<arma::vec>,Rcpp::Nullable<int>)");
         signatures.insert("Rcpp::List(*ssa_cpp_trajest)(SEXP,arma::vec,double,int,int,Rcpp::Nullable<arma::vec>)");
         signatures.insert("Rcpp::List(*ssa_cpp_count)(SEXP,arma::vec,double,Rcpp::Nullable<arma::vec>,Rcpp::Nullable<int>)");
         signatures.insert("double(*prop_px)(SEXP,arma::vec,int,int)");
@@ -323,7 +324,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_rendr_nsm_cpp", (DL_FUNC) &_rendr_nsm_cpp, 8},
     {"_rendr_nsm_cpp_pest", (DL_FUNC) &_rendr_nsm_cpp_pest, 6},
     {"_rendr_ssa_cpp", (DL_FUNC) &_rendr_ssa_cpp, 7},
-    {"_rendr_ssa_cpp_pest", (DL_FUNC) &_rendr_ssa_cpp_pest, 5},
+    {"_rendr_ssa_cpp_pest", (DL_FUNC) &_rendr_ssa_cpp_pest, 6},
     {"_rendr_ssa_cpp_trajest", (DL_FUNC) &_rendr_ssa_cpp_trajest, 6},
     {"_rendr_ssa_cpp_count", (DL_FUNC) &_rendr_ssa_cpp_count, 5},
     {"_rendr_prop_px", (DL_FUNC) &_rendr_prop_px, 4},

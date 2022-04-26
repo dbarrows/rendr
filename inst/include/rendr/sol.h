@@ -16,6 +16,7 @@ struct sol {
     vector<string> species;
     vector<double> t;
     vector<S> u;
+    uint steps;
 };
 
 // Functions --------------------------------------------------------------------------------------
@@ -42,7 +43,7 @@ void push(sol<S>& sol, double t, double T, S& x, S& x_last, bool all_out, uint& 
     // save everything
     if (all_out) {
         sol.t.push_back(T < t ? T : t);
-        sol.u.push_back(x);
+        sol.u.push_back(x_last);
     // length.out == 1: only save last state
     } else if (sol.t.size() == 1 && sol.t[0] < t) {
         sol.u[0] = x_last;

@@ -11,6 +11,7 @@
 #' @param average if `TRUE` (default `FALSE`) and generating multiple trajectories, averages trajectories at sample times; incompatible with `all.out = TRUE`
 #' @param k [`numeric`] vector of reaction rates corresponding to the reactions in `sys`, overrides those contained if `sys` if provided
 #' @param force_compile if set to `TRUE`, forces the overwriting and recompilation of the network source file
+#' @param rng_seed random number generator seed to use, if provided (default `NULL`)
 #' 
 #' @return [`rsol`] instance
 #' @export
@@ -60,16 +61,18 @@ ssa <- function(sys, length.out = 100, all.out = FALSE, trajectories = 1, parall
 #' @param trajectories number of trajectories to generate
 #' @param k [`vector`] of reaction rates corresponding to the reactions in `sys`, overrides those contained if `sys` if provided
 #' @param force_compile if set to `TRUE`, forces the overwriting and recompilation of the network source file
+#' @param rng_seed random number generator seed to use, if provided (default `NULL`)
 #' 
 #' @return [`numeric`] vector
 #' @export
-ssa_pest <- function(sys, trajectories = 1, k = NULL, force_compile = FALSE) {
+ssa_pest <- function(sys, trajectories = 1, k = NULL, force_compile = FALSE, rng_seed = NULL) {
     with(sys, {
         net <- network |> ensure_compiled(k, force_compile)
         ## obtain final solution point estimate
         pest <- ssa_cpp_pest(net, state, T,
                              trajectories = trajectories,
-                             k_vec = k)
+                             k_vec = k,
+                             seed_val = rng_seed)
         if (class(network) == 'network') {
             names(pest$mean) <- species(network)
             names(pest$sd) <- species(network)
@@ -109,6 +112,7 @@ ssa_trajest <- function(sys, trajectories = 1, length.out = 100, k = NULL, force
 #' @param sys [`rsys`] instance
 #' @param k [`vector`] of reaction rates corresponding to the reactions in `sys`, overrides those contained if `sys` if provided
 #' @param force_compile if set to `TRUE`, forces the overwriting and recompilation of the network source file
+#' @param rng_seed random number generator seed to use, if provided (default `NULL`)
 #' 
 #' @return [`numeric`] vector
 #' @export

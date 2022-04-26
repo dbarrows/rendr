@@ -4,7 +4,7 @@
 \alias{ssa_count}
 \title{Optimised final state + reaction count for a single SSA trajectory}
 \usage{
-ssa_count(sys, k = NULL, force_compile = FALSE)
+ssa_count(sys, k = NULL, force_compile = FALSE, rng_seed = NULL)
 }
 \arguments{
 \item{sys}{\code{\link{rsys}} instance}
@@ -12,6 +12,8 @@ ssa_count(sys, k = NULL, force_compile = FALSE)
 \item{k}{\code{\link{vector}} of reaction rates corresponding to the reactions in \code{sys}, overrides those contained if \code{sys} if provided}
 
 \item{force_compile}{if set to \code{TRUE}, forces the overwriting and recompilation of the network source file}
+
+\item{rng_seed}{random number generator seed to use, if provided (default \code{NULL})}
 }
 \value{
 \code{\link{numeric}} vector
