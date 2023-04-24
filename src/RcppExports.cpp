@@ -260,8 +260,8 @@ RcppExport SEXP _rendr_prop_px(SEXP rnet_xptrSEXP, SEXP xSEXP, SEXP piSEXP, SEXP
     return rcpp_result_gen;
 }
 // tauleap_cpp
-Rcpp::DataFrame tauleap_cpp(SEXP rnet_xptr, arma::vec y, double T, arma::mat hots, arma::vec reverse, int length_out, bool all_out, Rcpp::Nullable<arma::vec> k_vec, bool verbose);
-RcppExport SEXP _rendr_tauleap_cpp(SEXP rnet_xptrSEXP, SEXP ySEXP, SEXP TSEXP, SEXP hotsSEXP, SEXP reverseSEXP, SEXP length_outSEXP, SEXP all_outSEXP, SEXP k_vecSEXP, SEXP verboseSEXP) {
+Rcpp::DataFrame tauleap_cpp(SEXP rnet_xptr, arma::vec y, double T, arma::mat hots, bool use_implicit, int length_out, bool all_out, Rcpp::Nullable<arma::vec> k_vec, bool verbose);
+RcppExport SEXP _rendr_tauleap_cpp(SEXP rnet_xptrSEXP, SEXP ySEXP, SEXP TSEXP, SEXP hotsSEXP, SEXP use_implicitSEXP, SEXP length_outSEXP, SEXP all_outSEXP, SEXP k_vecSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -269,28 +269,12 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec >::type y(ySEXP);
     Rcpp::traits::input_parameter< double >::type T(TSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type hots(hotsSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type reverse(reverseSEXP);
+    Rcpp::traits::input_parameter< bool >::type use_implicit(use_implicitSEXP);
     Rcpp::traits::input_parameter< int >::type length_out(length_outSEXP);
     Rcpp::traits::input_parameter< bool >::type all_out(all_outSEXP);
     Rcpp::traits::input_parameter< Rcpp::Nullable<arma::vec> >::type k_vec(k_vecSEXP);
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
-    rcpp_result_gen = Rcpp::wrap(tauleap_cpp(rnet_xptr, y, T, hots, reverse, length_out, all_out, k_vec, verbose));
-    return rcpp_result_gen;
-END_RCPP
-}
-// tauleap_implicit_cpp
-Rcpp::DataFrame tauleap_implicit_cpp(SEXP rnet_xptr, arma::vec y, double T, int length_out, bool all_out, Rcpp::Nullable<arma::vec> k_vec);
-RcppExport SEXP _rendr_tauleap_implicit_cpp(SEXP rnet_xptrSEXP, SEXP ySEXP, SEXP TSEXP, SEXP length_outSEXP, SEXP all_outSEXP, SEXP k_vecSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< SEXP >::type rnet_xptr(rnet_xptrSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type y(ySEXP);
-    Rcpp::traits::input_parameter< double >::type T(TSEXP);
-    Rcpp::traits::input_parameter< int >::type length_out(length_outSEXP);
-    Rcpp::traits::input_parameter< bool >::type all_out(all_outSEXP);
-    Rcpp::traits::input_parameter< Rcpp::Nullable<arma::vec> >::type k_vec(k_vecSEXP);
-    rcpp_result_gen = Rcpp::wrap(tauleap_implicit_cpp(rnet_xptr, y, T, length_out, all_out, k_vec));
+    rcpp_result_gen = Rcpp::wrap(tauleap_cpp(rnet_xptr, y, T, hots, use_implicit, length_out, all_out, k_vec, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -329,7 +313,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_rendr_ssa_cpp_count", (DL_FUNC) &_rendr_ssa_cpp_count, 5},
     {"_rendr_prop_px", (DL_FUNC) &_rendr_prop_px, 4},
     {"_rendr_tauleap_cpp", (DL_FUNC) &_rendr_tauleap_cpp, 9},
-    {"_rendr_tauleap_implicit_cpp", (DL_FUNC) &_rendr_tauleap_implicit_cpp, 6},
     {"_rendr_RcppExport_registerCCallable", (DL_FUNC) &_rendr_RcppExport_registerCCallable, 0},
     {NULL, NULL, 0}
 };

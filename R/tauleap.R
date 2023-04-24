@@ -30,26 +30,20 @@ tauleap <- function(sys, length.out = 100, all.out = FALSE, trajectories = 1, pa
                 else
                     NULL
             })
+
         ## obtain solutions
-        tauleapf <- function() {
-            switch(method,
-                   'implicit' = tauleap_implicit_cpp(net, state, T,
-                                                     length_out = length.out,
-                                                     all_out = all.out,
-                                                     k_vec = k),
-                   tauleap_cpp(net, state, T,
-                               hots(network),
-                               find_reversible(network),
-                               length_out = length.out,
-                               all_out = all.out,
-                               k_vec = k,
-                               verbose)
-                )
-            }
+        tauleapf <- function(i) tauleap_cpp(
+            net, state, T,
+            hots(network),
+            method == 'implicit',
+            length_out = length.out,
+            all_out = all.out,
+            k_vec = k,
+            verbose)
         sols <- if(parallel) {
-                mclapply(1:trajectories, function(i) tauleapf(), mc.cores = cores)
+                mclapply(1:trajectories, tauleapf, mc.cores = cores)
             } else {
-                lapply(1:trajectories, function(i) tauleapf())
+                lapply(1:trajectories, tauleapf)
             }
         ## shape solutions as needed
         sol <- if (trajectories == 1) {

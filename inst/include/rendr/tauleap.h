@@ -16,11 +16,13 @@ using namespace std;
 using namespace core;
 using uint = unsigned int;
 
-// constants
 const uint n_crit = 10;
 const double eps = 5e-2;
-const double delta = 5e-2;
-const double n_stiff = 819;
+
+enum leaptype {
+    exleap,
+    imleap
+};
 
 vector<uint> reactant_species(mat& hots, vector<uint> reaction_indices) {
     auto i_rs = vector<uint>();
@@ -85,58 +87,30 @@ double tau(vec& x, vec& a, bondr::rnet& network, mat& hots, vector<vec>& v,
         taus[si*2] = dx/fabs(u);
         taus[si*2 + 1] = dx*dx/s2;
     }
-    //Rcpp::Rcout << taus << endl;
     return min(taus);
 }
 
-vector<uint> intersect(vector<uint>& a, vector<uint>& b) {
-    auto x = vector<uint>();
-    for (uint i = 0; i < a.size(); i++)
-        for (uint j = 0; j < b.size(); j++)
-            if (a[i] == b[j])
-                x.push_back(a[i]);
-    return x;
-}
-
-bool set_eq(vector<uint>& a, vector<uint>& b) {
-    if (a.size() != b.size())
-        return false;
-    for (uint i = 0; i < a.size(); i++)
-        if (a[i] != b[i])
-            return false;
-    return true;
-}
-
-template<typename T>
-void set_print(string label, vector<T> set) {
-    Rcpp::Rcout << " - " << label << ": ";
-    if (set.size() == 0) {
-        Rcpp::Rcout << "{}";
-    } else {
-        for (uint i = 0; i < set.size(); i++) {
-            Rcpp::Rcout << set[i];
-            if (i < set.size() - 1)
-                Rcpp::Rcout << ", ";
-        }
-    }
-    Rcpp::Rcout << endl;
-}
-
-std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
-                                        vec y,
-                                        double T,
-                                        mat hots,
-                                        vec reverse,
-                                        uint length_out = 100,
-                                        bool all_out = false,
-                                        vec k_override = vec(),
-                                        bool verbose = false,
-                                        rng* rng = nullptr) {
+rsol tauleap(
+        bondr::rnet network,
+        vec y,
+        double T,
+        mat hots,
+        leaptype leaping,
+        uint length_out = 100,
+        bool all_out = false,
+        vec k_override = vec(),
+        rng* rng = nullptr) {
     bool internal_rng = false;
     if (rng == nullptr) {
         rng = new class rng();
         internal_rng = true;
     }
+
+    Rcpp::Rcout
+        << "Starting tau-leaping with "
+        << (leaping == leaptype::imleap ? "implicit" : "explicit")
+        << " method"
+        << std::endl;
 
     uint N = network.species.size();
     uint M = network.reactions.size();
@@ -152,17 +126,15 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
     auto sol_push = [&](bool final = false) {
         push(sol, final ? T + 1 : t, T, x, x_last, all_out, next_out);
     };
-    // step type saving
-    auto step_type = vector<string>();
 
     // save initial state
     sol_push();
-    step_type.push_back("Initial");
 
     // allocate propensities vector
     vec a = vec(M, fill::zeros);
     vec csum = vec(M);
     double asum;
+    double asum_cr;
 
     // f system function for implicit tau leaping
     auto f = imtau::f_make(network);
@@ -217,36 +189,22 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
         }
     };
 
-    // flags --------------------------------
-    // ssa
-    bool ssa_on = false;
-    bool ssa_extau_last = false;
-    uint ssa_remaining = 0;
-    // tau
-    bool tau_on = false;
-    bool imtau_on = false;
-    bool extau_on = false;
     double tau_1;
-    double tau_im;
-    double tau_ex;
-    uint tau_1_div_count = 0;
-
-    // counters ------------------------------
-    uint ssa_count = 0;
-    uint imtau_count = 0;
-    uint extau_count = 0;
+    double tau_2;
+    double tau_use;
+    auto leaping_in_progress = false;
 
     while (t < T) {
-        for (uint j = 0; j < M; j++) {
-            a[j] = network.reactions[j].propensity(x);
-            if (k_override.size() != 0)
-                a[j] *= k_override[j];
-        }
-        csum = cumsum(a);
-        asum = csum[M - 1];
+        if (!leaping_in_progress) {
+            for (uint j = 0; j < M; j++) {
+                a[j] = network.reactions[j].propensity(x);
+                if (k_override.size() != 0)
+                    a[j] *= k_override[j];
+            }
+            csum = cumsum(a);
+            asum = csum[M - 1];
+            asum_cr = 0;
 
-        // Steps 1-3
-        if (!ssa_on && !tau_on) {
             // if all propensities zero, system halts
             if (asum == 0) {
                 sol_push(true);
@@ -256,247 +214,80 @@ std::pair<rsol, vector<string>> tauleap(bondr::rnet network,
             // update critical reactions
             update_critical(x);
 
-            // update reaction sets
-            // not at equilibrium
-            auto j_ne = vector<uint>();
-            for (uint j = 0; j < M; j++) {
-                if (j < reverse[j]) {
-                    double ap = a[j];
-                    double am = a[reverse[j]];
-                    if (!(fabs(ap - am) <= delta*min(ap, am))) {
-                        j_ne.push_back(j);
-                        j_ne.push_back(reverse[j]);
-                    }
-                } else if (reverse[j] < 0) {
-                    j_ne.push_back(j);
-                }
-            }
-            // not at equilibrium or critical
-            auto j_necr = intersect(j_ne, j_ncr);
-            
-            /*set_print("Crit          ", j_cr);
-            set_print("Not crit      ", j_ncr);
-            set_print("Not at eq     ", j_ne);
-            set_print("Not crit or eq", j_necr);*/
-
             auto i_rs = reactant_species(hots, j_ncr);
 
-            // compute explicit tau time step
-            tau_ex = 4*tau(x, a, network, hots, v, i_rs, j_ncr);
+            // step for non-critical reactions
+            tau_1 = tau(x, a, network, hots, v, i_rs, j_ncr);
 
-            // compute implicit tau time step
-            tau_im = tau(x, a, network, hots, v, i_rs, j_necr);
-
-            // determine whether to use explicit or implicit tau (if not using SSA)
-            imtau_on = false;
-            extau_on = false;
-            if (n_stiff*tau_ex < tau_im) {
-                // system is stiff - use implicit tau
-                tau_1 = tau_im;
-                imtau_on = true;
-                //Rcpp::Rcout << "x: " << x << endl;
-                //Rcpp::Rcout << "a: " << a << endl;
-            } else {
-                // system is not stiff - use explicit tau
-                tau_1 = tau_ex;
-                if (verbose)
-                    Rcpp::Rcout << "tau_ex: " << tau_ex << endl;
-                extau_on = true;
-            }
-        }
-
-        // use ssa if necessary
-        if (ssa_on || tau_1 < 10.0/asum) {
-            // use ssa
-            if (!ssa_on) {
-                // if entering a new ssa batch
-                ssa_on = true;
-                tau_on = false;
-                ssa_remaining = ssa_extau_last ? 100 : 10;
-                if (verbose)
-                    Rcpp::Rcout << "SSA: " << ssa_remaining << endl;
-            }
-            // perform SSA
-            uint j = 0;
-            double atarget = asum*rng->uniform();
-            while (csum[j] < atarget)
-                j++;
-            // get reaction time
-            double tau = -log(rng->uniform())/asum;
-            // stash current system state + advance
-            x_last = x;
-            network.reactions[j].update(x);
-            t += tau;
-            sol_push();
-            ssa_extau_last = true;
-            ssa_count++;
-            step_type.push_back("SSA");
-            ssa_remaining--;
-
-            if (ssa_remaining == 0) {
-                // done ssa batch
-                ssa_on = false;
-            }
-        } else {
-            // use tau-leaping
-            if (verbose)
-                Rcpp::Rcout << (imtau_on ? "ImTau" : "ExTau");
-
-            double tau;
-            auto k = vec(M);
-
-            // critcal reactions propensity aggregation quantities
-            double asum_cr = 0;
+            // step for critical reactions
             for (uint ri = 0; ri < j_cr.size(); ri++)
                 asum_cr += a[j_cr[ri]];
-            double tau_2 = -log(rng->uniform())/asum_cr;
+            tau_2 = -log(rng->uniform())/asum_cr;
+        }
 
-            if (tau_1 < tau_2) {
-                // no critical reactions will fire
-                tau = tau_1;
-                if (verbose)
-                    Rcpp::Rcout << ", tau = tau1 = " << tau << "...";
-                
-                if (imtau_on) {
-                    // implicit tau k's
-                    k = imtau::k_im(network, f, x, tau);
-                } else {
-                    // explicit tau k's
-                    for (uint j = 0; j < M; j++)
-                        k[j] = rng->poisson(a[j]*tau);
-                }
-                // set firings to zero for critical reactions
-                for (uint ri = 0; ri < j_cr.size(); ri++)
-                    k[j_cr[ri]] = 0;
-            } else {
-                // only one critical reaction will fire
-                tau = tau_2;
-                if (verbose)
-                    Rcpp::Rcout << ", tau = tau2 = " << tau << "...";
-                
-                // get index of single critical reaction
-                int jc = -1;
-                if (0 < j_cr.size()) {
-                    uint ric = 0;
-                    double a_cr_target = asum_cr*rng->uniform();
-                    double csum_cr = a[j_cr[0]];
-                    while (csum_cr < a_cr_target)
-                        csum_cr += a[j_cr[++ric]];
-                    jc = ric;
-                }
-
-                // get remaining k's
-                if (extau_on || tau_2 < tau_ex) {
-                    // use explicit tau
-                    for (uint j = 0; j < M; j++)
-                        k[j] = rng->poisson(a[j]*tau);
-                } else {
-                    // use implicit tau
-                    k = imtau::k_im(network, f, x, tau);
-                }
-
-                // correct k's based on single selected critical reaction
-                for (uint ri = 0; ri < j_cr.size(); ri++) {
-                    uint j = j_cr[ri];
-                    k[j] = j == jc ? 1 : 0;
-                }
-            }
+        auto k = vec(M);
+        if (tau_1 < tau_2) {
+            // no critical reactions will fire
+            tau_use = tau_1;
             
-            vec dx = vec(N, fill::zeros);
-            for (uint j = 0; j < M; j++)
-                dx += k[j]*v[j];
-            if (all(0 <= (x + dx))) {
-                // fire tau step
-                x_last = x;
-                x += dx;
-                t += tau;
-                sol_push();
-                if (imtau_on) {
-                    imtau_count++;
-                    step_type.push_back("ImTau");
-                    ssa_extau_last = false;
-                } else {
-                    extau_count++;
-                    step_type.push_back("ExTau");
-                    ssa_extau_last = true;
-                }
-                tau_on = false;
-                tau_1_div_count = 0;
-                if (verbose)
-                    Rcpp::Rcout << "done" << endl;
-            } else {
-                // tau leaping still in progress, reduce tau_1 by half and try stepping again
-                tau_1 /= 2;
-                tau_1_div_count++;
-                tau_on = true;
+            if (leaping == leaptype::imleap) {
+                k = imtau::k_im(network, f, x, tau_use);
+            } else { //explicit tau
+                for (uint j = 0; j < M; j++)
+                    k[j] = rng->poisson(a[j]*tau_use);
+            }
+
+            // set firings to zero for critical reactions
+            for (uint ri = 0; ri < j_cr.size(); ri++)
+                k[j_cr[ri]] = 0;
+        } else {
+            // only one critical reaction will fire
+            tau_use = tau_2;
+            
+            // get index of single critical reaction
+            int jc = -1;
+            if (0 < j_cr.size()) {
+                uint ric = 0;
+                double a_cr_target = asum_cr*rng->uniform();
+                double csum_cr = a[j_cr[0]];
+                while (csum_cr < a_cr_target)
+                    csum_cr += a[j_cr[++ric]];
+                jc = ric;
+            }
+
+            if (leaping == leaptype::imleap){
+                k = imtau::k_im(network, f, x, tau_use);
+            } else { // explicit tau
+                for (uint j = 0; j < M; j++)
+                    k[j] = rng->poisson(a[j]*tau_use);
+            }
+
+            // correct k's based on single selected critical reaction
+            for (uint ri = 0; ri < j_cr.size(); ri++) {
+                uint j = j_cr[ri];
+                k[j] = j == jc ? 1 : 0;
             }
         }
-    }
-
-    if (verbose) {
-        Rcpp::Rcout << "SSA:           " << ssa_count << endl;
-        Rcpp::Rcout << "Explicit tau:  " << extau_count << endl;
-        Rcpp::Rcout << "Implicit tau:  " << imtau_count << endl;
+            
+        vec dx = vec(N, fill::zeros);
+        for (uint j = 0; j < M; j++)
+            dx += k[j]*v[j];
+        if (all(0 <= (x + dx))) {
+            // fire tau step
+            x_last = x;
+            x += dx;
+            t += tau_use;
+            sol_push();
+            leaping_in_progress = false;
+        } else {
+            // tau leaping still in progress, reduce tau_1 by half and try stepping again
+            tau_1 /= 2;
+            leaping_in_progress = true;
+        }
     }
 
     if (internal_rng)
         delete rng;
-
-    return { sol, step_type };
-}
-
-rsol tauleap_implicit(bondr::rnet network,
-                      vec y,
-                      double T,
-                      uint length_out = 100,
-                      bool all_out = false,
-                      vec k = vec()) {
-
-    uint N = network.species.size();
-    uint M = network.reactions.size();
-
-    double t = 0;
-    double tau = T / length_out;
-    vec x = vec(y);
-
-    auto x_last = x;
-
-    // update vectors
-    auto v = vector<vec>(M);
-    for (uint j = 0; j < M; j++) {
-        vec vj = vec(x.size(), fill::zeros);
-        network.reactions[j].update(vj);
-        v[j] = vj;
-    }
-        
-    // data saving
-    auto sol = provision<vec>(network.species, T, length_out, all_out);
-    uint next_out = 0;
-    auto sol_push = [&](bool final = false) {
-        push(sol, final ? T + 1 : t, T, x, x_last, all_out, next_out);
-    };
-
-    // save initial state
-    sol_push();
-
-    // f system function
-    auto f = imtau::f_make(network);
-
-    while (t < T) {
-        x_last = x;
-
-        // determine state vector increments
-        k = imtau::k_im(network, f, x, tau);
-        vec dx = vec(N, fill::zeros);
-        for (uint j = 0; j < M; j++)
-            dx += k[j]*v[j];
-
-        // evolve system
-        x += dx;
-        t += tau;
-
-        sol_push();
-    }
 
     return sol;
 }

@@ -33,12 +33,8 @@ prop_px <- function(rnet_xptr, x, pi, xi) {
     .Call(`_rendr_prop_px`, rnet_xptr, x, pi, xi)
 }
 
-tauleap_cpp <- function(rnet_xptr, y, T, hots, reverse, length_out = 100L, all_out = FALSE, k_vec = NULL, verbose = FALSE) {
-    .Call(`_rendr_tauleap_cpp`, rnet_xptr, y, T, hots, reverse, length_out, all_out, k_vec, verbose)
-}
-
-tauleap_implicit_cpp <- function(rnet_xptr, y, T, length_out = 100L, all_out = FALSE, k_vec = NULL) {
-    .Call(`_rendr_tauleap_implicit_cpp`, rnet_xptr, y, T, length_out, all_out, k_vec)
+tauleap_cpp <- function(rnet_xptr, y, T, hots, use_implicit = FALSE, length_out = 100L, all_out = FALSE, k_vec = NULL, verbose = FALSE) {
+    .Call(`_rendr_tauleap_cpp`, rnet_xptr, y, T, hots, use_implicit, length_out, all_out, k_vec, verbose)
 }
 
 # Register entry points for exported C++ functions
